@@ -1,0 +1,6 @@
+{
+  "extends": "stylelint-config-awzome",
+  "rules": {
+    "unit-whitelist": [ "deg", "em", "rem", "px", "%", "vh", "vw", "s"]
+  }
+}
