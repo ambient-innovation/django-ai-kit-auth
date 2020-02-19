@@ -1,0 +1,25 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+# django
+Django = "~=3.0"                           # django
+# Testing
+model-bakery = "==1.0.2"                   # Test template for objects
+# REST API
+djangorestframework = "==3.11.0"           # django REST API
+django-rest-auth = "==0.9.5"               # Authentication for DRF
+djangorestframework-camel-case = "==1.1.2" # CamelCase JSON rendering for API
+djangorestframework-jwt = "*"
+# Deploy
+gunicorn = "==20.0.4"                      # Webserver
+django-ai-kit-auth = {path = "./django-ai-kit-auth-0.1.tar.gz"}
+
+[dev-packages]
+flake8 = "==3.7.9"                         # Linting
+pep8-naming = "==0.9.1"                    # PEP8 conform name linting
+
+[requires]
+python_version = "3.7"
