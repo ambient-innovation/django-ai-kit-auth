@@ -26,6 +26,7 @@
     "react": "^16.12.0"
   },
   "devDependencies": {
+    "@semantic-release/gitlab": "^6.0.2",
     "@types/node": "^13.7.2",
     "@types/react": "^16.9.20",
     "@typescript-eslint/eslint-plugin": "^2.20.0",
@@ -40,11 +41,35 @@
     "eslint-plugin-react": "^7.18.3",
     "eslint-plugin-react-hooks": "^1.7.0",
     "eslint-plugin-unicorn": "^16.1.1",
+    "semantic-release": "^17.0.4",
     "stylelint": "^10.1.0",
     "stylelint-config-awzome": "^1.1.1",
     "typescript": "^3.7.5"
   },
   "files": [
     "dist/**/*"
-  ]
+  ],
+  "release": {
+    "branches": [
+      "master"
+    ],
+    "tagFormat": "frontend_v${version}",
+    "plugins": [
+      ["@semantic-release/commit-analyzer", {
+        "preset": "angular",
+        "releaseRules": [
+          {"scope": "!*react*", "release": false}
+        ]
+      }],
+      "@semantic-release/release-notes-generator",
+      ["@semantic-release/gitlab", {
+        "gitlabUrl": "https://gitlab.ambient-innovation.com/",
+        "assets": [
+          {"path": "dist/**/*.js", "label": "JS"},
+          {"path": "dist/**/*.d.ts", "label": "TS"}
+        ]
+      }],
+      "@semantic-release/npm"
+    ]
+  }
 }
