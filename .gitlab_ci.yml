@@ -1,0 +1,70 @@
+image: docker:stable
+
+variables:
+  DOCKER_DRIVER: overlay2
+  DJANGO: django-ai-kit-auth
+  REACT: ai-kit-auth
+  IMAGE_TAG_BACKEND: $CI_REGISTRY_IMAGE/django-ai-kit-auth:$CI_COMMIT_REF_SLUG
+  IMAGE_TAG_FRONTEND: $CI_REGISTRY_IMAGE/ai-kit-auth:$CI_COMMIT_REF_SLUG
+  DOCKER_HOST: tcp://localhost:2375
+
+stages:
+  - lint
+  - build
+  - test
+  - deploy
+
+services:
+  - docker:18.09-dind
+
+lint django:
+  image: python:3.7-slim
+  stage: lint
+  tags:
+    - low-load
+  before_script:
+    - pip install black
+  script:
+    - black --check $DJANGO/apps/* --exclude .*/migrations/.*
+
+lint react:
+  image: node:13
+  stage: lint
+  tags:
+    - low-load
+  before_script:
+    - npm ci --prefix $REACT
+  script:
+    - npm run --prefix $REACT lint
+
+#unit test django:
+#  stage: test
+#  tags:
+#    - normal-load
+#  variables:
+#    GIT_STRATEGY: none
+#  script:
+#    - $DJANGO/runtests.py
+
+unit test react:
+  image: node:13
+  stage: test
+  tags:
+    - normal-load
+  variables:
+    GIT_STRATEGY: none
+  before_script:
+    - npm ci --prefix $REACT
+  script:
+    - npm test --prefix $REACT
+
+deploy react:
+  image: node:13
+  stage: deploy
+  only: master
+  tags:
+    - low-load
+  before_script:
+    - npm ci --prefix $REACT
+  script:
+    - npx semantic-release
