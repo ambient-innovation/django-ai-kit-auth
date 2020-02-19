@@ -38,6 +38,7 @@ lint react:
     - npm run --prefix $REACT lint
 
 #unit test django:
+#  image: python:3.7-slim
 #  stage: test
 #  tags:
 #    - normal-load
