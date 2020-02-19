@@ -16,5 +16,11 @@
     "material-ui"
   ],
   "author": "Matthias Herzkamp",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "react": "^16.12.0"
+  },
+  "devDependencies": {
+    "typescript": "^3.7.5"
+  }
 }
