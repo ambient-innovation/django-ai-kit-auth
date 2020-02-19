@@ -1,0 +1,20 @@
+{
+  "name": "ai-kit-auth",
+  "version": "0.0.1",
+  "description": "Out of the box login capability in combination with django-ai-kit-auth",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.ambient-innovation.com/ai/ai.kit/authentication.git"
+  },
+  "keywords": [
+    "login",
+    "react",
+    "material-ui"
+  ],
+  "author": "Matthias Herzkamp",
+  "license": "MIT"
+}
