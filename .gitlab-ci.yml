@@ -42,8 +42,6 @@ lint react:
 #  stage: test
 #  tags:
 #    - normal-load
-#  variables:
-#    GIT_STRATEGY: none
 #  script:
 #    - $DJANGO/runtests.py
 
@@ -52,8 +50,6 @@ unit test react:
   stage: test
   tags:
     - normal-load
-  variables:
-    GIT_STRATEGY: none
   before_script:
     - npm ci --prefix $REACT
   script:
