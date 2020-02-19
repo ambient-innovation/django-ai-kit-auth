@@ -61,7 +61,8 @@ unit test react:
 deploy react:
   image: node:13
   stage: deploy
-  only: master
+  only:
+    - master
   tags:
     - low-load
   before_script:
