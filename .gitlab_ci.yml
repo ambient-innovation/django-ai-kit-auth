@@ -17,15 +17,15 @@ stages:
 services:
   - docker:18.09-dind
 
-lint django:
-  image: python:3.7-slim
-  stage: lint
-  tags:
-    - low-load
-  before_script:
-    - pip install black
-  script:
-    - black --check $DJANGO/apps/* --exclude .*/migrations/.*
+#lint django:
+#  image: python:3.7-slim
+#  stage: lint
+#  tags:
+#    - low-load
+#  before_script:
+#    - pip install black
+#  script:
+#    - black --check $DJANGO/apps/* --exclude .*/migrations/.*
 
 lint react:
   image: node:13
