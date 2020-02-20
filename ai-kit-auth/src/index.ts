@@ -1,1 +1,2 @@
-export default {};
+
+export { LoginView } from './components/Login';
