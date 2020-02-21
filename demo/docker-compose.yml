@@ -1,0 +1,27 @@
+version: '2'
+
+services:
+  backend:
+    build: ./backend
+    env_file: ./backend/docker-compose.env
+    command: bash ./run_backend_local.sh
+    volumes:
+      - ./backend:/src
+    ports:
+      - "8000:8000"
+    restart: "no"
+
+#  frontend:
+#    build: ./frontend
+#    env_file: ./frontend/docker-compose.env
+#    command: yarn start
+#    volumes:
+#      - ./frontend:/app
+#      - /app/node_modules
+#    ports:
+#      - "3000:3000"
+#    restart: "no"
+
+
+volumes:
+  mysql_data:
