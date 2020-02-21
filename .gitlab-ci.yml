@@ -47,7 +47,7 @@ unit test django:
     - pip install -U pip pipenv
     - pipenv install --deploy --system
   script:
-    - python $DJANGO/runtests.py
+    - python runtests.py
 
 unit test react:
   image: node:13
