@@ -4,9 +4,10 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-python-semantic-release = "^4.6.0"
+python-semantic-release = ">=4.6.0"
 
 [packages]
+django = ">=3.0.0"
 
 [requires]
 python_version = "3.7"
