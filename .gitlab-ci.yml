@@ -43,7 +43,7 @@ unit test django:
   tags:
     - normal-load
   script:
-    - $DJANGO/runtests.py
+    - python $DJANGO/runtests.py
 
 unit test react:
   image: node:13
