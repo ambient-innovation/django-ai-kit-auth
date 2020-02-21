@@ -41,3 +41,9 @@ TODO: different url sets for standard, registration etc.
 
 3.) Run `python manage.py migrate`.
  
+## Dev 
+
+To build the library, use:
+```
+python3 setup.py sdist
+```
