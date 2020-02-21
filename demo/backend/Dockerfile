@@ -4,7 +4,7 @@ ENV PYTHONUNBUFFERED 1
 # Install dependencies
 RUN pip install -U pip pipenv
 COPY Pipfile Pipfile.lock ./
-COPY "django-ai-kit-auth-0.1.tar.gz" ./
+COPY "django-ai-kit-auth.tar.gz" ./
 RUN ls -laF
 RUN pipenv install --deploy --system
 
