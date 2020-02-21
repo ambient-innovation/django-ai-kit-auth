@@ -25,7 +25,7 @@ lint django:
   before_script:
     - pip install black
   script:
-    - black --check $DJANGO/apps/* --exclude .*/migrations/.*
+    - black --check $DJANGO/* --exclude .*/migrations/.*
 
 lint react:
   image: node:13
