@@ -34,3 +34,7 @@ cypress/cypress/integration/examples/
 cypress/cypress/screenshots/
 cypress/cypress/videos/
 cypress/cypress/results/
+
+#
+**/node_modules
+**/dist
