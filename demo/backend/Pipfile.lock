@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "8276ab03a1f8c3f278bb806d74fead6e92006d86da285dd14e6bf9c2366f92a3"
+            "sha256": "bdf015bfca70e9836a10d31322af14d52d7b7e3a5a570778672c3acde361150f"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -32,7 +32,7 @@
             "version": "==3.0.3"
         },
         "django-ai-kit-auth": {
-            "path": "./django-ai-kit-auth-0.1.tar.gz"
+            "path": "./django-ai-kit-auth.tar.gz"
         },
         "django-rest-auth": {
             "hashes": [
