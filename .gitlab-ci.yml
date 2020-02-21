@@ -43,6 +43,7 @@ unit test django:
   tags:
     - normal-load
   before_script:
+    - cd $DJANGO
     - pip install -U pip pipenv
     - pipenv install --deploy --system
   script:
