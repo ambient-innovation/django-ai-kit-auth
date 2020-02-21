@@ -42,6 +42,9 @@ unit test django:
   stage: test
   tags:
     - normal-load
+  before_script:
+    - pip install -U pip pipenv
+    - pipenv install --deploy --system
   script:
     - python $DJANGO/runtests.py
 
