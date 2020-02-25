@@ -96,6 +96,7 @@ deploy-django:
     - cd $DJANGO
     - pip install -U pip pipenv
     - pipenv install --deploy --system -d
+    - apt-get install git
     - git config --global user.name "semantic-release"
     - git config --global user.email "hello@ambient-innovation.com"
   script:
