@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "996ced3d91345264a9f3c2209c2e651c18dca97e751ece15670017e568ec6342"
+            "sha256": "c606c7f86bfbcb23cafd326c964c57cae296e7c33123c385b43b1d7c5f49b67f"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -112,6 +112,9 @@
             ],
             "version": "==0.4.1"
         },
+        "commit-parser": {
+            "path": "./../python_commit_parser"
+        },
         "django": {
             "hashes": [
                 "sha256:2f1ba1db8648484dd5c238fb62504777b7ad090c81c5f1fd8d5eb5ec21b5f283",
@@ -119,9 +122,6 @@
             ],
             "index": "pypi",
             "version": "==3.0.3"
-        },
-        "django-ai-kit-commit-parser": {
-            "path": "./../python_commit_parser"
         },
         "docutils": {
             "hashes": [
