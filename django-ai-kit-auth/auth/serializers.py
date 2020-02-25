@@ -1,0 +1,30 @@
+from django.contrib.auth import authenticate, get_user_model
+from django.conf import settings
+from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
+
+
+UserModel = get_user_model()
+
+
+class LoginSerializer(serializers.Serializer):
+    email_or_username = serializers.CharField(required=True)
+    password = serializers.CharField(style={"input_type": "password"})
+
+    def validate(self, attrs):
+        ident = attrs.get("email_or_username")
+        password = attrs.get("password")
+
+        # if the ident is an email, we have to map it to a username
+        try:
+            ident = UserModel.objects.get(email__iexact=ident).get_username()
+        except UserModel.DoesNotExist:
+            pass
+
+        user = authenticate(self.context["request"], username=ident, password=password)
+
+        if not user:
+            raise ValidationError("invalid_credentials")
+
+        attrs["user"] = user
+        return attrs

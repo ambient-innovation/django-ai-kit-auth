@@ -6,7 +6,7 @@ verify_ssl = true
 [packages]
 Django = ">=3.0.0"
 djangorestframework = "*"
-djangorestframework-jwt = "*"
+djangorestframework-simplejwt = "*"
 
 [dev-packages]
 python-semantic-release = ">=4.6.0"
