@@ -86,7 +86,8 @@ deploy django:
     - low-load
   before_script:
     - cd $DJANGO
-    - pip install --user --upgrade twine
+    - pip install --user --upgrade pipenv
+    - pipenv install --deploy --system -d
     - python setup.py sdist
   script:
-    - python -m twine upload dist/* --username $PYPI_USERNAME --password $PYPI_PASSWORD
+    - semantic-release publish
