@@ -10,8 +10,9 @@ variables:
 
 stages:
   - lint
-  - build
   - test
+  - build
+  - e2e
   - deploy
 
 services:
@@ -62,6 +63,60 @@ unit-test-react:
     - npm ci --prefix $REACT
   script:
     - npm test --prefix $REACT
+
+build-demo-backend:
+  stage: build
+  tags:
+    - normal-load
+  script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    # https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#using-docker-caching
+    - docker pull $CI_REGISTRY_IMAGE/django-ai-kit-auth:develop || true
+    - docker build --cache-from $CI_REGISTRY_IMAGE/django-ai-kit-auth:develop -t $IMAGE_TAG_BACKEND ./demo/backend
+    - docker push $IMAGE_TAG_BACKEND
+
+build-demo-frontend:
+  stage: build
+  tags:
+    - normal-load
+  script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker pull $CI_REGISTRY_IMAGE/ai-kit-auth:develop || true
+    - docker build --cache-from $CI_REGISTRY_IMAGE/ai-kit-auth:develop -t $IMAGE_TAG_FRONTEND --build-arg app_env=production ./demo/frontend
+    - docker push $IMAGE_TAG_FRONTEND
+
+e2e-test-demo:
+  stage: e2e
+  needs: ["build-demo-backend", "build-demo-frontend"]
+  tags:
+    - high-load
+  artifacts:
+    name: "$CI_JOB_STAGE-$CI_COMMIT_REF_NAME-screenshots"
+    expire_in: 1 week
+    when: always
+    paths:
+      - screenshots/
+      - videos/
+    reports:
+      junit: test-reports/reporter*.xml
+  before_script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker pull $IMAGE_TAG_FRONTEND
+    - docker run -d -p 3000:5000 $IMAGE_TAG_FRONTEND
+    - docker pull $IMAGE_TAG_BACKEND
+    - docker run -d -p 8000:8000 -e DJANGO_SESSION_COOKIE_SECURE=False -e DJANGO_CACHE_BACKEND=local $IMAGE_TAG_BACKEND ./run_backend.sh loadfixtures
+  script:
+    - docker run --rm
+      -v ${PWD}/cypress/cypress:/app/cypress
+      -v ${PWD}/cypress/cypress.json:/app/cypress.json
+      -v ${PWD}/cypress/package.json:/app/package.json
+      -v ${PWD}/screenshots:/app/cypress/screenshots
+      -v ${PWD}/videos:/app/cypress/videos
+      -v ${PWD}/test-reports:/app/cypress/results
+      --network="host"
+      --ipc=host
+      ambientinnovation/cypress-docker:latest
+      bash -c "npm install && cypress run --browser chrome"
 
 deploy-react:
   image: node:13
