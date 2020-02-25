@@ -72,18 +72,21 @@ deploy react:
     - npm ci --prefix $REACT
   script:
     - cd ai-kit-auth
-    - npm build
+    - npm run build
     - npx semantic-release
 
 deploy django:
   image: python:3.7-slim
   stage: deploy
+  variables:
+    PYPI_USERNAME: ambient-innovation
   only:
     - master
   tags:
     - low-load
   before_script:
+    - cd $DJANGO
     - pip install --user --upgrade twine
     - python setup.py sdist
   script:
-    - twine upload dist/* --username $PYPI_USERNAMe --password $PYPI_PASSWORD
+    - twine upload dist/* --username $PYPI_USERNAME --password $PYPI_PASSWORD
