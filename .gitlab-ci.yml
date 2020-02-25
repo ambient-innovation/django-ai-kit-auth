@@ -76,12 +76,15 @@ deploy react:
 deploy django:
   image: python:3.7-slim
   stage: deploy
+  variables:
+    PYPI_USERNAME: ambient-innovation
   only:
     - master
   tags:
     - low-load
   before_script:
+    - cd $DJANGO
     - pip install --user --upgrade twine
     - python setup.py sdist
   script:
-    - twine upload dist/* --username $PYPI_USERNAMe --password $PYPI_PASSWORD
+    - twine upload dist/* --username $PYPI_USERNAME --password $PYPI_PASSWORD
