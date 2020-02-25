@@ -66,6 +66,8 @@ unit-test-react:
 
 build-demo-backend:
   stage: build
+  dependencies:
+    - unit-test-django
   tags:
     - normal-load
   script:
@@ -77,6 +79,8 @@ build-demo-backend:
 
 build-demo-frontend:
   stage: build
+  dependencies:
+    - unit-test-react
   tags:
     - normal-load
   script:
@@ -87,7 +91,9 @@ build-demo-frontend:
 
 e2e-test-demo:
   stage: e2e
-  needs: ["build-demo-backend", "build-demo-frontend"]
+  dependencies:
+    - build-demo-backend
+    - build-demo-frontend
   tags:
     - high-load
   artifacts:
