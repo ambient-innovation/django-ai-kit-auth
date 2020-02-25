@@ -27,7 +27,7 @@ COPY demo/frontend/package*.json /app/
 RUN yalc link ai-kit-auth && \
     npm ci
 
-COPY . /app/
+COPY demo/frontend /app/
 
 
 # In production, we want to install the node server and run the "npm run build" command.
