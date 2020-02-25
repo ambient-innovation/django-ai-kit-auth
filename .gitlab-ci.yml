@@ -17,15 +17,15 @@ stages:
 services:
   - docker:18.09-dind
 
-#lint django:
-#  image: python:3.7-slim
-#  stage: lint
-#  tags:
-#    - low-load
-#  before_script:
-#    - pip install black
-#  script:
-#    - black --check $DJANGO/apps/* --exclude .*/migrations/.*
+lint django:
+  image: python:3.7-slim
+  stage: lint
+  tags:
+    - low-load
+  before_script:
+    - pip install black
+  script:
+    - black --check $DJANGO/**/*.py --exclude .*/migrations/.*
 
 lint react:
   image: node:13
@@ -37,13 +37,17 @@ lint react:
   script:
     - npm run --prefix $REACT lint
 
-#unit test django:
-#  image: python:3.7-slim
-#  stage: test
-#  tags:
-#    - normal-load
-#  script:
-#    - $DJANGO/runtests.py
+unit test django:
+  image: python:3.7-slim
+  stage: test
+  tags:
+    - normal-load
+  before_script:
+    - cd $DJANGO
+    - pip install -U pip pipenv
+    - pipenv install --deploy --system -d
+  script:
+    - python runtests.py
 
 unit test react:
   image: node:13
@@ -70,3 +74,16 @@ deploy react:
     - cd ai-kit-auth
     - npm build
     - npx semantic-release
+
+deploy django:
+  image: python:3.7-slim
+  stage: deploy
+  only:
+    - master
+  tags:
+    - low-load
+  before_script:
+    - pip install --user --upgrade twine
+    - python setup.py sdist
+  script:
+    - twine upload dist/* --username $PYPI_USERNAMe --password $PYPI_PASSWORD
