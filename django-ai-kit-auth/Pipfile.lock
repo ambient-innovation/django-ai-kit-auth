@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "3438ec39c61c1eab1ca8fa8b9d344ccb2f6d60d8458f8f8dfec476e6dfc3283e"
+            "sha256": "996ced3d91345264a9f3c2209c2e651c18dca97e751ece15670017e568ec6342"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -119,6 +119,9 @@
             ],
             "index": "pypi",
             "version": "==3.0.3"
+        },
+        "django-ai-kit-commit-parser": {
+            "path": "./../python_commit_parser"
         },
         "docutils": {
             "hashes": [
