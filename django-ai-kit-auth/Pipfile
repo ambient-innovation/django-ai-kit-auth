@@ -9,6 +9,7 @@ djangorestframework = "*"
 djangorestframework-jwt = "*"
 
 [dev-packages]
+django-ai-kit-commit-parser = {path = "./../python_commit_parser"}
 python-semantic-release = ">=4.6.0"
 model_bakery = "*"
 

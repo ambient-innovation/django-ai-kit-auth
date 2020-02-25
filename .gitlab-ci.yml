@@ -99,6 +99,5 @@ deploy-django:
     - apt-get update && apt-get install -y git
     - git config --global user.name "semantic-release"
     - git config --global user.email "hello@ambient-innovation.com"
-    - cd python_commit_parser && python setup.py install && cd ..
   script:
     - semantic-release publish
