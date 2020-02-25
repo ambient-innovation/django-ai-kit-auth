@@ -17,7 +17,7 @@ stages:
 services:
   - docker:18.09-dind
 
-lint django:
+lint-django:
   image: python:3.7-slim
   stage: lint
   tags:
@@ -67,7 +67,7 @@ deploy-react:
   image: node:13
   stage: deploy
   dependencies:
-    - test-react
+    - unit-test-react
   variables:
     GITLAB_URL: gitlab.ambient-innovation.com
   only:
@@ -85,7 +85,7 @@ deploy-django:
   image: python:3.7-slim
   stage: deploy
   dependencies:
-    - test-django
+    - unit-test-django
   variables:
     PYPI_USERNAME: ambient-innovation
   only:
