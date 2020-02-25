@@ -72,7 +72,7 @@ build-demo-backend:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     # https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#using-docker-caching
     - docker pull $CI_REGISTRY_IMAGE/django-ai-kit-auth:develop || true
-    - docker build --cache-from $CI_REGISTRY_IMAGE/django-ai-kit-auth:develop -t $IMAGE_TAG_BACKEND ./demo/backend
+    - docker build --cache-from $CI_REGISTRY_IMAGE/django-ai-kit-auth:develop -t $IMAGE_TAG_BACKEND --file ./demo/backend/Dockerfile ./
     - docker push $IMAGE_TAG_BACKEND
 
 build-demo-frontend:
@@ -82,7 +82,7 @@ build-demo-frontend:
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker pull $CI_REGISTRY_IMAGE/ai-kit-auth:develop || true
-    - docker build --cache-from $CI_REGISTRY_IMAGE/ai-kit-auth:develop -t $IMAGE_TAG_FRONTEND --build-arg app_env=production ./demo/frontend
+    - docker build --cache-from $CI_REGISTRY_IMAGE/ai-kit-auth:develop -t $IMAGE_TAG_FRONTEND --build-arg app_env=production --file ./demo/frontend/Dockerfile ./
     - docker push $IMAGE_TAG_FRONTEND
 
 e2e-test-demo:

@@ -6,12 +6,12 @@
     "@types/node": "^12.0.0",
     "@types/react": "^16.9.0",
     "@types/react-dom": "^16.9.0",
+    "ai-kit-auth": "^0.1.5",
     "node-sass": "^4.13.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-scripts": "^3.4.0",
-    "typescript": "~3.7.2",
-    "ai-kit-auth": "ai-kit-auth.tgz"
+    "typescript": "~3.7.2"
   },
   "scripts": {
     "start": "react-scripts start",
