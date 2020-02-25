@@ -71,6 +71,8 @@ deploy react:
   before_script:
     - npm ci --prefix $REACT
   script:
+    - cd ai-kit-auth
+    - npm run build
     - npx semantic-release
 
 deploy django:
