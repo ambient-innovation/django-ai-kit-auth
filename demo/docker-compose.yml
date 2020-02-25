@@ -11,17 +11,13 @@ services:
       - "8000:8000"
     restart: "no"
 
-#  frontend:
-#    build: ./frontend
-#    env_file: ./frontend/docker-compose.env
-#    command: yarn start
-#    volumes:
-#      - ./frontend:/app
-#      - /app/node_modules
-#    ports:
-#      - "3000:3000"
-#    restart: "no"
-
-
-volumes:
-  mysql_data:
+  frontend:
+    build: ./frontend
+    env_file: ./frontend/docker-compose.env
+    command: npm run start
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    restart: "no"
