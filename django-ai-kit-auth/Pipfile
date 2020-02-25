@@ -3,11 +3,14 @@ name = "pypi"
 url = "https://pypi.org/simple"
 verify_ssl = true
 
+[packages]
+Django = ">=3.0.0"
+djangorestframework = "*"
+djangorestframework-jwt = "*"
+
 [dev-packages]
 python-semantic-release = ">=4.6.0"
-
-[packages]
-django = ">=3.0.0"
+model_bakery = "*"
 
 [requires]
 python_version = "3.7"
