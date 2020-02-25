@@ -96,16 +96,7 @@
         "@semantic-release/gitlab",
         {
           "gitlabUrl": "https://gitlab.ambient-innovation.com/",
-          "assets": [
-            {
-              "path": "dist/**/*.js",
-              "label": "JS"
-            },
-            {
-              "path": "dist/**/*.d.ts",
-              "label": "TS"
-            }
-          ]
+          "assets": []
         }
       ],
       "@semantic-release/npm"
