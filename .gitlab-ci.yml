@@ -89,4 +89,4 @@ deploy django:
     - pip install --user --upgrade twine
     - python setup.py sdist
   script:
-    - twine upload dist/* --username $PYPI_USERNAME --password $PYPI_PASSWORD
+    - python -m twine upload dist/* --username $PYPI_USERNAME --password $PYPI_PASSWORD
