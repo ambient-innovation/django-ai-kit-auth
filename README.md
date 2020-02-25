@@ -73,9 +73,14 @@ the either one must contain `BREAKING CHANGE:` with a following description
 of what is changing. `body` and `footer` are not required if the type is not
 `fix` or `feat`.
 
-### Packing django app
+## E2E-Testing
 
-To build the library, use:
-```
-python3 setup.py sdist
-```
+In order to perform end-to-end tests, both libraries are use in the demo project.
+However, the current versions are necessary for the tests, which is why the
+libraries need to be packed and copied into the demo folder.
+
+### Packing the ai-kit-auth
+
+Execute `npm pack` in the ai-kit-auth folder. This will automatically create
+a packaged archive of the current version, copy it to demo and delete the local
+version.

@@ -35,6 +35,7 @@ cypress/cypress/screenshots/
 cypress/cypress/videos/
 cypress/cypress/results/
 
-#
+# npm
 **/node_modules
 **/dist
+*.tgz

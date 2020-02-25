@@ -62,6 +62,8 @@ unit test react:
 deploy react:
   image: node:13
   stage: deploy
+  variables:
+    GITLAB_URL: gitlab.ambient-innovation.com
   only:
     - master
   tags:
