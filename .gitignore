@@ -1,0 +1,41 @@
+# python and django
+*~
+*.pyc
+.idea
+.webassets-cache
+.sonar
+.DS_Store
+/staticfiles
+/media/
+/dev.db
+/logs/*
+!/logs/.gitkeep
+/*.db
+*.egg-info/
+/dist/
+/.mypy_cache/
+*.tar.gz
+*.sqlite
+
+# Local env
+.env
+venv
+
+# NPM
+node_modules/
+
+# docker
+celerybeat.pid
+celerybeat-schedule
+
+# Cypress
+cypress/cypress/fixtures/example.json
+cypress/cypress/integration/examples/
+cypress/cypress/screenshots/
+cypress/cypress/videos/
+cypress/cypress/results/
+
+# npm
+**/node_modules
+**/dist
+*.tgz

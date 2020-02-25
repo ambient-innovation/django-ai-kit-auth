@@ -1,0 +1,106 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "sourceType": "module",
+    "project": "./tsconfig.eslint.json",
+    "ecmaVersion": 2019,
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "plugins": [
+    "unicorn",
+    "jsdoc",
+    "@typescript-eslint",
+    "react",
+    "react-hooks",
+    "jest"
+  ],
+  "extends": [
+    "plugin:unicorn/recommended",
+    "airbnb",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:jest/recommended"
+  ],
+  "rules": {
+    "react/jsx-filename-extension": [0, { "extensions": [".js", ".jsx"] }],
+    "react/jsx-props-no-spreading": 0,
+    "react/prop-types": 0,
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
+    "import/prefer-default-export": 0,
+    "jsdoc/check-examples": 1,
+    "jsdoc/check-param-names": 1,
+    "jsdoc/check-tag-names": 1,
+    "jsdoc/check-types": 1,
+    "jsdoc/newline-after-description": 1,
+    "jsdoc/require-description-complete-sentence": 1,
+    "jsdoc/require-hyphen-before-param-description": 1,
+    "jsdoc/require-param": 1,
+    "jsdoc/require-param-description": 1,
+    "jsdoc/require-param-name": 1,
+    "jsdoc/require-returns-check": 1,
+    "jsdoc/require-returns-description": 1,
+    "jsdoc/valid-types": 1,
+    "padding-line-between-statements": [
+      "error",
+      { "blankLine": "always", "prev": "*", "next": "return" }
+    ],
+    "unicorn/prevent-abbreviations": 0,
+    "unicorn/explicit-length-check": 0,
+    "@typescript-eslint/explicit-function-return-type": 0
+  },
+  "overrides": [
+    {
+      "files": ["src/**/*.tsx"],
+      "rules": {
+        "unicorn/filename-case": ["error", {
+          "case": "pascalCase",
+          "ignore": [".test.tsx$"]
+        }],
+        "import/extensions": ["error", "ignorePackages", {
+          "js": "never",
+          "jsx": "never",
+          "ts": "never",
+          "tsx": "never"
+        }]
+      }
+    },
+    {
+      "files": ["src/**/*.ts", "src/**/index.tsx"],
+      "rules": {
+        "unicorn/filename-case": ["error", { "case": "camelCase" }],
+        "import/extensions": ["error", "ignorePackages", {
+          "js": "never",
+          "jsx": "never",
+          "ts": "never",
+          "tsx": "never"
+        }]
+      }
+    },
+    {
+      "files": ["src/pages/*.tsx", "src/react-app-env.d.ts"],
+      "rules": {
+        "unicorn/filename-case": ["error", { "case": "kebabCase" }]
+      }
+    },
+    {
+      "files": ["*.js"],
+      "rules": {
+        "@typescript-eslint/no-var-requires": 0
+      }
+    }
+  ],
+  "env": {
+    "es6": true,
+    "jest/globals": true,
+    "browser": true
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    }
+  }
+}
