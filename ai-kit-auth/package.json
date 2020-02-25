@@ -1,6 +1,6 @@
 {
   "name": "ai-kit-auth",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Out of the box login capability in combination with django-ai-kit-auth",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -80,7 +80,7 @@
     "branches": [
       "master"
     ],
-    "tagFormat": "frontend_v${version}",
+    "tagFormat": "react_v${version}",
     "plugins": [
       [
         "@semantic-release/commit-analyzer",
