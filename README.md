@@ -32,7 +32,7 @@ TODO: `JWT_AUTH` config?
 ```
 urlpatterns = [
     ...
-    re_path("^auth/", include("django-ai-kit-auth.account.urls"))
+    re_path("^auth/", include("django-ai-kit-auth.auth.urls"))
     ...
 ]
 ```

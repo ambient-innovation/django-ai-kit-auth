@@ -4,7 +4,7 @@ import os
 import sys
 
 os.environ["DJANGO_SETTINGS_MODULE"] = "tests.settings"
-test_dir = os.path.join(os.path.dirname(__file__), "account")
+test_dir = os.path.join(os.path.dirname(__file__), "auth")
 sys.path.insert(0, test_dir)
 
 import django
@@ -17,7 +17,7 @@ def runtests():
     test_runner = TestRunner(verbosity=1, interactive=True)
     if hasattr(django, "setup"):
         django.setup()
-    failures = test_runner.run_tests(["account"])
+    failures = test_runner.run_tests(["auth"])
     sys.exit(bool(failures))
 
 
