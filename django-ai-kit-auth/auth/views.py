@@ -2,7 +2,7 @@ from rest_framework import viewsets, status, generics
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
-
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from . import models, serializers
 
 
@@ -30,4 +30,18 @@ class LoginView(generics.GenericAPIView):
         }
         response = Response(data, status=status.HTTP_200_OK)
 
+        return response
+
+
+class Me(generics.GenericAPIView):
+    """
+    Barebones user model detail view
+    """
+
+    authentication_classes = (JWTAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, *args, **kwargs):
+        data = {"username": request.user.username, "email": request.user.email}
+        response = Response(data, status=status.HTTP_200_OK)
         return response

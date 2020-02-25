@@ -24,6 +24,7 @@ class LoginTests(APITestCase):
         self.user.save()
         self.login_url = reverse("rest_login")
         self.refresh_url = reverse("rest_token_refresh")
+        self.me_url = reverse("rest_me")
 
         response = self.client.post(
             self.login_url,
@@ -76,4 +77,16 @@ class LoginTests(APITestCase):
         response = self.client.post(
             self.refresh_url, {"refresh": self.access_token}, format="json",
         )
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_access_protected(self):
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.access_token}")
+        response = self.client.get(self.me_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["email"], self.user.email)
+        self.assertEqual(response.data["username"], self.user.username)
+
+    def test_access_protected_fail(self):
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer DefinitlyNotAValidToken")
+        response = self.client.get(self.me_url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
