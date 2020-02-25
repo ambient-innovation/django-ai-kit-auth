@@ -8,7 +8,6 @@
     "test": "jest",
     "build": "tsc",
     "lint": "eslint 'src/**/*.{tsx,ts}'",
-    "stylelint": "./node_modules/.bin/stylelint 'src/**/*.scss'",
     "postpack": "cp -f ai-kit-auth-*.tgz ../demo/frontend/ai-kit-auth.tgz && rm ai-kit-auth-*.tgz"
   },
   "repository": {
@@ -51,8 +50,6 @@
     "jest": "^25.1.0",
     "react-dom": "^16.12.0",
     "semantic-release": "^17.0.4",
-    "stylelint": "^10.1.0",
-    "stylelint-config-awzome": "^1.1.1",
     "ts-jest": "^25.2.1",
     "typescript": "^3.7.5"
   },
