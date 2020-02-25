@@ -27,7 +27,7 @@ lint django:
   script:
     - black --check $DJANGO/**/*.py --exclude .*/migrations/.*
 
-lint react:
+lint-react:
   image: node:13
   stage: lint
   tags:
@@ -37,11 +37,11 @@ lint react:
   script:
     - npm run --prefix $REACT lint
 
-unit test django:
+unit-test-django:
   image: python:3.7-slim
   stage: test
   dependencies:
-    - lint django
+    - lint-django
   tags:
     - normal-load
   before_script:
@@ -51,11 +51,11 @@ unit test django:
   script:
     - python runtests.py
 
-unit test react:
+unit-test-react:
   image: node:13
   stage: test
   dependencies:
-    - lint react
+    - lint-react
   tags:
     - normal-load
   before_script:
@@ -63,11 +63,11 @@ unit test react:
   script:
     - npm test --prefix $REACT
 
-deploy react:
+deploy-react:
   image: node:13
   stage: deploy
   dependencies:
-    - test react
+    - test-react
   variables:
     GITLAB_URL: gitlab.ambient-innovation.com
   only:
@@ -81,11 +81,11 @@ deploy react:
     - npm run build
     - npx semantic-release
 
-deploy django:
+deploy-django:
   image: python:3.7-slim
   stage: deploy
   dependencies:
-    - test django
+    - test-django
   variables:
     PYPI_USERNAME: ambient-innovation
   only:
