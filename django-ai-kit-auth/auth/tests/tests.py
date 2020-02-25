@@ -22,9 +22,11 @@ class LoginTests(APITestCase):
         self.user = baker.make(UserModel, email=EMAIL)
         self.user.set_password(PASSWORD)
         self.user.save()
+
         self.login_url = reverse("rest_login")
         self.refresh_url = reverse("rest_token_refresh")
         self.me_url = reverse("rest_me")
+        self.validate_password_url = reverse("validate_password")
 
         response = self.client.post(
             self.login_url,
@@ -90,3 +92,19 @@ class LoginTests(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer DefinitlyNotAValidToken")
         response = self.client.get(self.me_url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_validate_password(self):
+        response = self.client.post(
+            self.validate_password_url,
+            {"password": "longandvalidpassword", "user": "username"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_invalidate_password(self):
+        response = self.client.post(
+            self.validate_password_url,
+            {"password": "username", "user": "username"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

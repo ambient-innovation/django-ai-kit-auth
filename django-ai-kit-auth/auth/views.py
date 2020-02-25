@@ -1,14 +1,20 @@
-from rest_framework import viewsets, status, generics
+from django.conf import settings
+from django.contrib.auth.password_validation import (
+    get_password_validators,
+    validate_password,
+)
+from django.core.exceptions import ValidationError as DjangoValidationError
+from rest_framework import status, generics
 from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from . import models, serializers
+from . import serializers
 
 
 class LoginView(generics.GenericAPIView):
     # uses standard user model
-    #
     serializer_class = serializers.LoginSerializer
     permission_classes = (AllowAny,)
 
@@ -45,3 +51,28 @@ class Me(generics.GenericAPIView):
         data = {"username": request.user.username, "email": request.user.email}
         response = Response(data, status=status.HTTP_200_OK)
         return response
+
+
+class ValidatePassword(generics.GenericAPIView):
+    """
+    Endpoint to validate the password without trying to register an account.
+    Can be used to show the user error messages on the fly
+    """
+
+    permission_classes = (AllowAny,)
+
+    def post(self, request, *args, **kwargs):
+        try:
+            validators = get_password_validators(settings.AUTH_PASSWORD_VALIDATORS)
+        except:
+            validators = None
+        password = request.data["password"]
+        try:
+            validate_password(
+                request.data["password"],
+                user=request.data["user"],
+                password_validators=validators,
+            )
+        except DjangoValidationError as e:
+            raise ValidationError(e.error_list)
+        return Response({}, status=status.HTTP_200_OK)
