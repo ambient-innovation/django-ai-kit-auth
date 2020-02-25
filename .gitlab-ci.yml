@@ -86,8 +86,9 @@ deploy django:
     - low-load
   before_script:
     - cd $DJANGO
-    - pip install --user --upgrade pipenv
+    - pip install -U pip pipenv
     - pipenv install --deploy --system -d
-    - python setup.py sdist
+    - git config --global user.name "semantic-release"
+    - git config --global user.email "hello@ambient-innovation.com"
   script:
     - semantic-release publish
