@@ -67,4 +67,5 @@ deploy react:
   before_script:
     - npm ci --prefix $REACT
   script:
+    - cd ai-kit-auth
     - npx semantic-release
