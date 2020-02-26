@@ -11,6 +11,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from . import serializers
+from rest_framework.authtoken.models import Token
 
 
 class LoginView(generics.GenericAPIView):
