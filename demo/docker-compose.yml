@@ -8,7 +8,8 @@ services:
     env_file: ./backend/docker-compose.env
     command: bash ./run_backend_local.sh
     volumes:
-      - ./backend:/src
+      - ./backend:/demo/backend
+      - ../django-ai-kit-auth:/django-ai-kit-auth
     ports:
       - "8000:8000"
     restart: "no"
