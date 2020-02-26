@@ -66,7 +66,6 @@ class ValidatePassword(generics.GenericAPIView):
             validators = get_password_validators(settings.AUTH_PASSWORD_VALIDATORS)
         except:
             validators = None
-        password = request.data["password"]
         try:
             validate_password(
                 request.data["password"],
