@@ -24,4 +24,4 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",},
 ]
 
-ROOT_URLCONF = "auth.urls"
+ROOT_URLCONF = "ai-kit-auth.urls"
