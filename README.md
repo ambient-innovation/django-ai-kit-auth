@@ -12,7 +12,6 @@ It includes a custom user model including an admin interface and configures rest
 INSTALLED_APPS = (
     ...
     "rest_framework",
-    "rest_auth"
     ...
     "django-ai-kit-auth",
 )
@@ -25,14 +24,13 @@ Further settings:
 REST_USE_JWT = True
 ```
 
-TODO: `JWT_AUTH` config?
 
 2.) Include the routes in your `urls.py`:
 
 ```
 urlpatterns = [
     ...
-    re_path("^auth/", include("django-ai-kit-auth.auth.urls"))
+    re_path("^auth/", include("django-ai-kit-auth.django_ai_kit.urls"))
     ...
 ]
 ```
