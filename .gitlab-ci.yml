@@ -17,7 +17,7 @@ stages:
 services:
   - docker:18.09-dind
 
-lint django:
+lint-django:
   image: python:3.7-slim
   stage: lint
   tags:
@@ -27,7 +27,7 @@ lint django:
   script:
     - black --check $DJANGO/**/*.py --exclude .*/migrations/.*
 
-lint react:
+lint-react:
   image: node:13
   stage: lint
   tags:
@@ -37,9 +37,11 @@ lint react:
   script:
     - npm run --prefix $REACT lint
 
-unit test django:
+unit-test-django:
   image: python:3.7-slim
   stage: test
+  dependencies:
+    - lint-django
   tags:
     - normal-load
   before_script:
@@ -49,9 +51,11 @@ unit test django:
   script:
     - python runtests.py
 
-unit test react:
+unit-test-react:
   image: node:13
   stage: test
+  dependencies:
+    - lint-react
   tags:
     - normal-load
   before_script:
@@ -59,9 +63,11 @@ unit test react:
   script:
     - npm test --prefix $REACT
 
-deploy react:
+deploy-react:
   image: node:13
   stage: deploy
+  dependencies:
+    - unit-test-react
   variables:
     GITLAB_URL: gitlab.ambient-innovation.com
   only:
@@ -71,11 +77,15 @@ deploy react:
   before_script:
     - npm ci --prefix $REACT
   script:
+    - cd ai-kit-auth
+    - npm run build
     - npx semantic-release
 
-deploy django:
+deploy-django:
   image: python:3.7-slim
   stage: deploy
+  dependencies:
+    - unit-test-django
   variables:
     PYPI_USERNAME: ambient-innovation
   only:
@@ -83,8 +93,11 @@ deploy django:
   tags:
     - low-load
   before_script:
+    - apt-get update && apt-get install -y git
+    - git config --global user.name "semantic-release"
+    - git config --global user.email "hello@ambient-innovation.com"
     - cd $DJANGO
-    - pip install --user --upgrade twine
-    - python setup.py sdist
+    - pip install -U pip pipenv
+    - pipenv install --deploy --system -d
   script:
-    - python -m twine upload dist/* --username $PYPI_USERNAME --password $PYPI_PASSWORD
+    - semantic-release publish

@@ -9,6 +9,7 @@ djangorestframework = "*"
 djangorestframework-simplejwt = "*"
 
 [dev-packages]
+commit_parser = {path = "./../python_commit_parser"}
 python-semantic-release = ">=4.6.0"
 model_bakery = "*"
 

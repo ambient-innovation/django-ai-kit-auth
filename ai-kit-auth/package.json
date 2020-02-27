@@ -8,7 +8,7 @@
     "test": "jest",
     "build": "tsc",
     "lint": "eslint 'src/**/*.{tsx,ts}'",
-    "postpack": "cp -f ai-kit-auth-*.tgz ../demo/frontend/ai-kit-auth.tgz && rm ai-kit-auth-*.tgz"
+    "postpack": "rm ../demo/frontend/ai-kit-auth.tgz && cp -f ai-kit-auth-*.tgz ../demo/frontend/ai-kit-auth.tgz && rm ai-kit-auth-*.tgz"
   },
   "repository": {
     "type": "git",
@@ -97,16 +97,7 @@
         "@semantic-release/gitlab",
         {
           "gitlabUrl": "https://gitlab.ambient-innovation.com/",
-          "assets": [
-            {
-              "path": "dist/**/*.js",
-              "label": "JS"
-            },
-            {
-              "path": "dist/**/*.d.ts",
-              "label": "TS"
-            }
-          ]
+          "assets": []
         }
       ],
       "@semantic-release/npm"

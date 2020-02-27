@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "017270f248a54e3067bdc1cb7e7afb8a1734a515842b94fc71d591908fd4f353"
+            "sha256": "c606c7f86bfbcb23cafd326c964c57cae296e7c33123c385b43b1d7c5f49b67f"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -111,6 +111,9 @@
                 "sha256:f8ac84de7840f5b9c4e3347b3c1eaa50f7e49c2b07596221daec5edaabbd7c48"
             ],
             "version": "==0.4.1"
+        },
+        "commit-parser": {
+            "path": "./../python_commit_parser"
         },
         "django": {
             "hashes": [
