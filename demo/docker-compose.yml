@@ -2,17 +2,22 @@ version: '2'
 
 services:
   backend:
-    build: ./backend
+    build:
+      context: ../
+      dockerfile: ./demo/backend/Dockerfile
     env_file: ./backend/docker-compose.env
     command: bash ./run_backend_local.sh
     volumes:
-      - ./backend:/src
+      - ./backend:/demo/backend
+      - ../django-ai-kit-auth:/django-ai-kit-auth
     ports:
       - "8000:8000"
     restart: "no"
 
   frontend:
-    build: ./frontend
+    build:
+      context: ../
+      dockerfile: ./demo/frontend/Dockerfile
     env_file: ./frontend/docker-compose.env
     command: npm run start
     volumes:

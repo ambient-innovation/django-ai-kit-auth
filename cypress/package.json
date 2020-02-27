@@ -1,0 +1,41 @@
+{
+  "name": "cypress",
+  "version": "1.0.0",
+  "description": "cypress end-to-end tests",
+  "scripts": {
+    "eslint": "eslint --ext=js cypress",
+    "cypress:open": "cypress open",
+    "cypress:open:chrome": "cypress open --browser chrome",
+    "cypress:run": "cypress run",
+    "cypress:run:chrome": "cypress run --browser chrome"
+  },
+  "author": "Ambient-Innovation: GmbH",
+  "devDependencies": {
+    "@testing-library/cypress": "^5.0.2",
+    "@types/testing-library__cypress": "^5.0.1",
+    "cypress": "^4.0.0",
+    "cypress-file-upload": "^3.5.1",
+    "eslint": "^6.7.2",
+    "eslint-plugin-chai-friendly": "^0.5.0",
+    "eslint-plugin-cypress": "^2.7.0"
+  },
+  "private": true,
+  "eslintConfig": {
+    "env": {
+      "es6": true,
+      "es2017": true,
+      "node": true,
+      "cypress/globals": true
+    },
+    "plugins": [
+      "cypress",
+      "chai-friendly"
+    ],
+    "extends": [
+      "plugin:cypress/recommended"
+    ],
+    "parserOptions": {
+      "sourceType": "module"
+    }
+  }
+}
