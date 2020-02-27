@@ -19,15 +19,3 @@ import './commands'
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
-beforeEach(function () {
-  // we have to give the api routes an alias so we can tell cypress to wait for it to respond before continuing.
-  cy.server();
-  cy.route({
-    method: 'GET',
-    url: '/api/v1/**',
-  }).as('apiCall');
-  cy.route({
-    method: 'POST',
-    url: '/api/v1/**',
-  }).as('apiPostCall');
-});
