@@ -18,5 +18,5 @@ from django.urls import path, re_path, include
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    re_path("^auth/", include("django-ai-kit-auth.ai-kit-auth.urls")),
+    re_path("^auth/", include("django-ai-kit-auth.ai_kit_auth.urls")),
 ]
