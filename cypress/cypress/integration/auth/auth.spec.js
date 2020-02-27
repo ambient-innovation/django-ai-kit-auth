@@ -3,7 +3,7 @@
  * Tests the login view
  */
 
-describe('User creates, edits and deletes Location', () => {
+describe('Startpage is shown', () => {
   const page = '/';
 
   before(() => {
