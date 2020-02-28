@@ -64,8 +64,12 @@ export function makeGenericUserStore<U extends unknown = User>() {
     useContext(GenericUserContext)
   );
 
-  return [GenericUserStore, useGenericUserStore, GenericUserContext];
+  return {
+    UserStore: GenericUserStore,
+    useUserStore: useGenericUserStore,
+    UserContext: GenericUserContext,
+  };
 }
 
-const [UserStore, useUserStore, UserContext] = makeGenericUserStore();
+const { UserStore, useUserStore, UserContext } = makeGenericUserStore();
 export { UserStore, useUserStore, UserContext };
