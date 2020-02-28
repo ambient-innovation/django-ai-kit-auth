@@ -59,9 +59,9 @@ This should be the url to the django backend of your project.
 `useUserStore` is a react hook, which can be used to obtain user information and helper
 functions stored in the `UserStore`. It returns an object containing the following entries:
 
-* `user: { username: string, email: string } | undefined`
+* `user: { username: string; email: string; } | undefined`
 * `loading: boolean`
-* `login: (userIdentifier: string, password: string) => Promise<{ username: string, email: string }>`
+* `login: (userIdentifier: string, password: string) => Promise<{ username: string; email: string; }>`
 
 The `user` object contains basic information about the user.
 If it is undefined, the login was not yet successful, or the user has been logged out already.
@@ -97,3 +97,6 @@ interface MyUser {
 
 export const { UserStore, useUserStore } = makeGenericUserStore<MyUser>();
 ```
+
+After this you can use the returned values just like the standard ones, except that the
+`user` object is of type `MyUser` instead of `{ username: string; email: string; }`
