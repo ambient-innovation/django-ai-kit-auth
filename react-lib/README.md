@@ -1,10 +1,10 @@
-#AI-KIT: Authentication
+# AI-KIT: Authentication
 
 This is the frontend library for the AI-KIT module Authentication.
 Use it in conjunction with the django package `django-ai-kit-auth` in order to get a
 functioning authentication running in your app in no time.
 
-##Installation
+## Installation
 
 You can easily install AI-KIT: Authentication via npmjs. Using npm, run
 ```commandline
@@ -16,7 +16,7 @@ Using yarn, run
 yarn add ai-kit-auth
 ```
 
-##Usage
+## Usage
 
 AI-KIT: Authentication provides the following components and functions:
 * `UserStore`
@@ -24,7 +24,7 @@ AI-KIT: Authentication provides the following components and functions:
 * `UserContext`
 * `makeGenericUserStore`
 
-###UserStore
+### UserStore
 
 This component provides user data and authentication helper functions to its children via
 react context.
@@ -54,7 +54,7 @@ export default App;
 The `apiUrl` prop tells the store, where to send login requests.
 This should be the url to the django backend of your project.
 
-###useUserStore
+### useUserStore
 
 `useUserStore` is a react hook, which can be used to obtain user information and helper
 functions stored in the `UserStore`. It returns an object containing the following entries:
@@ -67,3 +67,33 @@ The `user` object contains basic information about the user.
 If it is undefined, the login was not yet successful, or the user has been logged out already.
 
 `loading` is true if a login request has been sent, but the reply has not yet arrived.
+
+You can trigger a login request by calling the `login` function in your components.
+It requires an identifier string, which is either the username or email of the user.
+Depending on the configuration, the backend accepts either one or only one of them.
+
+### UserContext
+
+The `UserContext` is a react context and can be used as such. `UserStore` internally creates
+a `UserContext.Provider`, and `useUserStore()` is a shorthand for `useContext(UserContext)`.
+
+### makeGenericUserStore
+
+If you want to load more data than just the username and email of a user, you need to configure
+your django backend to use a custom `UserSerializer`.
+However, if you use typescript, you will get error messages if you try to access these
+additional fields from the standard user store.
+In order to get typescript to use the correct types, you need to define your own `User` interface
+containing all data fields, and then use `makeGenericUserStore` to create a custom set of
+`UserStore`, `useUserStore` etc.
+Example:
+
+```typescript
+interface MyUser {
+  username: string;
+  email: string;
+  group: string;
+}
+
+export const { UserStore, useUserStore } = makeGenericUserStore<MyUser>();
+```
