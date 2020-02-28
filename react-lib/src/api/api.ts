@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { AccessResponse } from './types';
+import { MeResponse, User } from './types';
 
 const loginUrl = (apiUrl: string) => {
   const suffix = 'login/';
@@ -14,13 +14,8 @@ const loginUrl = (apiUrl: string) => {
  * @param emailOrUsername - Email of the user.
  * @param password - Password of the user.
  */
-export const loginAPI: (
+export const loginAPI = <U = User>(
   apiUrl: string, emailOrUsername: string, password: string,
-) => Promise<AccessResponse> = (
-  apiUrl, emailOrUsername, password,
-) => (
-  axios.post<AccessResponse>(loginUrl(apiUrl), {
-    emailOrUsername, password,
-  })
-    .then((response) => response.data)
-);
+) => axios.post<MeResponse<U>>(loginUrl(apiUrl), {
+  emailOrUsername, password,
+}).then((response) => response.data);

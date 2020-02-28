@@ -1,8 +1,7 @@
-import { AxiosRequestConfig } from 'axios';
-import { AccessResponse } from '../api/types';
+import { User } from '../api/types';
 
-export interface UserStoreValue {
+export interface UserStoreValue<U = User> {
+  user?: U;
   loading: boolean;
-  login: (userIdentifier: string, password: string) => Promise<AccessResponse>;
-  axiosAuthConfig: AxiosRequestConfig;
+  login: (userIdentifier: string, password: string) => Promise<U>;
 }

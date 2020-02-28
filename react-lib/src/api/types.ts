@@ -1,4 +1,9 @@
 
-export interface AccessResponse {
-  token: string;
+export interface User {
+  username: string;
+  email: string;
+}
+
+export interface MeResponse<U = User> {
+  user: U;
 }
