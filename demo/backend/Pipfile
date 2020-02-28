@@ -15,7 +15,8 @@ djangorestframework-camel-case = "==1.1.2" # CamelCase JSON rendering for API
 djangorestframework-jwt = "*"
 # Deploy
 gunicorn = "==20.0.4"                      # Webserver
-django-ai-kit-auth = {path = "./django-ai-kit-auth.tar.gz"}
+# Local installation of django-ai-kit-auth
+django-ai-kit-auth = {editable = true,path = "./../../django-ai-kit-auth"}
 
 [dev-packages]
 flake8 = "==3.7.9"                         # Linting

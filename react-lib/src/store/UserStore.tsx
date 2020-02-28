@@ -4,7 +4,7 @@ import React, {
 import { AxiosRequestConfig } from 'axios';
 import { useCookies } from 'react-cookie';
 import { AccessResponse } from '../api/types';
-import { accessAPI } from '../api/api';
+import { loginAPI } from '../api/api';
 import { UserStoreValue } from './types';
 
 
@@ -35,7 +35,7 @@ export const UserStore: FC<UserStoreProps> = ({
   const login: (userIdentifier: string, password: string) => Promise<AccessResponse> = (
     userIdentifier, password,
   ) => (
-    accessAPI(apiUrl, userIdentifier, password).then((data) => {
+    loginAPI(apiUrl, userIdentifier, password).then((data) => {
       setLoginData(data);
       setCookie(jwtCookieName, data.token, { path: '/' });
 
