@@ -7,8 +7,7 @@
   "scripts": {
     "test": "jest",
     "build": "tsc",
-    "lint": "eslint 'src/**/*.{tsx,ts}'",
-    "postpack": "rm ../demo/frontend/ai-kit-auth.tgz && cp -f ai-kit-auth-*.tgz ../demo/frontend/ai-kit-auth.tgz && rm ai-kit-auth-*.tgz"
+    "lint": "eslint 'src/**/*.{tsx,ts}'"
   },
   "repository": {
     "type": "git",

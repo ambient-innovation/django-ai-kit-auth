@@ -15,7 +15,7 @@
 /dist/
 /.mypy_cache/
 *.tar.gz
-*.sqlite
+*.sqlite3
 
 # Local env
 .env
