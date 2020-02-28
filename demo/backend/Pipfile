@@ -16,7 +16,7 @@ djangorestframework-jwt = "*"
 # Deploy
 gunicorn = "==20.0.4"                      # Webserver
 # Local installation of django-ai-kit-auth
-django-ai-kit-auth = {editable = true,path = "./../../django-ai-kit-auth"}
+django-ai-kit-auth = {editable = true,path = "./../../django-app"}
 
 [dev-packages]
 flake8 = "==3.7.9"                         # Linting

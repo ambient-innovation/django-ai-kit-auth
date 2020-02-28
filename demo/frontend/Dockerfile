@@ -6,10 +6,10 @@ RUN mkdir /app
 # we use yalc because npm link is not reliable in this context
 RUN npm i -g yalc
 
-COPY ./ai-kit-auth /ai-kit-auth
+COPY ./react-lib /react-lib
 
 # build the ai-kit-auth package and 'publish' it with yalc
-WORKDIR /ai-kit-auth
+WORKDIR /react-lib
 RUN npm install && \
   npm run build && \
   yalc publish --private
