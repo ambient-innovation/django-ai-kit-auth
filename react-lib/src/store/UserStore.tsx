@@ -21,7 +21,7 @@ export function makeGenericUserStore<U extends unknown = User>() {
   const GenericUserStore: FC<UserStoreProps> = ({
     children, apiUrl,
   }) => {
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [user, setUser] = useState<U|undefined>(undefined);
 
     const login: (userIdentifier: string, password: string) => Promise<U> = (

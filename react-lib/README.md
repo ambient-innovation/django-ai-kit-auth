@@ -1,2 +1,69 @@
-**AI-KIT: Authentication**
+#AI-KIT: Authentication
 
+This is the frontend library for the AI-KIT module Authentication.
+Use it in conjunction with the django package `django-ai-kit-auth` in order to get a
+functioning authentication running in your app in no time.
+
+##Installation
+
+You can easily install AI-KIT: Authentication via npmjs. Using npm, run
+```commandline
+npm install ai-kit-auth
+```
+
+Using yarn, run
+```commandline
+yarn add ai-kit-auth
+```
+
+##Usage
+
+AI-KIT: Authentication provides the following components and functions:
+* `UserStore`
+* `useUserStore`
+* `UserContext`
+* `makeGenericUserStore`
+
+###UserStore
+
+This component provides user data and authentication helper functions to its children via
+react context.
+For AI-KIT: Authentication to work correctly, it is necessary to place it high in your
+component tree, so that it contains any components which might try to access user information,
+or perform user actions like login, logout etc.
+An example `App.tsx` might look like this:
+
+```typescript jsx
+import React from 'react';
+import { UserStore } from 'ai-kit-auth';
+import ...
+
+const App: React.FC = () => (
+  <UserStore
+    apiUrl="http://localhost:8000/api/v1/"
+  >
+    <BrowserRouter>
+      ...
+    </BrowserRouter>
+  </UserStore>
+);
+
+export default App;
+```
+
+The `apiUrl` prop tells the store, where to send login requests.
+This should be the url to the django backend of your project.
+
+###useUserStore
+
+`useUserStore` is a react hook, which can be used to obtain user information and helper
+functions stored in the `UserStore`. It returns an object containing the following entries:
+
+* `user: { username: string, email: string } | undefined`
+* `loading: boolean`
+* `login: (userIdentifier: string, password: string) => Promise<{ username: string, email: string }>`
+
+The `user` object contains basic information about the user.
+If it is undefined, the login was not yet successful, or the user has been logged out already.
+
+`loading` is true if a login request has been sent, but the reply has not yet arrived.
