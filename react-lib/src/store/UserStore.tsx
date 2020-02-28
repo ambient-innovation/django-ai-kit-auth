@@ -1,8 +1,8 @@
 import React, {
-  createContext, FC, useContext, useState,
+  createContext, FC, useContext, useEffect, useState,
 } from 'react';
 import { User } from '../api/types';
-import { loginAPI } from '../api/api';
+import { loginAPI, meAPI } from '../api/api';
 import { UserStoreValue } from './types';
 
 
@@ -39,26 +39,13 @@ export function makeGenericUserStore<U extends unknown = User>() {
         });
     };
 
-    /* Keep this around for future tickets
-    const logout: () => void = () => {
-      setUser(undefined);
-      removeCookies(jwtCookieName, { path: '/' });
-    };
-
     useEffect(() => {
-      // If we have a cookie but no user, we need to obtain it via  the me endpoint
-      // We also need to reload the data, if the jwt token in our cookies does not match
-      // the token in the login data.
-      if (cookies[jwtCookieName] && (!user || cookies[jwtCookieName] !== user?.token)) {
-        meAPI(authorization(cookies[jwtCookieName])).then((me) => setUser(
-          { user: me, token: cookies[jwtCookieName] },
-        ));
-      } else if (user && !cookies[jwtCookieName]) {
-        setUser(undefined);
+      // If we don't have a user, we need to obtain it via  the me endpoint
+      if (!user) {
+        meAPI<U>(apiUrl).then((data) => setUser(data.user));
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [cookies]);
-     */
+    }, []);
 
     return (
       <GenericUserContext.Provider

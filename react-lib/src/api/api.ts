@@ -1,8 +1,10 @@
 import axios from 'axios';
 import { MeResponse, User } from './types';
 
-const loginUrl = (apiUrl: string) => {
-  const suffix = 'login/';
+const loginSuffix = 'login/';
+const meSuffix = 'me/';
+
+const makeUrl = (apiUrl: string, suffix: string) => {
   const separator = apiUrl.endsWith('/') ? '' : '/';
 
   return `${apiUrl}${separator}${suffix}`;
@@ -16,6 +18,12 @@ const loginUrl = (apiUrl: string) => {
  */
 export const loginAPI = <U = User>(
   apiUrl: string, emailOrUsername: string, password: string,
-) => axios.post<MeResponse<U>>(loginUrl(apiUrl), {
+) => axios.post<MeResponse<U>>(makeUrl(apiUrl, loginSuffix), {
   emailOrUsername, password,
 }).then((response) => response.data);
+
+
+export const meAPI = <U = User>(apiUrl: string) => (
+  axios.get<MeResponse<U>>(makeUrl(apiUrl, meSuffix))
+    .then(({ data }) => data)
+);

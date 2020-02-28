@@ -1,3 +1,3 @@
 
 export { LoginView } from './components/Login';
-export { UserStore } from './store/UserStore';
+export { UserStore, useUserStore, UserContext } from './store/UserStore';
