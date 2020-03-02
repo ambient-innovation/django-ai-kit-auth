@@ -100,3 +100,16 @@ export const { UserStore, useUserStore } = makeGenericUserStore<MyUser>();
 
 After this you can use the returned values just like the standard ones, except that the
 `user` object is of type `MyUser` instead of `{ username: string; email: string; }`
+
+## Local Development
+
+Start the demo project with docker-compose
+
+    cd demo
+    docker-compose up -d
+    
+Start the npm watch script in the react-lib folder
+
+    npm run watch
+    
+Changes to the library will automatically be shown and updated in the demo project
