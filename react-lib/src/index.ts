@@ -1,5 +1,4 @@
 
-export { LoginView } from './components/Login';
 export {
   UserStore,
   useUserStore,
@@ -21,3 +20,7 @@ export {
   LoginForm,
   makeLoginForm,
 } from './components/LoginForm';
+
+export {
+  LoginView,
+} from './components/LoginView';

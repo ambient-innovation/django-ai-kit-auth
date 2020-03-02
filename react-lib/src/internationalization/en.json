@@ -7,6 +7,7 @@
     "Username": "Username",
     "Email": "Email",
     "UsernameOrEmail": "Username or Email",
-    "Password": "Password"
+    "Password": "Password",
+    "Login": "Login"
   }
 }
