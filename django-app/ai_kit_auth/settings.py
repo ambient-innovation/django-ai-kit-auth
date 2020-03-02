@@ -54,7 +54,9 @@ class APISettings:
 
         # specialized validation
         if not self._settings["FRONTEND_URL"]:
-            raise InvalidConfigurationError("Please set FRONTEND_URL")
+            raise InvalidConfigurationError(
+                "Please configure FRONTEND_URL in the AI_KIT_AUTH namespace"
+            )
 
     def __getattr__(self, attr):
         return self._settings[attr]

@@ -2,7 +2,8 @@
 
 `django-ai-kit-auth` bundles everything user account and authentication related.
 
-It includes a custom user model including an admin interface and configures rest routes for login, logout, registration etc.
+It includes a custom user model including an admin interface and configures rest
+routes for login, logout, registration etc.
 
 ## Quick Start
 
@@ -18,8 +19,33 @@ INSTALLED_APPS = (
 ```
 `rest_framework` has to be installed for `django-ai-kit-auth` to work.
 
+2.) Configuration is namespaced unter `AI_KIT_AUTH` like so:
 
-2.) Include the routes in your `urls.py`:
+```
+AI_KIT_AUTH = {
+    "ACTIVATION_ROUTE": "activation",
+    "FRONTEND_URL": "example.com",
+    ...
+}
+```
+
+Note that `FRONTEND_URL` is a required configuration that does not have a
+default. Default configurations are:
+
+```
+AI_KIT_AUTH = {
+    "ACTIVATION_ROUTE": "activation",
+    "EMAIL_TEMPLATE_USER_CREATED_TITLE": "user_created_title.txt",
+    "EMAIL_TEMPLATE_USER_CREATED_BODY_PLAINTEXT": "user_created_body.txt",
+    "EMAIL_TEMPLATE_USER_CREATED_BODY_HTML": "user_created_body.html",
+    "USERNAME_REQUIRED": False,
+    "FRONTEND_URL": None,
+}
+```
+
+TODO: keep this updated as the lib is developed
+
+3.) Include the routes in your `urls.py`:
 
 ```
 urlpatterns = [
@@ -29,9 +55,8 @@ urlpatterns = [
 ]
 ```
 
-TODO: different url sets for standard, registration etc.
 
-3.) Run `python manage.py migrate`.
+4.) Run `python manage.py migrate`.
 
 ## Contributing
 
