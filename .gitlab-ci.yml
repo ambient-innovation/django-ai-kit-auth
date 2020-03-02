@@ -126,8 +126,8 @@ e2e-test-demo:
 deploy-react:
   image: node:13
   stage: deploy
-#  dependencies:
-#    - unit-test-react
+  dependencies:
+    - unit-test-react
   variables:
     GITLAB_URL: gitlab.ambient-innovation.com
   only:
@@ -144,8 +144,8 @@ deploy-react:
 deploy-django:
   image: python:3.7-slim
   stage: deploy
-#  dependencies:
-#    - unit-test-django
+  dependencies:
+    - unit-test-django
   variables:
     PYPI_USERNAME: ambient-innovation
   only:
