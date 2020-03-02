@@ -74,7 +74,7 @@ build-demo-backend:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     # https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#using-docker-caching
     - docker pull $CI_REGISTRY_IMAGE/django-ai-kit-auth:develop || true
-    - docker build --cache-from $CI_REGISTRY_IMAGE/django-ai-kit-auth:develop -t $IMAGE_TAG_BACKEND --file ./demo/backend/Dockerfile ./
+    - docker build --cache-from $CI_REGISTRY_IMAGE/django-ai-kit-auth:feature-7-cypress-fixes -t $IMAGE_TAG_BACKEND --file ./demo/backend/Dockerfile ./
     - docker push $IMAGE_TAG_BACKEND
 
 build-demo-frontend:
@@ -86,7 +86,7 @@ build-demo-frontend:
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker pull $CI_REGISTRY_IMAGE/ai-kit-auth:develop || true
-    - docker build --cache-from $CI_REGISTRY_IMAGE/ai-kit-auth:develop -t $IMAGE_TAG_FRONTEND --build-arg app_env=production --file ./demo/frontend/Dockerfile ./
+    - docker build --cache-from $CI_REGISTRY_IMAGE/ai-kit-auth:feature-7-cypress-fixes -t $IMAGE_TAG_FRONTEND --build-arg app_env=production --file ./demo/frontend/Dockerfile ./
     - docker push $IMAGE_TAG_FRONTEND
 
 e2e-test-demo:
@@ -110,7 +110,7 @@ e2e-test-demo:
     - docker pull $IMAGE_TAG_FRONTEND
     - docker run -d -p 3000:5000 $IMAGE_TAG_FRONTEND
     - docker pull $IMAGE_TAG_BACKEND
-    - docker run -p 8000:8000 -e DJANGO_SESSION_COOKIE_SECURE=False -e DJANGO_CACHE_BACKEND=local $IMAGE_TAG_BACKEND ./run_backend.sh loadfixtures
+    - docker run -d -p 8000:8000 -e DJANGO_SESSION_COOKIE_SECURE=False -e DJANGO_CACHE_BACKEND=local $IMAGE_TAG_BACKEND ./run_backend.sh loadfixtures
     - docker run --rm
       -v ${PWD}/cypress/cypress:/app/cypress
       -v ${PWD}/cypress/cypress.json:/app/cypress.json
