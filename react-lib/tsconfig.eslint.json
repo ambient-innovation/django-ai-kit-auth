@@ -13,6 +13,7 @@
     "moduleResolution": "Node",
     "esModuleInterop": true,
     "isolatedModules": true,
+    "resolveJsonModule": true,
     "declaration": true,
     "noEmitOnError": true,
     "outDir": "./dist",

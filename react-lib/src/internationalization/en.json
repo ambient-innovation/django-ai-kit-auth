@@ -1,0 +1,12 @@
+{
+  "Common": {
+    "ok": "OK",
+    "cancel": "Cancel",
+  },
+  "LoginForm": {
+    "Username": "Username",
+    "Email": "Email",
+    "UsernameOrEmail": "Username or Email",
+    "Password": "Password"
+  }
+}
