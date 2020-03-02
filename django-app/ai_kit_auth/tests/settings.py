@@ -31,6 +31,4 @@ AUTH_PASSWORD_VALIDATORS = [
 EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
 ROOT_URLCONF = "ai_kit_auth.urls"
 
-AI_KIT_AUTH = {
-    "ACTIVATION_ROUTE": "activation",
-}
+AI_KIT_AUTH = {"FRONTEND_URL": "example.com"}
