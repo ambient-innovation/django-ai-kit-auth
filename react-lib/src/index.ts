@@ -16,3 +16,8 @@ export {
   LoginRoute,
   makeLoginRoute,
 } from './components/LoginRoute';
+
+export {
+  LoginForm,
+  makeLoginForm,
+} from './components/LoginForm';

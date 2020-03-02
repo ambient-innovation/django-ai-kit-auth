@@ -9,16 +9,16 @@ import { Location } from 'history';
 import { UserContext } from '../store/types';
 import { UserContext as StandardUserContext } from '../store/UserStore';
 
-interface LocationState {
+export interface LocationState {
   from: {
     pathname: string;
   };
 }
-interface LoginRouteProps extends RouteProps {
+export interface LoginRouteProps extends RouteProps {
   location?: Location<LocationState>;
 }
 
-interface LoginRouteOptions<User> {
+export interface LoginRouteOptions<User> {
   userContext: UserContext<User>;
   pathToMainPage?: string;
 }
