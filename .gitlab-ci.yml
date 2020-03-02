@@ -108,7 +108,13 @@ e2e-test-demo:
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker pull $IMAGE_TAG_FRONTEND
-    - docker run -d -p 3000:5000 $IMAGE_TAG_FRONTEND
+    - docker run
+      -d
+      -p 3000:5000
+      -v ./frontend/src:/app/src
+      -v ../react-lib:/react-lib
+      $IMAGE_TAG_FRONTEND
+      bash -c ./run.sh
     - docker pull $IMAGE_TAG_BACKEND
     - docker run -d -p 8000:8000 -e DJANGO_SESSION_COOKIE_SECURE=False -e DJANGO_CACHE_BACKEND=local $IMAGE_TAG_BACKEND ./run_backend.sh loadfixtures
     - docker run --rm

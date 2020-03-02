@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 cd /react-lib
 echo "build ai-kit-auth package"
 npm run build
@@ -7,5 +7,5 @@ npm link
 cd /app
 npm link ai-kit-auth
 
-#cp serve.json ./build/serve.json
-serve -s build
+echo "npm run start"
+npm run start
