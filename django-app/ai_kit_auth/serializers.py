@@ -2,18 +2,16 @@ from django.contrib.auth import authenticate, get_user_model
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-
 UserModel = get_user_model()
 
 
 class LoginSerializer(serializers.Serializer):
-    email_or_username = serializers.CharField(required=True)
+    ident = serializers.CharField(required=True)
     password = serializers.CharField(style={"input_type": "password"})
 
     def validate(self, attrs):
-        ident = attrs.get("email_or_username")
+        ident = attrs.get("ident")
         password = attrs.get("password")
-
         # if the ident is an email, we have to map it to a username
         try:
             ident = UserModel.objects.get(email__iexact=ident).get_username()
@@ -27,3 +25,9 @@ class LoginSerializer(serializers.Serializer):
 
         attrs["user"] = user
         return attrs
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserModel
+        fields = ["id", "email", "username"]

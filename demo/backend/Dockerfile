@@ -17,4 +17,4 @@ RUN touch ./demo/.env
 
 EXPOSE 8000
 
-CMD ["./run_backend.sh"]
+CMD ["./run_backend.sh", "loadfixtures"]

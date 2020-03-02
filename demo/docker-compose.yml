@@ -19,10 +19,10 @@ services:
       context: ../
       dockerfile: ./demo/frontend/Dockerfile
     env_file: ./frontend/docker-compose.env
-    command: npm run start
+    command: bash ./run_local.sh
     volumes:
-      - ./frontend:/app
-      - /app/node_modules
+      - ./frontend/src:/app/src
+      - ../react-lib:/react-lib
     ports:
       - "3000:3000"
     restart: "no"

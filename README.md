@@ -6,23 +6,17 @@ It includes a custom user model including an admin interface and configures rest
 
 ## Quick Start
 
-1.) Add `django-ai-kit-auth` to your `INSTALLED_APPS` like so:
+1.) Add `ai-kit-auth` to your `INSTALLED_APPS` like so:
 
 ```
 INSTALLED_APPS = (
     ...
     "rest_framework",
     ...
-    "django-ai-kit-auth",
+    "ai-kit-auth",
 )
 ```
-`rest_framework` and `rest_auth` has to be installed for `django-ai-kit-auth` to work.
-
-Further settings:
-
-```
-REST_USE_JWT = True
-```
+`rest_framework` has to be installed for `django-ai-kit-auth` to work.
 
 
 2.) Include the routes in your `urls.py`:
@@ -30,7 +24,7 @@ REST_USE_JWT = True
 ```
 urlpatterns = [
     ...
-    re_path("^auth/", include("django-ai-kit-auth.django_ai_kit.urls"))
+    re_path("^api/v1/", include("ai_kit.urls"))
     ...
 ]
 ```

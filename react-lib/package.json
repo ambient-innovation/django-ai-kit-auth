@@ -4,10 +4,20 @@
   "description": "Out of the box login capability in combination with django-ai-kit-auth",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "watch": {
+    "build": {
+      "patterns": [
+        "src"
+      ],
+      "extensions": "ts,tsx",
+      "quiet": false
+    }
+  },
   "scripts": {
     "test": "jest",
     "build": "tsc",
-    "lint": "eslint 'src/**/*.{tsx,ts}'"
+    "lint": "eslint 'src/**/*.{tsx,ts}'",
+    "watch": "npm-watch"
   },
   "repository": {
     "type": "git",
@@ -54,6 +64,7 @@
     "eslint-plugin-unicorn": "^16.1.1",
     "husky": "^4.2.3",
     "jest": "^25.1.0",
+    "npm-watch": "^0.6.0",
     "react-dom": "^16.12.0",
     "semantic-release": "^17.0.4",
     "ts-jest": "^25.2.1",

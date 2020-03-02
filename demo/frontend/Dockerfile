@@ -3,17 +3,6 @@ FROM node:12.14
 
 RUN mkdir /app
 
-# we use yalc because npm link is not reliable in this context
-RUN npm i -g yalc
-
-COPY ./react-lib /react-lib
-
-# build the ai-kit-auth package and 'publish' it with yalc
-WORKDIR /react-lib
-RUN npm install && \
-  npm run build && \
-  yalc publish --private
-
 # set working directory
 WORKDIR /app
 
@@ -24,8 +13,7 @@ ENV PATH /app/node_modules/.bin:$PATH
 COPY demo/frontend/package*.json /app/
 
 # add the 'published' package to node_modules with yalc
-RUN yalc link ai-kit-auth && \
-    npm ci
+RUN npm ci
 
 COPY demo/frontend /app/
 
@@ -43,6 +31,3 @@ RUN if [ ${app_env} = production ]; \
 	fi
 
 EXPOSE 3000
-
-# For local development run `yarn start`
-CMD ["./run.sh"]
