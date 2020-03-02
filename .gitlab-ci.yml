@@ -9,8 +9,8 @@ variables:
   DOCKER_HOST: tcp://localhost:2375
 
 stages:
-#  - lint
-#  - test
+  - lint
+  - test
   - build
   - e2e
   - deploy
@@ -18,75 +18,75 @@ stages:
 services:
   - docker:18.09-dind
 
-#lint-django:
-#  image: python:3.7-slim
-#  stage: lint
-#  tags:
-#    - low-load
-#  before_script:
-#    - pip install black
-#  script:
-#    - black --check $DJANGO/**/*.py --exclude .*/migrations/.*
-#
-#lint-react:
-#  image: node:13
-#  stage: lint
-#  tags:
-#    - low-load
-#  before_script:
-#    - npm ci --prefix $REACT
-#  script:
-#    - npm run --prefix $REACT lint
-#
-#unit-test-django:
-#  image: python:3.7-slim
-#  stage: test
-#  dependencies:
-#    - lint-django
-#  tags:
-#    - normal-load
-#  before_script:
-#    - cd $DJANGO
-#    - pip install -U pip pipenv
-#    - pipenv install --deploy --system -d
-#  script:
-#    - python runtests.py
-#
-#unit-test-react:
-#  image: node:13
-#  stage: test
-#  dependencies:
-#    - lint-react
-#  tags:
-#    - normal-load
-#  before_script:
-#    - npm ci --prefix $REACT
-#  script:
-#    - npm test --prefix $REACT
+lint-django:
+  image: python:3.7-slim
+  stage: lint
+  tags:
+    - low-load
+  before_script:
+    - pip install black
+  script:
+    - black --check $DJANGO/**/*.py --exclude .*/migrations/.*
+
+lint-react:
+  image: node:13
+  stage: lint
+  tags:
+    - low-load
+  before_script:
+    - npm ci --prefix $REACT
+  script:
+    - npm run --prefix $REACT lint
+
+unit-test-django:
+  image: python:3.7-slim
+  stage: test
+  dependencies:
+    - lint-django
+  tags:
+    - normal-load
+  before_script:
+    - cd $DJANGO
+    - pip install -U pip pipenv
+    - pipenv install --deploy --system -d
+  script:
+    - python runtests.py
+
+unit-test-react:
+  image: node:13
+  stage: test
+  dependencies:
+    - lint-react
+  tags:
+    - normal-load
+  before_script:
+    - npm ci --prefix $REACT
+  script:
+    - npm test --prefix $REACT
 
 build-demo-backend:
   stage: build
-#  dependencies:
-#    - unit-test-django
+  dependencies:
+    - unit-test-django
   tags:
     - normal-load
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     # https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#using-docker-caching
     - docker pull $CI_REGISTRY_IMAGE/django-ai-kit-auth:develop || true
-    - docker build --cache-from $CI_REGISTRY_IMAGE/django-ai-kit-auth:feature-7-cypress-fixes -t $IMAGE_TAG_BACKEND --file ./demo/backend/Dockerfile ./
+    - docker build --cache-from $CI_REGISTRY_IMAGE/django-ai-kit-auth:develop -t $IMAGE_TAG_BACKEND --file ./demo/backend/Dockerfile ./
     - docker push $IMAGE_TAG_BACKEND
 
 build-demo-frontend:
   stage: build
-#  dependencies:
-#    - unit-test-react
+  dependencies:
+    - unit-test-react
   tags:
     - normal-load
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker pull $CI_REGISTRY_IMAGE/ai-kit-auth:develop || true
-    - docker build --cache-from $CI_REGISTRY_IMAGE/ai-kit-auth:feature-7-cypress-fixes -t $IMAGE_TAG_FRONTEND --build-arg app_env=production --file ./demo/frontend/Dockerfile ./
+    - docker build --cache-from $CI_REGISTRY_IMAGE/ai-kit-auth:develop -t $IMAGE_TAG_FRONTEND --build-arg app_env=production --file ./demo/frontend/Dockerfile ./
     - docker push $IMAGE_TAG_FRONTEND
 
 e2e-test-demo:
@@ -123,41 +123,41 @@ e2e-test-demo:
       ambientinnovation/cypress-docker:latest
       bash -c "npm install && cypress run --browser chrome"
 
-#deploy-react:
-#  image: node:13
-#  stage: deploy
-#  dependencies:
-#    - unit-test-react
-#  variables:
-#    GITLAB_URL: gitlab.ambient-innovation.com
-#  only:
-#    - master
-#  tags:
-#    - low-load
-#  before_script:
-#    - npm ci --prefix $REACT
-#  script:
-#    - cd ai-kit-auth
-#    - npm run build
-#    - npx semantic-release
-#
-#deploy-django:
-#  image: python:3.7-slim
-#  stage: deploy
-#  dependencies:
-#    - unit-test-django
-#  variables:
-#    PYPI_USERNAME: ambient-innovation
-#  only:
-#    - master
-#  tags:
-#    - low-load
-#  before_script:
-#    - apt-get update && apt-get install -y git
-#    - git config --global user.name "semantic-release"
-#    - git config --global user.email "hello@ambient-innovation.com"
-#    - cd $DJANGO
-#    - pip install -U pip pipenv
-#    - pipenv install --deploy --system -d
-#  script:
-#    - semantic-release publish
+deploy-react:
+  image: node:13
+  stage: deploy
+  dependencies:
+    - unit-test-react
+  variables:
+    GITLAB_URL: gitlab.ambient-innovation.com
+  only:
+    - master
+  tags:
+    - low-load
+  before_script:
+    - npm ci --prefix $REACT
+  script:
+    - cd ai-kit-auth
+    - npm run build
+    - npx semantic-release
+
+deploy-django:
+  image: python:3.7-slim
+  stage: deploy
+  dependencies:
+    - unit-test-django
+  variables:
+    PYPI_USERNAME: ambient-innovation
+  only:
+    - master
+  tags:
+    - low-load
+  before_script:
+    - apt-get update && apt-get install -y git
+    - git config --global user.name "semantic-release"
+    - git config --global user.email "hello@ambient-innovation.com"
+    - cd $DJANGO
+    - pip install -U pip pipenv
+    - pipenv install --deploy --system -d
+  script:
+    - semantic-release publish
