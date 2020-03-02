@@ -123,41 +123,41 @@ e2e-test-demo:
       ambientinnovation/cypress-docker:latest
       bash -c "npm install && cypress run --browser chrome"
 
-deploy-react:
-  image: node:13
-  stage: deploy
-  dependencies:
-    - unit-test-react
-  variables:
-    GITLAB_URL: gitlab.ambient-innovation.com
-  only:
-    - master
-  tags:
-    - low-load
-  before_script:
-    - npm ci --prefix $REACT
-  script:
-    - cd ai-kit-auth
-    - npm run build
-    - npx semantic-release
-
-deploy-django:
-  image: python:3.7-slim
-  stage: deploy
-  dependencies:
-    - unit-test-django
-  variables:
-    PYPI_USERNAME: ambient-innovation
-  only:
-    - master
-  tags:
-    - low-load
-  before_script:
-    - apt-get update && apt-get install -y git
-    - git config --global user.name "semantic-release"
-    - git config --global user.email "hello@ambient-innovation.com"
-    - cd $DJANGO
-    - pip install -U pip pipenv
-    - pipenv install --deploy --system -d
-  script:
-    - semantic-release publish
+#deploy-react:
+#  image: node:13
+#  stage: deploy
+#  dependencies:
+#    - unit-test-react
+#  variables:
+#    GITLAB_URL: gitlab.ambient-innovation.com
+#  only:
+#    - master
+#  tags:
+#    - low-load
+#  before_script:
+#    - npm ci --prefix $REACT
+#  script:
+#    - cd ai-kit-auth
+#    - npm run build
+#    - npx semantic-release
+#
+#deploy-django:
+#  image: python:3.7-slim
+#  stage: deploy
+#  dependencies:
+#    - unit-test-django
+#  variables:
+#    PYPI_USERNAME: ambient-innovation
+#  only:
+#    - master
+#  tags:
+#    - low-load
+#  before_script:
+#    - apt-get update && apt-get install -y git
+#    - git config --global user.name "semantic-release"
+#    - git config --global user.email "hello@ambient-innovation.com"
+#    - cd $DJANGO
+#    - pip install -U pip pipenv
+#    - pipenv install --deploy --system -d
+#  script:
+#    - semantic-release publish
