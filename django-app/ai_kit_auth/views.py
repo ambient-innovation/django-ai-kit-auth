@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.contrib.auth import login, get_user_model
+from django.contrib.auth import login, get_user_model, tokens
 from django.contrib.auth.password_validation import (
     get_password_validators,
     validate_password,
@@ -90,7 +90,14 @@ class ActivateUser(generics.GenericAPIView):
         try:
             pk = services.feistel_chipher(int(ident))
             user = UserModel.objects.get(pk=pk)
-        except (TypeError, ValueError, OverflowError, UserModel.DoesNotExist):
+            assert tokens.PasswordResetTokenGenerator().check_token(user, token)
+        except (
+            TypeError,
+            ValueError,
+            OverflowError,
+            AssertionError,
+            UserModel.DoesNotExist,
+        ):
             return Response(
                 {"error": "activation_link_invalid"}, status=status.HTTP_400_BAD_REQUEST
             )

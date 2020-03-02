@@ -1,5 +1,6 @@
 from django.urls import re_path
 from . import views
+from .settings import api_settings
 
 # Right there is not a lot happening here, just the reexport of the rest_auth
 # urls. Later when we do the account reset stuff it makes sense to not use
@@ -10,7 +11,9 @@ from . import views
 urlpatterns = [
     re_path(r"^login/$", views.LoginView.as_view(), name="rest_login"),
     re_path(
-        r"^activate/(?P<ident>[0-9]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$",
+        r"^"
+        + api_settings.ACTIVATION_ROUTE
+        + r"/(?P<ident>[0-9]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$",
         views.ActivateUser.as_view(),
         name="rest_activate",
     ),
