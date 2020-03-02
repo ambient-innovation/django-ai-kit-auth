@@ -1,7 +1,9 @@
-import React, { FC, ComponentType, useContext, Context } from 'react';
+import React, {
+  FC, ComponentType, useContext, Context,
+} from 'react';
 import { Redirect, Route, RouteProps } from 'react-router-dom';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { UserStoreValue } from '../store/types';
+import { UserContext } from '../store/types';
 import { UserContext as StardardUserContext } from '../store/UserStore';
 
 interface ProtectedRouteProps extends RouteProps {
@@ -14,8 +16,6 @@ interface ProtectedRouteOptions<User> {
   pathToMainPage?: string;
   loadingIndicator: ComponentType;
 }
-
-type UserContext<User> = Context<UserStoreValue<User>>;
 
 export const makeProtectedRoute: <User>(
   options: ProtectedRouteOptions<User>,
@@ -55,7 +55,7 @@ export const makeProtectedRoute: <User>(
   );
 };
 
-export default makeProtectedRoute({
+export const ProtectedRoute = makeProtectedRoute({
   userContext: StardardUserContext,
   loadingIndicator: CircularProgress,
 });
