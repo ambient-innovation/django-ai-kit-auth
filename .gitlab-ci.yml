@@ -3,7 +3,7 @@ image: docker:stable
 variables:
   DOCKER_DRIVER: overlay2
   DJANGO: django-app
-  REACT: ai-kit-auth
+  REACT: react-lib
   IMAGE_TAG_BACKEND: $CI_REGISTRY_IMAGE/django-ai-kit-auth:$CI_COMMIT_REF_SLUG
   IMAGE_TAG_FRONTEND: $CI_REGISTRY_IMAGE/ai-kit-auth:$CI_COMMIT_REF_SLUG
   DOCKER_HOST: tcp://localhost:2375
