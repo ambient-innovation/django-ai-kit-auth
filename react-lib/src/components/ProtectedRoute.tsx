@@ -1,26 +1,61 @@
-import React, { FC, useContext } from 'react';
-import { Route, RouteProps } from 'react-router-dom';
-import { UserContext } from '../store/UserStore';
+import React, { FC, ComponentType, useContext, Context } from 'react';
+import { Redirect, Route, RouteProps } from 'react-router-dom';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { UserStoreValue } from '../store/types';
+import { UserContext as StardardUserContext } from '../store/UserStore';
 
 interface ProtectedRouteProps extends RouteProps {
   path: string;
-  redirectToLogin: FC;
-  loadingIndicator: FC;
 }
 
-export const ProtectedRoute: FC<ProtectedRouteProps> = ({
-  path,
-  redirectToLogin,
+interface ProtectedRouteOptions<User> {
+  userContext: UserContext<User>;
+  pathToLogin?: string;
+  pathToMainPage?: string;
+  loadingIndicator: ComponentType;
+}
+
+type UserContext<User> = Context<UserStoreValue<User>>;
+
+export const makeProtectedRoute: <User>(
+  options: ProtectedRouteOptions<User>,
+) => FC<ProtectedRouteProps> = ({
+  userContext,
+  pathToLogin = 'auth/login',
+  pathToMainPage = '/',
   loadingIndicator,
+}) => ({
   component,
   render,
   children,
-  ...rest
+  ...routerProps
 }) => {
-  const { user, loading } = useContext(UserContext);
+  const { user, loading } = useContext(userContext);
+  const pathname = routerProps.location?.pathname || pathToMainPage;
 
-  if (loading) return <Route {...rest} path={path} component={loadingIndicator} />;
-  if (!user) return <Route {...rest} path={path} component={redirectToLogin} />;
+  if (loading) return <Route {...routerProps} component={loadingIndicator} />;
+  if (!user) {
+    return (
+      <Redirect to={{
+        pathname: pathToLogin,
+        state: { from: pathname },
+      }}
+      />
+    );
+  }
 
-  return <Route {...rest} path={path} component={component} render={render}>{children}</Route>;
+  return (
+    <Route
+      {...routerProps}
+      component={component}
+      render={render}
+    >
+      {children}
+    </Route>
+  );
 };
+
+export default makeProtectedRoute({
+  userContext: StardardUserContext,
+  loadingIndicator: CircularProgress,
+});
