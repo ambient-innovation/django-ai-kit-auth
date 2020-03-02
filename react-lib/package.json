@@ -30,13 +30,13 @@
   ],
   "author": "Ambient Innovation",
   "license": "MIT",
-  "dependencies": {
+  "dependencies": {},
+  "peerDependencies": {
     "@material-ui/core": "^4.9.5",
-    "axios": "^0.19.2",
-    "history": "^4.10.1",
-    "react": "^16.12.0",
-    "react-cookie": "^4.0.3",
-    "react-router-dom": "^5.1.2"
+    "axios": "^0.19.0",
+    "history": "^4.0.0",
+    "react": "^16.8.0",
+    "react-router-dom": "^5.0.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^8.3.5",
@@ -52,6 +52,11 @@
     "@types/react-router-dom": "^5.1.3",
     "@typescript-eslint/eslint-plugin": "^2.20.0",
     "@typescript-eslint/parser": "^2.20.0",
+    "@material-ui/core": "^4.9.5",
+    "axios": "^0.19.2",
+    "history": "^4.10.1",
+    "react": "^16.12.0",
+    "react-router-dom": "^5.1.2",
     "eslint": "^6.8.0",
     "eslint-config-airbnb": "^18.0.1",
     "eslint-config-prettier": "^6.10.0",
@@ -74,21 +79,9 @@
     "dist/**/*"
   ],
   "jest": {
-    "setupFilesAfterEnv": [
-      "./setupTests.ts"
-    ],
     "transform": {
       "^.+\\.tsx?$": "ts-jest"
-    },
-    "testRegex": "(.*/tests/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "jsx",
-      "json",
-      "node"
-    ]
+    }
   },
   "release": {
     "branches": [

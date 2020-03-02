@@ -23,6 +23,7 @@ services:
     volumes:
       - ./frontend/src:/app/src
       - ../react-lib:/react-lib
+      - /react-lib/node_modules/
     ports:
       - "3000:3000"
     restart: "no"

@@ -1,12 +1,16 @@
 import React from 'react';
-import { LoginView } from 'ai-kit-auth';
+import { UserStore, LoginView } from 'ai-kit-auth';
 import './App.scss';
 
 const App: React.FC = () => (
-  <div className="App">
+  <UserStore
+    apiUrl="http://localhost:8000/api/v1/"
+  >
+    <div className="App">
     AI-KIT AUTH Demo Project
-    <LoginView />
-  </div>
+      <LoginView />
+    </div>
+  </UserStore>
 );
 
 export default App;
