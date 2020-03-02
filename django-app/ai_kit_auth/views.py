@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.contrib.auth import login
+from django.contrib.auth import login, get_user_model
 from django.contrib.auth.password_validation import (
     get_password_validators,
     validate_password,
@@ -10,8 +10,10 @@ from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from . import serializers
+from . import serializers, services
 from django.conf import settings
+
+UserModel = get_user_model()
 
 
 class LoginView(generics.GenericAPIView):
@@ -74,3 +76,25 @@ class ValidatePassword(generics.GenericAPIView):
         except DjangoValidationError as e:
             raise ValidationError(e.error_list)
         return Response({}, status=status.HTTP_200_OK)
+
+
+class ActivateUser(generics.GenericAPIView):
+    """
+    Endpoint to validate the password without trying to register an account.
+    Can be used to show the user error messages on the fly
+    """
+
+    permission_classes = (AllowAny,)
+
+    def get(self, request, ident, token, *args, **kwargs):
+        try:
+            pk = services.feistel_chipher(int(ident))
+            user = UserModel.objects.get(pk=pk)
+        except (TypeError, ValueError, OverflowError, UserModel.DoesNotExist):
+            return Response(
+                {"error": "activation_link_invalid"}, status=status.HTTP_400_BAD_REQUEST
+            )
+        user.is_active = True
+        user.save()
+        login(request, user)
+        return Response(status=status.HTTP_200_OK)

@@ -28,4 +28,5 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",},
 ]
 
+EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
 ROOT_URLCONF = "ai_kit_auth.urls"
