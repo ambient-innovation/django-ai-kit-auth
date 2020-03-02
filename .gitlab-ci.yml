@@ -112,7 +112,7 @@ e2e-test-demo:
       -d
       -p 3000:5000
       -v ./frontend/src:/app/src
-      -v ../react-lib:/react-lib
+      -v ${PWD}/react-lib:/react-lib
       $IMAGE_TAG_FRONTEND
       bash -c ./run.sh
     - docker pull $IMAGE_TAG_BACKEND
