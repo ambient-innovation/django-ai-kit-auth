@@ -17,7 +17,6 @@ const App: React.FC = () => (
           </div>
         </ProtectedRoute>
       </Switch>
-      <LoginView />
     </BrowserRouter>
   </UserStore>
 );
