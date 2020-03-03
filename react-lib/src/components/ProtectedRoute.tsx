@@ -57,5 +57,5 @@ export const makeProtectedRoute: <User>(
 
 export const ProtectedRoute = makeProtectedRoute({
   userContext: StardardUserContext,
-  loadingIndicator: CircularProgress,
+  loadingIndicator: () => <CircularProgress />,
 });

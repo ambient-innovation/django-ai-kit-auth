@@ -44,8 +44,7 @@ export function makeGenericUserStore<U extends unknown = User>() {
         meAPI<U>(apiUrl).then((loggedInUser) => {
           console.log('me', loggedInUser);
           setUser(loggedInUser);
-          setLoading(false);
-        });
+        }).finally(() => setLoading(false));
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
