@@ -17,6 +17,7 @@ RUN echo "installing npm packages" && \
     echo "build ai-kit-auth package" && \
     npm ci && \
     npm link /demo/frontend/node_modules/react && \
+    npm link /demo/frontend/node_modules/react-router-dom && \
     npm run build && \
     npm link && \
     cd - && \
