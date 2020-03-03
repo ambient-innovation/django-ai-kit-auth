@@ -1,15 +1,17 @@
 import React, {
   createContext, FC, useContext, useEffect, useState,
 } from 'react';
+import { CssBaseline, Theme, ThemeProvider } from '@material-ui/core';
 import { User } from '../api/types';
 import { loginAPI, meAPI } from '../api/api';
 import { UserStoreValue } from './types';
-
+import { defaultTheme } from '../styles/styles';
 
 const errorExecutor = () => { throw new Error('No User Store provided!'); };
 
 interface UserStoreProps {
   apiUrl: string;
+  customTheme?: Theme;
 }
 
 export function makeGenericUserStore<U extends unknown = User>() {
@@ -19,7 +21,7 @@ export function makeGenericUserStore<U extends unknown = User>() {
   });
 
   const GenericUserStore: FC<UserStoreProps> = ({
-    children, apiUrl,
+    children, apiUrl, customTheme,
   }) => {
     const [loading, setLoading] = useState(true);
     const [user, setUser] = useState<U|undefined>(undefined);
@@ -57,7 +59,10 @@ export function makeGenericUserStore<U extends unknown = User>() {
           login,
         }}
       >
-        {children}
+        <CssBaseline />
+        <ThemeProvider theme={customTheme || defaultTheme}>
+          {children}
+        </ThemeProvider>
       </GenericUserContext.Provider>
     );
   };

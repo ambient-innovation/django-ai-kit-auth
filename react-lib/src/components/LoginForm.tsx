@@ -17,13 +17,16 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     paddingRight: 30,
     paddingBottom: 36,
     boxShadow: '0 1px 36px 0 rgba(211, 211, 211, 0.5)',
+    width: '100%',
   },
   loginTitle: {
     marginBottom: 35,
-
   },
   inputField: {
     marginBottom: 30,
+  },
+  inputLabel: {
+    fontStyle: 'italic',
   },
 }));
 
@@ -54,7 +57,7 @@ export const makeLoginForm: (options: LoginFormOptions) => FC = ({
     >
       <Typography
         className={classes.loginTitle}
-        variant="h2"
+        variant="h3"
       >
         {strings.LoginForm.Login}
       </Typography>
@@ -104,7 +107,7 @@ export const makeLoginForm: (options: LoginFormOptions) => FC = ({
 
         <Button
           type="submit"
-          title="Anmelden"
+          title={strings.LoginForm.Login}
           variant="contained"
           color="primary"
         >

@@ -10,7 +10,7 @@ const App: React.FC = () => (
   >
     <BrowserRouter>
       <Switch>
-        <LoginRoute exact path="/login" component={LoginView} />
+        <LoginRoute exact path="/auth/login" component={LoginView} />
         <ProtectedRoute exact path="/">
           <div>
             Django Test App
