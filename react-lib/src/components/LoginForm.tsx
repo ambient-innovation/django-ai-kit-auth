@@ -26,6 +26,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     marginBottom: 30,
   },
 }));
+
 export enum Identifier {
   Username = 1,
   Email= 2,

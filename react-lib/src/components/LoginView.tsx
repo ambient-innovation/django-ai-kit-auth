@@ -10,11 +10,6 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   },
 }));
 
-export enum Identifier {
-  Username = 1,
-  Email= 2,
-  UsernameOrEmail = 3,
-}
 export const LoginView: FC = () => {
   const classes = useStyles();
 
