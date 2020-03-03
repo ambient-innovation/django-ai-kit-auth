@@ -22,8 +22,7 @@ services:
     command: bash ./run_local.sh
     volumes:
       - ./frontend/src:/app/src
-      - ../react-lib:/react-lib
-      - /react-lib/node_modules/
+      - ../react-lib/dist:/react-lib/dist
     ports:
       - "3000:3000"
     restart: "no"

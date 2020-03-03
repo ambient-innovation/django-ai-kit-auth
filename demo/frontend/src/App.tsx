@@ -1,6 +1,5 @@
 import React from 'react';
 import { UserStore, LoginView } from 'ai-kit-auth';
-import './App.scss';
 
 const App: React.FC = () => (
   <UserStore

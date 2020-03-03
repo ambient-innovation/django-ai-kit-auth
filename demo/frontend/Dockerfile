@@ -1,30 +1,37 @@
 # base image
 FROM node:12.14
 
-RUN mkdir /app
-
 # set working directory
-WORKDIR /app
+WORKDIR /demo/frontend
 
-# add `/app/node_modules/.bin` to $PATH
-ENV PATH /app/node_modules/.bin:$PATH
+# add `/demo/frontend/node_modules/.bin` to $PATH
+ENV PATH /demo/frontend/node_modules/.bin:$PATH
 
-# install and cache app dependencies
-COPY demo/frontend/package*.json /app/
+# install and cache demo/frontend dependencies
+COPY demo/frontend/package*.json ./
+COPY react-lib /react-lib
 
-# add the 'published' package to node_modules with yalc
-RUN npm ci
+RUN echo "installing npm packages" && \
+    npm ci && \
+    cd /react-lib && \
+    echo "build ai-kit-auth package" && \
+    npm ci && \
+    npm link /demo/frontend/node_modules/react && \
+    npm run build && \
+    npm link && \
+    cd - && \
+    npm link ai-kit-auth
 
-COPY demo/frontend /app/
+COPY demo/frontend .
 
 
 # In production, we want to install the node server and run the "npm run build" command.
 # We do not want to run this in development to save time and disk space.
-# Therefore we can pass an argument when building `docker build --build-arg app_env=production .`.
-ARG app_env
+# Therefore we can pass an argument when building `docker build --build-arg demo/frontend_env=production .`.
+ARG app
 
 # Install node server and build code if production
-RUN if [ ${app_env} = production ]; \
+RUN if [ ${app} = production ]; \
 	then \
 	npm install --global serve && \
 	npm run build --production; \
