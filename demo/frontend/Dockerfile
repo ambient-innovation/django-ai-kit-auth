@@ -27,11 +27,11 @@ COPY demo/frontend .
 
 # In production, we want to install the node server and run the "npm run build" command.
 # We do not want to run this in development to save time and disk space.
-# Therefore we can pass an argument when building `docker build --build-arg demo/frontend_env=production .`.
-ARG app
+# Therefore we can pass an argument when building `docker build --build-arg app_env=production .`.
+ARG app_env
 
 # Install node server and build code if production
-RUN if [ ${app} = production ]; \
+RUN if [ "${app_env}" = production ]; \
 	then \
 	npm install --global serve && \
 	npm run build --production; \
