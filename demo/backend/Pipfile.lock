@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "b792edbead3040d412465cde7adb9d62d1d8af48ed7ecc7e42622c6f3d75c89d"
+            "sha256": "5f38bbadea36df8c57864f3ec0048dfe6e7cd3cc2377330437a3f17884ae3607"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -34,6 +34,14 @@
         "django-ai-kit-auth": {
             "editable": true,
             "path": "./../../django-app"
+        },
+        "django-cors-headers": {
+            "hashes": [
+                "sha256:a5960addecc04527ab26617e51b8ed42f0adab4594b24bb0f3c33e2bd3857c3f",
+                "sha256:a785b5f446f6635810776d9f5f5d23e6a2a2f728ea982648370afaf0dfdf2627"
+            ],
+            "index": "pypi",
+            "version": "==3.2.1"
         },
         "djangorestframework": {
             "hashes": [
@@ -75,10 +83,10 @@
         },
         "sqlparse": {
             "hashes": [
-                "sha256:40afe6b8d4b1117e7dff5504d7a8ce07d9a1b15aeeade8a2d10f130a834f8177",
-                "sha256:7c3dca29c022744e95b547e867cee89f4fce4373f3549ccd8797d8eb52cdb873"
+                "sha256:022fb9c87b524d1f7862b3037e541f68597a730a8843245c349fc93e1643dc4e",
+                "sha256:e162203737712307dfe78860cc56c8da8a852ab2ee33750e33aeadf38d12c548"
             ],
-            "version": "==0.3.0"
+            "version": "==0.3.1"
         }
     },
     "develop": {
