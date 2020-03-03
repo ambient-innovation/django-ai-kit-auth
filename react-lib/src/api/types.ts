@@ -1,9 +1,6 @@
 
 export interface User {
+  id: number;
   username: string;
   email: string;
-}
-
-export interface MeResponse<U = User> {
-  user: U;
 }

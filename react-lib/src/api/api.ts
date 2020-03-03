@@ -1,5 +1,7 @@
 import axios from 'axios';
-import { MeResponse, User } from './types';
+import { User } from './types';
+
+axios.defaults.withCredentials = true;
 
 const loginSuffix = 'login/';
 const meSuffix = 'me/';
@@ -18,12 +20,12 @@ export const makeUrl = (apiUrl: string, suffix: string) => {
  */
 export const loginAPI = <U = User>(
   apiUrl: string, ident: string, password: string,
-) => axios.post<MeResponse<U>>(makeUrl(apiUrl, loginSuffix), {
+) => axios.post<U>(makeUrl(apiUrl, loginSuffix), {
   ident, password,
 }).then((response) => response.data);
 
 
 export const meAPI = <U = User>(apiUrl: string) => (
-  axios.get<MeResponse<U>>(makeUrl(apiUrl, meSuffix))
+  axios.get<U>(makeUrl(apiUrl, meSuffix))
     .then(({ data }) => data)
 );

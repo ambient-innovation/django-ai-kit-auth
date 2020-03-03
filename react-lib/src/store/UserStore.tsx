@@ -21,7 +21,7 @@ export function makeGenericUserStore<U extends unknown = User>() {
   const GenericUserStore: FC<UserStoreProps> = ({
     children, apiUrl,
   }) => {
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [user, setUser] = useState<U|undefined>(undefined);
 
     const login: (userIdentifier: string, password: string) => Promise<U> = (
@@ -30,8 +30,7 @@ export function makeGenericUserStore<U extends unknown = User>() {
       setLoading(true);
 
       return loginAPI<U>(apiUrl, userIdentifier, password)
-        .then((data) => {
-          const loginUser: U = data.user;
+        .then((loginUser) => {
           setUser(loginUser);
           setLoading(false);
 
@@ -42,7 +41,11 @@ export function makeGenericUserStore<U extends unknown = User>() {
     useEffect(() => {
       // If we don't have a user, we need to obtain it via  the me endpoint
       if (!user) {
-        meAPI<U>(apiUrl).then((data) => setUser(data.user));
+        meAPI<U>(apiUrl).then((loggedInUser) => {
+          console.log('me', loggedInUser);
+          setUser(loggedInUser);
+          setLoading(false);
+        });
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
