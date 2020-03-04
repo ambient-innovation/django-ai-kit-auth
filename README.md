@@ -19,7 +19,7 @@ functionality on the backend side and React Components for the frontend.
 
 ## Integration into your project
 
-See the READMEs in [django-app](django-app/README.md) and [react-lib](react-lib/README.md) for detailed instructions.
+See the READMEs in [django-app](django-app/README.rst) and [react-lib](react-lib/README.md) for detailed instructions.
 
 ## Contributing
 
