@@ -8,7 +8,7 @@ It targets the following tech stack:
 * Django in the back
 * React in the front
 * Material UI is used for the standard theme, but its not tightly coupled and
-not a nessessary dependency
+not a necessary dependency
 * REST Api
 * Sessions authentification. Support for JWT is planned, but not as the main
 auth method, but to enable access to external services for a short amount of
