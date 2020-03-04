@@ -62,9 +62,6 @@ libraries need to be packed and copied into the demo folder.
 
 ### Packing the ai-kit-auth
 
-Execute `npm pack` in the ai-kit-auth folder. This will automatically create
-a packaged archive of the current version, copy it to demo and delete the local
-version.
 
 ### Linting
 
