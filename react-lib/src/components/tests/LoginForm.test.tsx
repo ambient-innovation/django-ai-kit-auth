@@ -1,7 +1,7 @@
 import * as React from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { render, fireEvent, waitForElement } from '@testing-library/react';
-import { LoginForm } from '../LoginForm';
+import {Identifier, LoginForm, makeLoginForm} from '../LoginForm';
 import { UserContext } from '../..';
 import { strings } from '../../internationalization';
 import { User } from '../../api/types';
@@ -13,14 +13,16 @@ const mockPassword = '1324qwer';
 
 const login = jest.fn();
 
-const renderFunction = () => render(
+const renderFunction = (
+  element?: JSX.Element,
+) => render(
   <UserContext.Provider
     value={{
       loading: false,
       login,
     }}
   >
-    <LoginForm />
+    { element || <LoginForm /> }
   </UserContext.Provider>,
 );
 
@@ -123,4 +125,13 @@ test('password visibility', () => {
   fireEvent.click(renderObject.getByLabelText('toggle password visibility'));
   expect(renderObject.getByLabelText(strings.LoginForm.Password))
     .toHaveProperty('type', 'password');
+});
+
+test('Email type in ident input field', () => {
+  const EmailLoginForm = makeLoginForm({
+    identifier: Identifier.Email,
+  });
+  const renderOptions = renderFunction(<EmailLoginForm />);
+  expect(renderOptions.getByLabelText(strings.LoginForm.Email))
+    .toHaveProperty('type', 'email');
 });

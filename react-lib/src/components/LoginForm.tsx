@@ -99,6 +99,7 @@ export const makeLoginForm: (options: LoginFormOptions) => FC = ({
           id="userIdentifier"
           label={strings.LoginForm[Identifier[identifier] as IdentifierType]}
           variant="outlined"
+          type={identifier === Identifier.Email ? 'email' : 'text'}
           value={userIdentifier}
           helperText={errorMessage.ident ? (fieldErrors[errorMessage.ident]) : ''}
           error={!!errorMessage.ident}
