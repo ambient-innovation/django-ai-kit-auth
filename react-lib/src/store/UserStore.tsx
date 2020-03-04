@@ -44,7 +44,6 @@ export function makeGenericUserStore<U extends unknown = User>() {
       // If we don't have a user, we need to obtain it via  the me endpoint
       if (!user) {
         meAPI<U>(apiUrl).then((loggedInUser) => {
-          console.log('me', loggedInUser);
           setUser(loggedInUser);
         }).finally(() => setLoading(false));
       }
