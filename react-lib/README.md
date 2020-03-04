@@ -113,15 +113,107 @@ After this you can use the returned values just like the standard ones, except t
 `user` object is of type `MyUser` instead of `{ username: string; email: string; }`
 
 ### ProtectedRoute
+A wrapper for [\<Route\>](https://reacttraining.com/react-router/web/api/Route) routes that should only be available to users that are logged in.
+It checks with the UserContext if the user is in fact logged in. If not, it will redirect to the login page.
+During the check a loading spinner is shown.
+To use a custom UserContext, custom paths or a custom loading indicator, please use [makeProtectedRoute](#makeprotectedroute).
+Example usage:
 
-### makeProtectedRoute
+```typescript jsx
+<UserStore
+  apiUrl="http://localhost:8000/api/v1/"
+>
+  <BrowserRouter>
+    <Switch>
+      <ProtectedRoute exact path="/">
+        <div>
+          Hello World
+        </div>
+      </ProtectedRoute>
+    </Switch>
+  </BrowserRouter>
+</UserStore>
+  
+```
 
-### loginRoute
+### makeProtectedRoute()
+Returns a [ProtectedRoute](#protectedroute) Component. Requires you to pass the UserContext you are using, as well as a loading indicator
+and allows you to pass a path for the `main page` and `login page`.
+Example usage:
 
-### makeLoginRoute
+```typescript jsx
+const CustomProtectedRoute = makeProtectedRoute({
+  userContext: StardardUserContext,
+  loadingIndicator: () => <CircularProgress />,
+  pathToLogin: '/auth/login',
+  pathToMainPage: '/dashboard'
+});
+
+<UserStore
+  apiUrl="http://localhost:8000/api/v1/"
+>
+  <BrowserRouter>
+    <Switch>
+      <CustomProtectedRoute exact path="/dashboard">
+        <div>
+          Hello World
+        </div>
+      </CustomProtectedRoute>
+    </Switch>
+  </BrowserRouter>
+</UserStore>
+  
+```
+
+
+### LoginRoute
+A wrapper for [\<Route\>](https://reacttraining.com/react-router/web/api/Route) that uses the UserContext
+to see if the user is logged in or not. When the user is logged in it redirects to it's referrer.
+If there is no referrer, it redirects to the `main page` (default '/').
+If you want to use LoginRoute with a custom UserContext or a different `main page`, please use [makeLoginRoute](#makeloginroute)
+Example usage:
+
+```typescript jsx
+<UserStore
+  apiUrl="http://localhost:8000/api/v1/"
+>
+  <BrowserRouter>
+    <Switch>
+      <LoginRoute  exact path="/auth/login" component={LoginView} />
+    </Switch>
+  </BrowserRouter>
+</UserStore>
+  
+```
+
+### makeLoginRoute()
+Returns a [LoginRoute](#loginroute) Component. Requires you to pass the UserContext you are using and allows you to pass a path for the `main page`.
+Example usage:
+
+```typescript jsx
+const MyLoginRoute = makeLoginRoute({
+  userContext: myUserContext,
+  pathToMainPage: '/dashboard',
+});
+
+
+<UserStore
+  apiUrl="http://localhost:8000/api/v1/"
+>
+  <BrowserRouter>
+    <Switch>
+      <MyLoginRoute exact path="/auth/login" component={LoginView}/>
+    </Switch>
+  </BrowserRouter>
+</UserStore>
+  
+```
 
 ### LoginView
-Styled page wrapper for a LoginForm. You can pass your own [LoginForm](#loginform) Component created with [makeLoginForm](#makeloginform) as a child if you do not want the default [LoginForm](#loginform) Component. Example usage with default LoginForm (Username and Email):
+Styled page wrapper for a LoginForm. You can pass your own [LoginForm](#loginform) Component
+created with [makeLoginForm](#makeloginform) as a child if you do not want the default [LoginForm](#loginform) Component.
+
+Example usage with default LoginForm (Username and Email):
 
 ```typescript jsx
 const App: React.FC = () => (
@@ -152,7 +244,7 @@ const App: React.FC = () => (
 `LoginForm` is a react component that provides a [Material UI Paper](https://material-ui.com/components/paper/) wrapper and contains two input fields (username/email and password) and a submit button.
 If the login should only be possible using a username or email only, please use [makeLoginForm](#makeloginform).
 
-### makeLoginForm
+### makeLoginForm()
 `makeLoginForm` returns a [LoginForm](#loginform) component and requires you to pass an `Identifier` (Username, Email or UsernameAndEmail).
 Example Usage:
 
