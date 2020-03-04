@@ -136,24 +136,7 @@ export const defaultTheme = createMuiTheme({
     },
   },
   overrides: {
-    MuiInputBase: {
-      input: {
-        fontWeight: 600,
-      },
-    },
-    MuiInputLabel: {
-      root: {
-        fontWeight: 600,
-        '&$shrink': {
-          fontStyle: 'italic',
-          fontWeight: 400,
-        },
-      },
-    },
     MuiButton: {
-      label: {
-        fontWeight: 600,
-      },
       contained: {
         '&:hover': {
           color: '#fff',

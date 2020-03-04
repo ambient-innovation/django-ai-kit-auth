@@ -6,9 +6,11 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { FC, useState } from 'react';
-import { Paper, Typography } from '@material-ui/core';
+import { Grid, Paper, Typography } from '@material-ui/core';
+import { AxiosError } from 'axios';
 import { useUserStore } from '../store/UserStore';
 import { en as strings } from '../internationalization';
+import { MetaDict, ObjectOfStrings } from '../api/types';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   loginForm: {
@@ -18,6 +20,13 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     paddingBottom: 36,
     boxShadow: '0 1px 36px 0 rgba(211, 211, 211, 0.5)',
     width: '100%',
+    [theme.breakpoints.down('md')]: {
+      paddingLeft: 30,
+    },
+    [theme.breakpoints.down('xs')]: {
+      paddingLeft: 17,
+      paddingRight: 17,
+    },
   },
   loginTitle: {
     marginBottom: 35,
@@ -25,8 +34,10 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   inputField: {
     marginBottom: 30,
   },
-  inputLabel: {
-    fontStyle: 'italic',
+  formHelperText: {
+    marginBottom: 41,
+    fontSize: '1rem',
+    color: theme.palette.primary.main,
   },
 }));
 
@@ -50,6 +61,9 @@ export const makeLoginForm: (options: LoginFormOptions) => FC = ({
   const [userIdentifier, setUserIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<ObjectOfStrings>({});
+  const fieldErrors: ObjectOfStrings = strings.LoginForm.FieldErrors;
+  const nonFieldErrors: MetaDict = strings.LoginForm.NonFieldErrors;
 
   return (
     <Paper
@@ -61,10 +75,16 @@ export const makeLoginForm: (options: LoginFormOptions) => FC = ({
       >
         {strings.LoginForm.Login}
       </Typography>
+
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          login(userIdentifier, password);
+          login(userIdentifier, password)
+            .catch((error: AxiosError) => {
+              if (error.response) {
+                setErrorMessage(error.response.data);
+              }
+            });
         }}
       >
         <TextField
@@ -75,10 +95,13 @@ export const makeLoginForm: (options: LoginFormOptions) => FC = ({
           label={strings.LoginForm[Identifier[identifier] as IdentifierType]}
           variant="outlined"
           value={userIdentifier}
+          helperText={errorMessage.ident ? (fieldErrors[errorMessage.ident]) : ''}
+          error={!!errorMessage.ident}
           onChange={(event) => {
             setUserIdentifier(event.target.value);
           }}
         />
+
         <TextField
           className={classes.inputField}
           fullWidth
@@ -87,6 +110,8 @@ export const makeLoginForm: (options: LoginFormOptions) => FC = ({
           variant="outlined"
           value={password}
           type={showPassword ? 'text' : 'password'}
+          helperText={errorMessage.password ? (fieldErrors[errorMessage.password]) : ''}
+          error={!!errorMessage.password}
           onChange={(event) => {
             setPassword(event.target.value);
           }}
@@ -105,14 +130,28 @@ export const makeLoginForm: (options: LoginFormOptions) => FC = ({
           }}
         />
 
-        <Button
-          type="submit"
-          title={strings.LoginForm.Login}
-          variant="contained"
-          color="primary"
-        >
-          {strings.LoginForm.Login}
-        </Button>
+        {
+          errorMessage.non_field_errors && (
+            <Typography className={classes.formHelperText}>
+              {
+                nonFieldErrors[
+                  errorMessage.non_field_errors
+                ][Identifier[identifier] as IdentifierType]
+              }
+            </Typography>
+          )
+        }
+
+        <Grid container item xs={12} justify="center">
+          <Button
+            type="submit"
+            title={strings.LoginForm.Login}
+            variant="contained"
+            color="primary"
+          >
+            {strings.LoginForm.Login}
+          </Button>
+        </Grid>
       </form>
     </Paper>
   );

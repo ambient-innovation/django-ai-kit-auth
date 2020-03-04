@@ -8,6 +8,16 @@
     "Email": "Email",
     "UsernameOrEmail": "Username or Email",
     "Password": "Password",
-    "Login": "Login"
+    "Login": "Login",
+    "FieldErrors": {
+      "blank": "This field may not be blank."
+    },
+    "NonFieldErrors": {
+      "invalid_credentials": {
+        "Username": "The combination of username and password is invalid. Please try again.",
+        "Email": "The combination of email and password is invalid. Please try again.",
+        "UsernameOrEmail": "The combination of username or email and password is invalid. Please try again."
+      }
+    }
   }
 }
