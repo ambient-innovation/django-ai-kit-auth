@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { User } from './types';
 
 axios.defaults.withCredentials = true;

@@ -1,6 +1,7 @@
 import React, {
   createContext, FC, useContext, useEffect, useState,
 } from 'react';
+import { AxiosError } from 'axios';
 import { CssBaseline, Theme, ThemeProvider } from '@material-ui/core';
 import { User } from '../api/types';
 import { loginAPI, meAPI } from '../api/api';
@@ -37,15 +38,23 @@ export function makeGenericUserStore<U extends unknown = User>() {
           setLoading(false);
 
           return loginUser;
-        });
+        })
+        .finally(() => setLoading(false));
     };
 
     useEffect(() => {
       // If we don't have a user, we need to obtain it via  the me endpoint
       if (!user) {
-        meAPI<U>(apiUrl).then((loggedInUser) => {
-          setUser(loggedInUser);
-        }).finally(() => setLoading(false));
+        meAPI<U>(apiUrl)
+          .then((loggedInUser) => {
+            setUser(loggedInUser);
+          })
+          .catch((error: AxiosError) => {
+            if (!error.response) {
+              throw new Error('Host unreachable');
+            }
+          })
+          .finally(() => setLoading(false));
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
