@@ -62,4 +62,4 @@ libraries need to be packed and copied into the demo folder.
 
 ### Linting
 
-Python code should be formatted by black
+Python code should be formatted by black, typescript code by eslint.
