@@ -45,7 +45,7 @@ export const defaultTheme = createMuiTheme({
       light: defaultPrimaryColor[50],
       main: defaultPrimaryColor[300],
       dark: defaultPrimaryColor[900],
-      contrastText: 'rgba(0,0,0,0.87)',
+      contrastText: '#FFF',
     },
     secondary: {
       light: defaultSecondaryColor[50],
@@ -133,15 +133,6 @@ export const defaultTheme = createMuiTheme({
       fontSize: '0.81375rem',
       fontWeight: 400,
       letterSpacing: '2px',
-    },
-  },
-  overrides: {
-    MuiButton: {
-      contained: {
-        '&:hover': {
-          color: '#fff',
-        },
-      },
     },
   },
 });
