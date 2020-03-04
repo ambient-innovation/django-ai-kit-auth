@@ -19,7 +19,8 @@ functionality on the backend side and React Components for the frontend.
 
 ## Integration into your project
 
-See the READMEs in `django-app` and `react-app` for detailed instructions.
+See the READMEs in [django-ia-kit-auth](django-ai-kit-auth/README.md) and
+[`ai-kit-auth`](ai-kit-auth/README.md) for detailed instructions.
 
 ## Contributing
 
@@ -58,12 +59,6 @@ of what is changing. `body` and `footer` are not required if the type is not
 In order to perform end-to-end tests, both libraries are use in the demo project.
 However, the current versions are necessary for the tests, which is why the
 libraries need to be packed and copied into the demo folder.
-
-### Packing the ai-kit-auth
-
-Execute `npm pack` in the ai-kit-auth folder. This will automatically create
-a packaged archive of the current version, copy it to demo and delete the local
-version.
 
 ### Linting
 
