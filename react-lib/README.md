@@ -52,6 +52,7 @@ import ...
 const App: React.FC = () => (
   <UserStore
     apiUrl="http://localhost:8000/api/v1/"
+    customTheme={myCustomTheme}
   >
     <BrowserRouter>
       ...
@@ -64,6 +65,7 @@ export default App;
 
 The `apiUrl` prop tells the store, where to send login requests.
 This should be the url to the django backend of your project.
+You can also pass a MaterialUI Theme as a prop (customTheme), to overwrite any default themes this package provides.
 
 ### useUserStore
 
