@@ -7,16 +7,14 @@ import MockAdapter from 'axios-mock-adapter';
 import {
   render, waitForElement, fireEvent, act,
 } from '@testing-library/react';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { StateMock } from '@react-mock/state';
 
 import { UserStore, UserContext } from '../UserStore';
 import { User } from '../../api/types';
 
 const maxios = new MockAdapter(axios);
 
-const mockUser = ({
-  id: 42, username: 'Donald', email: 'donald@duck.ent',
+const mockUser: User = ({
+  id: 42, username: 'Donald', email: 'donald@example.com',
 });
 
 beforeEach(() => {
