@@ -17,14 +17,6 @@ yarn add ai-kit-auth
 ```
 
 
-### makeLoginRoute
-
-### LoginView
-
-### LoginForm
-
-### makeLoginForm
-
 ## Local Development
 
 Start the demo project with docker-compose
