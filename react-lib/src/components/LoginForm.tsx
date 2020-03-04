@@ -30,6 +30,10 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   },
   loginTitle: {
     marginBottom: 35,
+    [theme.breakpoints.down('xs')]: {
+      fontSize: 30,
+      letterSpacing: 0.18,
+    },
   },
   inputField: {
     marginBottom: 30,
