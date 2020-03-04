@@ -36,3 +36,8 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserModel
         fields = ["id", "email", "username"]
+
+
+class ValidatePasswordSerializer(serializers.Serializer):
+    ident = serializers.CharField(required=True)
+    password = serializers.CharField(required=True)
