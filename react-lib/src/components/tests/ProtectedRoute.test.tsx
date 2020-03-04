@@ -43,3 +43,22 @@ test('shows loading indicator when loading', () => {
   );
   expect(renderObject.getByText('loading')).toBeInTheDocument();
 });
+
+test('renders children when logged in', () => {
+  const renderObject = renderWithRouterAndUser(
+    <ProtectedRoute>
+      content
+    </ProtectedRoute>,
+    mockUser,
+  );
+  expect(renderObject.getByText('content')).toBeInTheDocument();
+});
+
+test('renders component when logged in', () => {
+  const Content: FC = () => <div>content</div>;
+  const renderObject = renderWithRouterAndUser(
+    <ProtectedRoute component={Content} />,
+    mockUser,
+  );
+  expect(renderObject.getByText('content')).toBeInTheDocument();
+});
