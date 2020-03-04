@@ -11,6 +11,7 @@ class LoginSerializer(serializers.Serializer):
     )
     password = serializers.CharField(
         style={"input_type": "password"},
+        required=True,
         error_messages={"required": "required", "blank": "blank"},
     )
 
