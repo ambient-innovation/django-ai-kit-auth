@@ -17,7 +17,7 @@ time.
 This project includes a django library that provides routes and other
 functionality on the backend side and React Components for the frontend.
 
-## Integration into you project
+## Integration into your project
 
 See the READMEs in `django-app` and `react-app` for detailed instructions.
 

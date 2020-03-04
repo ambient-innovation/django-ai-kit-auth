@@ -96,7 +96,7 @@ export const makeLoginForm: (options: LoginFormOptions) => FC = ({
           className={classes.inputField}
           autoFocus
           fullWidth
-          id="userIdentifier"
+          id="login_userIdentifier"
           label={strings.LoginForm[Identifier[identifier] as IdentifierType]}
           variant="outlined"
           type={identifier === Identifier.Email ? 'email' : 'text'}
@@ -111,7 +111,7 @@ export const makeLoginForm: (options: LoginFormOptions) => FC = ({
         <TextField
           className={classes.inputField}
           fullWidth
-          id="password"
+          id="login_password"
           label={strings.LoginForm.Password}
           variant="outlined"
           value={password}
@@ -150,6 +150,7 @@ export const makeLoginForm: (options: LoginFormOptions) => FC = ({
 
         <Grid container item xs={12} justify="center">
           <Button
+            id="login_submit"
             type="submit"
             title={strings.LoginForm.Login}
             variant="contained"
