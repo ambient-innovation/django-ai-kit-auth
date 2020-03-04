@@ -19,6 +19,7 @@ export {
 export {
   LoginForm,
   makeLoginForm,
+  Identifier,
 } from './components/LoginForm';
 
 export {

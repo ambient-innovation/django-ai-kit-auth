@@ -121,10 +121,53 @@ After this you can use the returned values just like the standard ones, except t
 ### makeLoginRoute
 
 ### LoginView
+Styled page wrapper for a LoginForm. You can pass your own [LoginForm](#loginform) Component created with [makeLoginForm](#makeloginform) as a child if you do not want the default [LoginForm](#loginform) Component. Example usage with default LoginForm (Username and Email):
 
+```typescript jsx
+const App: React.FC = () => (
+  <UserStore
+    apiUrl="http://localhost:8000/api/v1/"
+  >
+    <LoginView />
+  </UserStore>
+);
+```
+ Example usage with custom LoginForm (Email only):
+
+```typescript jsx
+const MyLogin = makeLoginForm({ identifier: Identifier.Email });
+
+const App: React.FC = () => (
+  <UserStore
+    apiUrl="http://localhost:8000/api/v1/"
+  >
+    <LoginView>
+      <MyLogin />
+    </LoginView>
+  </UserStore>
+);
+```
 ### LoginForm
 
+`LoginForm` is a react component that provides a [Material UI Paper](https://material-ui.com/components/paper/) wrapper and contains two input fields (username/email and password) and a submit button.
+If the login should only be possible using a username or email only, please use [makeLoginForm](#makeloginform).
+
 ### makeLoginForm
+`makeLoginForm` returns a [LoginForm](#loginform) component and requires you to pass an `Identifier` (Username, Email or UsernameAndEmail).
+Example Usage:
+
+```typescript jsx
+const MyLogin = makeLoginForm({ identifier: Identifier.Email });
+
+const App: React.FC = () => (
+  <UserStore
+    apiUrl="http://localhost:8000/api/v1/"
+  >
+    <MyLogin />
+  </UserStore>
+);
+
+```
 
 ## Local Development
 

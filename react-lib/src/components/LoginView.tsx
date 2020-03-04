@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   },
 }));
 
-export const LoginView: FC = () => {
+export const LoginView: FC = ({ children }) => {
   const classes = useStyles();
 
   return (
@@ -48,7 +48,9 @@ export const LoginView: FC = () => {
       <Grid item lg={1} />
 
       <Grid container item xs={12} lg={6} className={classes.loginFormContainer}>
-        <LoginForm />
+        {
+          children || <LoginForm />
+        }
       </Grid>
     </Grid>
   );
