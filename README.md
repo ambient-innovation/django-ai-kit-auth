@@ -60,9 +60,6 @@ In order to perform end-to-end tests, both libraries are use in the demo project
 However, the current versions are necessary for the tests, which is why the
 libraries need to be packed and copied into the demo folder.
 
-### Packing the ai-kit-auth
-
-
 ### Linting
 
 Python code should be formatted by black
