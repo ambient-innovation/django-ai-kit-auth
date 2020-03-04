@@ -116,7 +116,7 @@ After this you can use the returned values just like the standard ones, except t
 
 ### ProtectedRoute
 A wrapper for [\<Route\>](https://reacttraining.com/react-router/web/api/Route) routes that should only be available to users that are logged in.
-It checks with the UserContext if the user is in fact logged in. If not, it will redirect to the login page.
+It checks with the UserContext if the user is in fact logged in. If not, it will redirect to `/auth/login`.
 During the check a loading spinner is shown.
 To use a custom UserContext, custom paths or a custom loading indicator, please use [makeProtectedRoute](#makeprotectedroute).
 Example usage:
