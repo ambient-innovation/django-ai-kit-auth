@@ -1,7 +1,7 @@
 import * as React from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { render, fireEvent, waitForElement } from '@testing-library/react';
-import {Identifier, LoginForm, makeLoginForm} from '../LoginForm';
+import { Identifier, LoginForm, makeLoginForm } from '../LoginForm';
 import { UserContext } from '../..';
 import { strings } from '../../internationalization';
 import { User } from '../../api/types';
