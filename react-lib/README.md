@@ -19,10 +19,21 @@ yarn add ai-kit-auth
 ## Usage
 
 AI-KIT: Authentication provides the following components and functions:
-* `UserStore`
-* `useUserStore`
-* `UserContext`
-* `makeGenericUserStore`
+* UserStore
+    * [UserStore](#UserStore)
+    * [useUserStore](#useUserStore)
+    * [UserContext](#UserContext)
+    * [makeGenericUserStore](#makeGenericUserStore)
+* ProtectedRoute
+    * [ProtectedRoute](#ProtectedRoute)
+    * [makeProtectedRoute](#makeProtectedRoute)
+* LoginRoute
+    * [LoginRoute](#LoginRoute)
+    * [makeLoginRoute](#makeLoginRoute)
+* LoginView
+    * [LoginView](#LoginView)
+    * [LoginForm](#LoginForm)
+    * [makeLoginForm](#makeLoginForm)
 
 ### UserStore
 
@@ -100,6 +111,20 @@ export const { UserStore, useUserStore } = makeGenericUserStore<MyUser>();
 
 After this you can use the returned values just like the standard ones, except that the
 `user` object is of type `MyUser` instead of `{ username: string; email: string; }`
+
+### ProtectedRoute
+
+### makeProtectedRoute
+
+### loginRoute
+
+### makeLoginRoute
+
+### LoginView
+
+### LoginForm
+
+### makeLoginForm
 
 ## Local Development
 
