@@ -1,4 +1,4 @@
 
 import en from './en.json';
 
-export { en };
+export { en as strings };

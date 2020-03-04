@@ -9,8 +9,11 @@ import React, { FC, useState } from 'react';
 import { Grid, Paper, Typography } from '@material-ui/core';
 import { AxiosError } from 'axios';
 import { useUserStore } from '../store/UserStore';
-import { en as strings } from '../internationalization';
+import { strings } from '../internationalization';
 import { MetaDict, ObjectOfStrings } from '../api/types';
+
+const fieldErrors: ObjectOfStrings = strings.LoginForm.FieldErrors;
+const nonFieldErrors: MetaDict = strings.LoginForm.NonFieldErrors;
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   loginForm: {
@@ -62,8 +65,6 @@ export const makeLoginForm: (options: LoginFormOptions) => FC = ({
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState<ObjectOfStrings>({});
-  const fieldErrors: ObjectOfStrings = strings.LoginForm.FieldErrors;
-  const nonFieldErrors: MetaDict = strings.LoginForm.NonFieldErrors;
 
   return (
     <Paper
@@ -123,7 +124,7 @@ export const makeLoginForm: (options: LoginFormOptions) => FC = ({
                   onClick={() => setShowPassword(!showPassword)}
                   onMouseDown={(e) => e.preventDefault()}
                 >
-                  {showPassword ? <Visibility /> : <VisibilityOff />}
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
                 </IconButton>
               </InputAdornment>
             ),

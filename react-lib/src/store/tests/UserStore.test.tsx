@@ -59,6 +59,7 @@ const renderStoreValue = () => render(
 
 const sleep = async () => new Promise((r) => setTimeout(r, 200));
 
+// eslint-disable-next-line jest/expect-expect
 test('UserStore tries to obtain user information', async () => {
   maxios.onGet('/me/').reply(200, mockUser);
   const renderObject = renderStoreValue();
@@ -76,6 +77,7 @@ test('UserStore is loading initially', () => {
   expect(renderObject.getByText('loading')).toBeInTheDocument();
 });
 
+// eslint-disable-next-line jest/expect-expect
 test('UserStore behaviour if me-call fails', async () => {
   maxios.onGet('/me/').reply(403, {});
   await act(async () => {
@@ -84,6 +86,7 @@ test('UserStore behaviour if me-call fails', async () => {
   });
 });
 
+// eslint-disable-next-line jest/expect-expect
 test('UserStore sends login', async () => {
   maxios.onGet('/me/').reply(403, {});
   maxios.onPost('/login/').reply(200, mockUser);
@@ -106,6 +109,7 @@ test('UserStore shows loading while logging in', async () => {
   expect(renderObject.getByText('loading')).toBeInTheDocument();
 });
 
+// eslint-disable-next-line jest/expect-expect
 test('UserStore behaviour when login fails', async () => {
   maxios.onGet('/me/').reply(403, {});
   maxios.onPost('/login/').reply(400, mockUser);
