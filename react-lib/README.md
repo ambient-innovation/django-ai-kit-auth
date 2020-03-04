@@ -20,20 +20,20 @@ yarn add ai-kit-auth
 
 AI-KIT: Authentication provides the following components and functions:
 * UserStore
-    * [UserStore](#UserStore)
-    * [useUserStore](#useUserStore)
-    * [UserContext](#UserContext)
-    * [makeGenericUserStore](#makeGenericUserStore)
+    * [UserStore](#userstore)
+    * [useUserStore](#useuserstore)
+    * [UserContext](#usercontext)
+    * [makeGenericUserStore](#makegenericuserstore)
 * ProtectedRoute
-    * [ProtectedRoute](#ProtectedRoute)
-    * [makeProtectedRoute](#makeProtectedRoute)
+    * [ProtectedRoute](#protectedroute)
+    * [makeProtectedRoute](#makeprotectedroute)
 * LoginRoute
-    * [LoginRoute](#LoginRoute)
-    * [makeLoginRoute](#makeLoginRoute)
+    * [LoginRoute](#loginroute)
+    * [makeLoginRoute](#makeloginroute)
 * LoginView
-    * [LoginView](#LoginView)
-    * [LoginForm](#LoginForm)
-    * [makeLoginForm](#makeLoginForm)
+    * [LoginView](#loginview)
+    * [LoginForm](#loginform)
+    * [makeLoginForm](#makeloginform)
 
 ### UserStore
 
