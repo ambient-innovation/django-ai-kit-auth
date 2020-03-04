@@ -23,6 +23,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
     [theme.breakpoints.down('xs')]: {
       height: '-20vh',
+      paddingLeft: 17,
+      paddingRight: 17,
     },
   },
   loginSideBanner: {
