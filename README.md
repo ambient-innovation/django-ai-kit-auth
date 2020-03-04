@@ -1,45 +1,26 @@
 # AI-KIT: Authentication
 
-`django-ai-kit-auth` bundles everything user account and authentication related.
+AI Kit Auth is the one stop shop for authentification related tasks for
+ambient innovation.
 
-It includes a custom user model including an admin interface and configures rest routes for login, logout, registration etc.
+It targets the following tech stack:
 
-## Quick Start
+* Django in the back
+* React in the front
+* Material UI is used for the standard theme, but its not tightly coupled and
+not a nessessary dependency
+* REST Api
+* Sessions authentification. Support for JWT is planned, but not as the main
+auth method, but to enable access to external services for a short amount of
+time.
 
-1.) Add `django-ai-kit-auth` to your `INSTALLED_APPS` like so:
+This project includes a django library that provides routes and other
+functionality on the backend side and React Components for the frontend.
 
-```
-INSTALLED_APPS = (
-    ...
-    "rest_framework",
-    "rest_auth"
-    ...
-    "django-ai-kit-auth",
-)
-```
-`rest_framework` and `rest_auth` has to be installed for `django-ai-kit-auth` to work.
+## Integration into you project
 
-Further settings:
-
-```
-REST_USE_JWT = True
-```
-
-TODO: `JWT_AUTH` config?
-
-2.) Include the routes in your `urls.py`:
-
-```
-urlpatterns = [
-    ...
-    re_path("^auth/", include("django-ai-kit-auth.account.urls"))
-    ...
-]
-```
-
-TODO: different url sets for standard, registration etc.
-
-3.) Run `python manage.py migrate`.
+See the READMEs in [django-ia-kit-auth](django-ai-kit-auth/README.md) and
+[`ai-kit-auth`](ai-kit-auth/README.md) for detailed instructions.
 
 ## Contributing
 
@@ -81,6 +62,7 @@ libraries need to be packed and copied into the demo folder.
 
 ### Packing the ai-kit-auth
 
-Execute `npm pack` in the ai-kit-auth folder. This will automatically create
-a packaged archive of the current version, copy it to demo and delete the local
-version.
+
+### Linting
+
+Python code should be formatted by black

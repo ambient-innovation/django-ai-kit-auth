@@ -17,7 +17,7 @@ class DummyTest(TestCase):
 # class LoginTests(APITestCase):
 #     def test_login_username(self):
 #         """"
-#         create standard user account, log it in
+#         create standard user ai_kit_auth, log it in
 #         """
 #         user = baker.make(User)
 #         url = reverse("rest_login")
