@@ -268,7 +268,7 @@ const App: React.FC = () => (
 Start the demo project with docker-compose
 
     cd demo
-    docker-compose up -d
+    docker-compose up --build -d
     
 Start the npm watch script in the react-lib folder
 
