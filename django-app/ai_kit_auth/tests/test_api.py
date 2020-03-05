@@ -81,7 +81,7 @@ class LoginTests(APITestCase):
     def test_activate_user(self):
         user = baker.make(UserModel, is_active=False, email="to@example.com")
         ident, token = services.send_user_activation_mail(user)
-        response = self.client.get(reverse("rest_activate", args=[ident, token]))
+        response = self.client.get(reverse("auth_activate", args=[ident, token]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # we have to get the user object again to see the updates
         self.assertTrue(UserModel.objects.get(pk=user.id).is_active)
