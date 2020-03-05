@@ -1,0 +1,17 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[packages]
+Django = ">=3.0.0"
+djangorestframework = "*"
+djangorestframework-simplejwt = "*"
+
+[dev-packages]
+commit_parser = {path = "./../python_commit_parser"}
+python-semantic-release = ">=4.7.0"
+model_bakery = "*"
+
+[requires]
+python_version = "3.7"

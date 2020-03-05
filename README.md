@@ -8,7 +8,7 @@ It targets the following tech stack:
 * Django in the back
 * React in the front
 * Material UI is used for the standard theme, but its not tightly coupled and
-not a nessessary dependency
+not a necessary dependency
 * REST Api
 * Sessions authentification. Support for JWT is planned, but not as the main
 auth method, but to enable access to external services for a short amount of
@@ -17,10 +17,9 @@ time.
 This project includes a django library that provides routes and other
 functionality on the backend side and React Components for the frontend.
 
-## Integration into you project
+## Integration into your project
 
-See the READMEs in [django-ia-kit-auth](django-ai-kit-auth/README.md) and
-[`ai-kit-auth`](ai-kit-auth/README.md) for detailed instructions.
+See the READMEs in [django-app](django-app/README.rst) and [react-lib](react-lib/README.md) for detailed instructions.
 
 ## Contributing
 
