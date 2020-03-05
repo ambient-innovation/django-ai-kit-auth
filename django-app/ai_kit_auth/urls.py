@@ -8,11 +8,11 @@ from . import views
 
 
 urlpatterns = [
-    re_path(r"^login/$", views.LoginView.as_view(), name="rest_login"),
-    re_path(r"^me/$", views.Me.as_view(), name="rest_me"),
+    re_path(r"^login/$", views.LoginView.as_view(), name="auth_login"),
+    re_path(r"^me/$", views.Me.as_view(), name="auth_me"),
     re_path(
         r"^validate_password/$",
         views.ValidatePassword.as_view(),
-        name="validate_password",
+        name="auth_validate_password",
     ),
 ]

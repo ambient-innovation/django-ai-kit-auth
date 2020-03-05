@@ -18,9 +18,9 @@ class LoginTests(APITestCase):
         self.user.set_password(PASSWORD)
         self.user.save()
 
-        self.login_url = reverse("rest_login")
-        self.me_url = reverse("rest_me")
-        self.validate_password_url = reverse("validate_password")
+        self.login_url = reverse("auth_login")
+        self.me_url = reverse("auth_me")
+        self.validate_password_url = reverse("auth_validate_password")
 
     def test_login_with_username(self):
         response = self.client.post(
