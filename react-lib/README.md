@@ -52,6 +52,7 @@ import ...
 const App: React.FC = () => (
   <UserStore
     apiUrl="http://localhost:8000/api/v1/"
+    customTheme={myCustomTheme}
   >
     <BrowserRouter>
       ...
@@ -64,6 +65,7 @@ export default App;
 
 The `apiUrl` prop tells the store, where to send login requests.
 This should be the url to the django backend of your project.
+You can also pass a MaterialUI Theme as a prop (customTheme), to overwrite any default themes this package provides.
 
 ### useUserStore
 
@@ -114,7 +116,7 @@ After this you can use the returned values just like the standard ones, except t
 
 ### ProtectedRoute
 A wrapper for [\<Route\>](https://reacttraining.com/react-router/web/api/Route) routes that should only be available to users that are logged in.
-It checks with the UserContext if the user is in fact logged in. If not, it will redirect to the login page.
+It checks with the UserContext if the user is in fact logged in. If not, it will redirect to `/auth/login`.
 During the check a loading spinner is shown.
 To use a custom UserContext, custom paths or a custom loading indicator, please use [makeProtectedRoute](#makeprotectedroute).
 Example usage:
@@ -266,7 +268,7 @@ const App: React.FC = () => (
 Start the demo project with docker-compose
 
     cd demo
-    docker-compose up -d
+    docker-compose up --build -d
     
 Start the npm watch script in the react-lib folder
 

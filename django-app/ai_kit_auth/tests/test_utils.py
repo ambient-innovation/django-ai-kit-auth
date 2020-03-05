@@ -4,7 +4,7 @@ from ..utils import feistel_chipher
 
 class FeistelChipherTest(TestCase):
     def test_invertable(self):
-        for i in [0, 1000, 4020, 19432, 599299398]:
+        for i in list(range(1000)) + [4020, 19432, 599299398]:
             encoded = feistel_chipher(i)
             self.assertNotEqual(i, encoded)
             self.assertEqual(i, feistel_chipher(encoded))
