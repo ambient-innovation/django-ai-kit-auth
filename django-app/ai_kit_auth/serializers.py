@@ -6,8 +6,14 @@ UserModel = get_user_model()
 
 
 class LoginSerializer(serializers.Serializer):
-    ident = serializers.CharField(required=True)
-    password = serializers.CharField(style={"input_type": "password"})
+    ident = serializers.CharField(
+        required=True, error_messages={"required": "required", "blank": "blank"}
+    )
+    password = serializers.CharField(
+        style={"input_type": "password"},
+        required=True,
+        error_messages={"required": "required", "blank": "blank"},
+    )
 
     def validate(self, attrs):
         ident = attrs.get("ident")
@@ -31,3 +37,8 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserModel
         fields = ["id", "email", "username"]
+
+
+class ValidatePasswordSerializer(serializers.Serializer):
+    ident = serializers.CharField(required=True)
+    password = serializers.CharField(required=True)

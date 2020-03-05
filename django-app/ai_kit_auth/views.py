@@ -8,7 +8,6 @@ from django.core.exceptions import ValidationError as DjangoValidationError
 from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
-from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from . import serializers, services
 from django.conf import settings
@@ -43,7 +42,6 @@ class Me(generics.GenericAPIView):
     Barebones user model detail view
     """
 
-    # authentication_classes = (SessionAuthentication,)
     permission_classes = (IsAuthenticated,)
     user_serializer = serializers.UserSerializer
 
@@ -60,7 +58,15 @@ class ValidatePassword(generics.GenericAPIView):
     Can be used to show the user error messages on the fly
     """
 
+    serializer_class = serializers.ValidatePasswordSerializer
+
     permission_classes = (AllowAny,)
+
+    def get_queryset(self):
+        """
+        nessessary to shut drf up...
+        """
+        return None
 
     def post(self, request, *args, **kwargs):
         try:
@@ -70,11 +76,13 @@ class ValidatePassword(generics.GenericAPIView):
         try:
             validate_password(
                 request.data["password"],
-                user=request.data["user"],
+                user=request.data["ident"],
                 password_validators=validators,
             )
         except DjangoValidationError as e:
-            raise ValidationError(e.error_list)
+            # convert to error codes since translations are implemented in the
+            # frontend
+            raise ValidationError([error.code for error in e.error_list])
         return Response({}, status=status.HTTP_200_OK)
 
 

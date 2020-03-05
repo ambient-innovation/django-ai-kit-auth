@@ -1,15 +1,18 @@
 import React, {
   createContext, FC, useContext, useEffect, useState,
 } from 'react';
+import { AxiosError } from 'axios';
+import { CssBaseline, Theme, ThemeProvider } from '@material-ui/core';
 import { User } from '../api/types';
 import { loginAPI, meAPI } from '../api/api';
 import { UserStoreValue } from './types';
-
+import { defaultTheme } from '../styles/styles';
 
 const errorExecutor = () => { throw new Error('No User Store provided!'); };
 
 interface UserStoreProps {
   apiUrl: string;
+  customTheme?: Theme;
 }
 
 export function makeGenericUserStore<U extends unknown = User>() {
@@ -19,9 +22,9 @@ export function makeGenericUserStore<U extends unknown = User>() {
   });
 
   const GenericUserStore: FC<UserStoreProps> = ({
-    children, apiUrl,
+    children, apiUrl, customTheme,
   }) => {
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [user, setUser] = useState<U|undefined>(undefined);
 
     const login: (userIdentifier: string, password: string) => Promise<U> = (
@@ -30,19 +33,28 @@ export function makeGenericUserStore<U extends unknown = User>() {
       setLoading(true);
 
       return loginAPI<U>(apiUrl, userIdentifier, password)
-        .then((data) => {
-          const loginUser: U = data.user;
+        .then((loginUser) => {
           setUser(loginUser);
           setLoading(false);
 
           return loginUser;
-        });
+        })
+        .finally(() => setLoading(false));
     };
 
     useEffect(() => {
       // If we don't have a user, we need to obtain it via  the me endpoint
       if (!user) {
-        meAPI<U>(apiUrl).then((data) => setUser(data.user));
+        meAPI<U>(apiUrl)
+          .then((loggedInUser) => {
+            setUser(loggedInUser);
+          })
+          .catch((error: AxiosError) => {
+            if (!error.response) {
+              throw new Error('Host unreachable');
+            }
+          })
+          .finally(() => setLoading(false));
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -55,7 +67,10 @@ export function makeGenericUserStore<U extends unknown = User>() {
           login,
         }}
       >
-        {children}
+        <CssBaseline />
+        <ThemeProvider theme={customTheme || defaultTheme}>
+          {children}
+        </ThemeProvider>
       </GenericUserContext.Provider>
     );
   };
@@ -71,5 +86,4 @@ export function makeGenericUserStore<U extends unknown = User>() {
   };
 }
 
-const { UserStore, useUserStore, UserContext } = makeGenericUserStore();
-export { UserStore, useUserStore, UserContext };
+export const { UserStore, useUserStore, UserContext } = makeGenericUserStore();

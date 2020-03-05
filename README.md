@@ -1,62 +1,25 @@
 # AI-KIT: Authentication
 
-`django-ai-kit-auth` bundles everything user account and authentication related.
+AI Kit Auth is the one stop shop for authentification related tasks for
+ambient innovation.
 
-It includes a custom user model including an admin interface and configures rest
-routes for login, logout, registration etc.
+It targets the following tech stack:
 
-## Quick Start
+* Django in the back
+* React in the front
+* Material UI is used for the standard theme, but its not tightly coupled and
+not a necessary dependency
+* REST Api
+* Sessions authentification. Support for JWT is planned, but not as the main
+auth method, but to enable access to external services for a short amount of
+time.
 
-1.) Add `ai-kit-auth` to your `INSTALLED_APPS` like so:
+This project includes a django library that provides routes and other
+functionality on the backend side and React Components for the frontend.
 
-```
-INSTALLED_APPS = (
-    ...
-    "rest_framework",
-    ...
-    "ai-kit-auth",
-)
-```
-`rest_framework` has to be installed for `django-ai-kit-auth` to work.
+## Integration into your project
 
-2.) Configuration is namespaced unter `AI_KIT_AUTH` like so:
-
-```
-AI_KIT_AUTH = {
-    "ACTIVATION_ROUTE": "activation",
-    "FRONTEND_URL": "example.com",
-    ...
-}
-```
-
-Note that `FRONTEND_URL` is a required configuration that does not have a
-default. Default configurations are:
-
-```
-AI_KIT_AUTH = {
-    "ACTIVATION_ROUTE": "activation",
-    "EMAIL_TEMPLATE_USER_CREATED_TITLE": "user_created_title.txt",
-    "EMAIL_TEMPLATE_USER_CREATED_BODY_PLAINTEXT": "user_created_body.txt",
-    "EMAIL_TEMPLATE_USER_CREATED_BODY_HTML": "user_created_body.html",
-    "USERNAME_REQUIRED": False,
-    "FRONTEND_URL": None,
-}
-```
-
-TODO: keep this updated as the lib is developed
-
-3.) Include the routes in your `urls.py`:
-
-```
-urlpatterns = [
-    ...
-    re_path("^api/v1/", include("ai_kit.urls"))
-    ...
-]
-```
-
-
-4.) Run `python manage.py migrate`.
+See the READMEs in [django-app](django-app/README.rst) and [react-lib](react-lib/README.md) for detailed instructions.
 
 ## Contributing
 
@@ -96,8 +59,6 @@ In order to perform end-to-end tests, both libraries are use in the demo project
 However, the current versions are necessary for the tests, which is why the
 libraries need to be packed and copied into the demo folder.
 
-### Packing the ai-kit-auth
+### Linting
 
-Execute `npm pack` in the ai-kit-auth folder. This will automatically create
-a packaged archive of the current version, copy it to demo and delete the local
-version.
+Python code should be formatted by black, typescript code by eslint.

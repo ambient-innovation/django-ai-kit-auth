@@ -1,7 +1,13 @@
 {
   "viewportHeight": 1000,
   "viewportWidth": 1600,
-  "baseUrl": "http://127.0.0.1:3000",
+  "baseUrl": "http://localhost:3000",
   "backendUrl": "http://127.0.0.1:8000",
-  "apiUrl": "http://127.0.0.1:8000/api/v1/"
+  "apiUrl": "http://127.0.0.1:8000/api/v1/",
+  "users": {
+    "default": {
+      "ident": "testuser",
+      "password": "testuserpassword"
+    }
+  }
 }
