@@ -1,10 +1,24 @@
 import React from 'react';
-import './App.scss';
+import { BrowserRouter, Switch } from 'react-router-dom';
+import {
+  UserStore, LoginView, LoginRoute, ProtectedRoute,
+} from 'ai-kit-auth';
 
 const App: React.FC = () => (
-  <div className="App">
-    AI-KIT AUTH Demo Project
-  </div>
+  <UserStore
+    apiUrl="http://localhost:8000/api/v1/"
+  >
+    <BrowserRouter>
+      <Switch>
+        <LoginRoute exact path="/auth/login" component={LoginView} />
+        <ProtectedRoute exact path="/">
+          <div>
+            Django Test App
+          </div>
+        </ProtectedRoute>
+      </Switch>
+    </BrowserRouter>
+  </UserStore>
 );
 
 export default App;

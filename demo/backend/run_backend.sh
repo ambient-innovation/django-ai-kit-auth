@@ -5,7 +5,7 @@
 # Load fixtures if argument was passed like ./run_backend.sh loadfixtures
 if [ "$1" = "loadfixtures" ]
 then
-  ./manage.py loaddata test_data
+  ./manage.py loaddata demo/fixtures/users.json
 fi
 
 # Start Gunicorn processes

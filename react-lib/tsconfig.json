@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.eslint",
+  "exclude": [
+    "node_modules",
+    "**/tests/*"
+  ],
+  "compilerOptions": {
+    "skipLibCheck": true
+  }
+}

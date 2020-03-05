@@ -6,7 +6,7 @@ WORKDIR /demo/backend
 # Install dependencies
 RUN pip install -U pip pipenv
 COPY ./demo/backend/Pipfile ./demo/backend/Pipfile.lock ./
-COPY ./django-ai-kit-auth /django-ai-kit-auth
+COPY ./django-app /django-app
 
 RUN pipenv install --deploy --system
 
@@ -17,4 +17,4 @@ RUN touch ./demo/.env
 
 EXPOSE 8000
 
-CMD ["./run_backend.sh"]
+CMD ["./run_backend.sh", "loadfixtures"]

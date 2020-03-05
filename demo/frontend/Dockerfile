@@ -1,33 +1,29 @@
 # base image
 FROM node:12.14
 
-RUN mkdir /app
-
-# we use yalc because npm link is not reliable in this context
-RUN npm i -g yalc
-
-COPY ./ai-kit-auth /ai-kit-auth
-
-# build the ai-kit-auth package and 'publish' it with yalc
-WORKDIR /ai-kit-auth
-RUN npm install && \
-  npm run build && \
-  yalc publish --private
-
 # set working directory
-WORKDIR /app
+WORKDIR /demo/frontend
 
-# add `/app/node_modules/.bin` to $PATH
-ENV PATH /app/node_modules/.bin:$PATH
+# add `/demo/frontend/node_modules/.bin` to $PATH
+ENV PATH /demo/frontend/node_modules/.bin:$PATH
 
-# install and cache app dependencies
-COPY demo/frontend/package*.json /app/
+# install and cache demo/frontend dependencies
+COPY demo/frontend/package*.json ./
+COPY react-lib /react-lib
 
-# add the 'published' package to node_modules with yalc
-RUN yalc link ai-kit-auth && \
-    npm ci
+RUN echo "installing npm packages" && \
+    npm ci && \
+    cd /react-lib && \
+    echo "build ai-kit-auth package" && \
+    npm ci && \
+    npm link /demo/frontend/node_modules/react && \
+    npm link /demo/frontend/node_modules/react-router-dom && \
+    npm run build && \
+    npm link && \
+    cd - && \
+    npm link ai-kit-auth
 
-COPY demo/frontend /app/
+COPY demo/frontend .
 
 
 # In production, we want to install the node server and run the "npm run build" command.
@@ -36,13 +32,10 @@ COPY demo/frontend /app/
 ARG app_env
 
 # Install node server and build code if production
-RUN if [ ${app_env} = production ]; \
+RUN if [ "${app_env}" = production ]; \
 	then \
 	npm install --global serve && \
 	npm run build --production; \
 	fi
 
 EXPOSE 3000
-
-# For local development run `yarn start`
-CMD ["./run.sh"]
