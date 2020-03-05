@@ -10,7 +10,7 @@ import { Grid, Paper, Typography } from '@material-ui/core';
 import { AxiosError } from 'axios';
 import { useUserStore } from '../store/UserStore';
 import { strings } from '../internationalization';
-import { MetaDict, ObjectOfStrings } from '../api/types';
+import { ErrorMessage, MetaDict, ObjectOfStrings } from '../api/types';
 
 const fieldErrors: ObjectOfStrings = strings.LoginForm.FieldErrors;
 const nonFieldErrors: MetaDict = strings.LoginForm.NonFieldErrors;
@@ -68,7 +68,7 @@ export const makeLoginForm: (options: LoginFormOptions) => FC = ({
   const [userIdentifier, setUserIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<ObjectOfStrings>({});
+  const [errorMessage, setErrorMessage] = useState<ErrorMessage>({});
 
   return (
     <Paper
@@ -101,7 +101,8 @@ export const makeLoginForm: (options: LoginFormOptions) => FC = ({
           variant="outlined"
           type={identifier === Identifier.Email ? 'email' : 'text'}
           value={userIdentifier}
-          helperText={errorMessage.ident ? (fieldErrors[errorMessage.ident]) : ''}
+          helperText={errorMessage.ident ? errorMessage.ident.map((message: string) => (
+            fieldErrors[message])) : ''}
           error={!!errorMessage.ident}
           onChange={(event) => {
             setUserIdentifier(event.target.value);
@@ -116,7 +117,8 @@ export const makeLoginForm: (options: LoginFormOptions) => FC = ({
           variant="outlined"
           value={password}
           type={showPassword ? 'text' : 'password'}
-          helperText={errorMessage.password ? (fieldErrors[errorMessage.password]) : ''}
+          helperText={errorMessage.password ? errorMessage.password.map((message: string) => (
+            fieldErrors[message])) : ''}
           error={!!errorMessage.password}
           onChange={(event) => {
             setPassword(event.target.value);
@@ -138,13 +140,13 @@ export const makeLoginForm: (options: LoginFormOptions) => FC = ({
 
         {
           errorMessage.non_field_errors && (
-            <Typography className={classes.formHelperText}>
-              {
-                nonFieldErrors[
-                  errorMessage.non_field_errors
-                ][Identifier[identifier] as IdentifierType]
-              }
-            </Typography>
+            errorMessage.non_field_errors.map((message) => (
+              <Typography className={classes.formHelperText} key={message}>
+                {
+                  nonFieldErrors[message][Identifier[identifier] as IdentifierType]
+                }
+              </Typography>
+            ))
           )
         }
 

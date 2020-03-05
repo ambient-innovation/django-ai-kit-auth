@@ -12,3 +12,7 @@ export interface ObjectOfStrings {
 export interface MetaDict {
   [key: string]: ObjectOfStrings;
 }
+
+export interface ErrorMessage {
+  [key: string]: string[];
+}
