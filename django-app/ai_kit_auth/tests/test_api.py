@@ -1,5 +1,3 @@
-from django.test import TestCase
-
 from django.urls import reverse
 
 from django.contrib.auth import get_user_model
@@ -34,8 +32,6 @@ class LoginTests(APITestCase):
         self.assertEqual(response.data["email"], self.user.email)
 
     def test_login_with_email(self):
-        """"
-        """
         response = self.client.post(
             self.login_url,
             {"ident": self.user.email, "password": PASSWORD},
@@ -49,24 +45,21 @@ class LoginTests(APITestCase):
     def test_login_wrong_pw(self):
         response = self.client.post(
             self.login_url,
-            {"ident": self.user.email, "password": "wrong"},
+            {"ident": self.user.email, "password": "wrong" + PASSWORD},
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    # def test_access_protected(self):
-    #     self.client.login(username=self.user.username, password=PASSWORD)
-    #     import pdb
-    #
-    #     pdb.set_trace()
-    #     response = self.client.get(self.me_url, format=)
-    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
-    #     self.assertEqual(response.data["email"], self.user.email)
-    #     self.assertEqual(response.data["username"], self.user.username)
-    #
-    # def test_access_protected_fail(self):
-    #     response = self.client.get(self.me_url)
-    #     self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+    def test_access_protected(self):
+        self.client.login(username=self.user.username, password=PASSWORD)
+        response = self.client.get(self.me_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["email"], self.user.email)
+        self.assertEqual(response.data["username"], self.user.username)
+
+    def test_access_protected_fail(self):
+        response = self.client.get(self.me_url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_validate_password(self):
         response = self.client.post(

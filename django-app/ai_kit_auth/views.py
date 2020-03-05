@@ -8,7 +8,6 @@ from django.core.exceptions import ValidationError as DjangoValidationError
 from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
-from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from . import serializers
 from django.conf import settings
@@ -41,7 +40,6 @@ class Me(generics.GenericAPIView):
     Barebones user model detail view
     """
 
-    # authentication_classes = (SessionAuthentication,)
     permission_classes = (IsAuthenticated,)
     user_serializer = serializers.UserSerializer
 
