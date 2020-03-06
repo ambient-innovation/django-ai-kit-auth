@@ -26,9 +26,16 @@ class CreateFormTests(TestCase):
         self.assertEqual(AIUserCreationForm.clean_email(form), EMAIL)
 
     @patch("ai_kit_auth.admin.UserCreationForm.save", Mock())
+    @patch("ai_kit_auth.admin.send_user_activation_mail", Mock())
     def test_save_sets_inactive(self):
         instance = AIUserCreationForm().save()
         self.assertFalse(instance.is_active)
+
+    @patch("ai_kit_auth.admin.UserCreationForm.save", Mock())
+    @patch("ai_kit_auth.admin.send_user_activation_mail")
+    def test_creation_calls_mail_send_service(self, mock_send_mail):
+        instance = AIUserCreationForm().save()
+        mock_send_mail.assert_called_with(instance)
 
 
 class ChangeFormTests(TestCase):

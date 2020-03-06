@@ -6,6 +6,8 @@ from django.forms import EmailField
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
 
+from .services import send_user_activation_mail
+
 User = get_user_model()
 
 
@@ -27,8 +29,11 @@ class AIUserCreationForm(UserCreationForm):
     def save(self, commit=True):
         instance = super(AIUserCreationForm, self).save(commit=False)
         instance.is_active = False
+        send_user_activation_mail(instance)
         if commit:
             instance.save()
+            if hasattr(self, "save_m2m"):
+                self.save_m2m()
         return instance
 
 
