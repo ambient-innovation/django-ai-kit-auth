@@ -9,7 +9,7 @@ services:
     command: bash ./run_backend_local.sh
     volumes:
       - ./backend:/demo/backend
-      - ../django-ai-kit-auth:/django-ai-kit-auth
+      - ../django-app:/django-app
     ports:
       - "8000:8000"
     restart: "no"
