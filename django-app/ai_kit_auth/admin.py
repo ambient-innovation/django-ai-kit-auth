@@ -15,7 +15,7 @@ class AIUserCreationForm(UserCreationForm):
         model = User
         fields = ("email",)
 
-    email = EmailField(required=True, validators=[validate_email])
+    email = EmailField(label=_("Email address"), required=True)
 
     def clean_email(self):
         email = self.cleaned_data["email"]
@@ -31,7 +31,7 @@ class AIUserChangeForm(UserChangeForm):
         model = User
         fields = ("email",)
 
-    email = EmailField(required=True)
+    email = EmailField(label=_("Email address"), required=True)
 
     def clean_email(self):
         email = self.cleaned_data["email"]
