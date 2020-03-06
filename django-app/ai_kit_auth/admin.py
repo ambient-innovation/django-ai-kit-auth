@@ -4,7 +4,6 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.forms import EmailField
 from django.utils.translation import gettext_lazy as _
-from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 
 User = get_user_model()
@@ -24,6 +23,13 @@ class AIUserCreationForm(UserCreationForm):
                 _("Another user with this email already exists!"), code="unique_email"
             )
         return email
+
+    def save(self, commit=True):
+        instance = super(AIUserCreationForm, self).save(commit=False)
+        instance.is_active = False
+        if commit:
+            instance.save()
+        return instance
 
 
 class AIUserChangeForm(UserChangeForm):
