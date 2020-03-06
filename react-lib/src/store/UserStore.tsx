@@ -4,7 +4,7 @@ import React, {
 import { AxiosError } from 'axios';
 import { CssBaseline, Theme, ThemeProvider } from '@material-ui/core';
 import { User } from '../api/types';
-import { loginAPI, meAPI } from '../api/api';
+import { loginAPI, logoutAPI, meAPI } from '../api/api';
 import { UserStoreValue } from './types';
 import { defaultTheme } from '../styles/styles';
 
@@ -19,11 +19,14 @@ export function makeGenericUserStore<U extends unknown = User>() {
   const GenericUserContext = createContext<UserStoreValue<U>>({
     loading: false,
     login: () => new Promise<U>(errorExecutor),
+    logout: () => new Promise<U>(errorExecutor),
+    loggedOut: false,
   });
 
   const GenericUserStore: FC<UserStoreProps> = ({
     children, apiUrl, customTheme,
   }) => {
+    const [loggedOut, setLoggedOut] = useState(false);
     const [loading, setLoading] = useState(true);
     const [user, setUser] = useState<U|undefined>(undefined);
 
@@ -40,6 +43,27 @@ export function makeGenericUserStore<U extends unknown = User>() {
           return loginUser;
         })
         .finally(() => setLoading(false));
+    };
+
+    const logout: () => Promise<U> = () => {
+      setLoading(true);
+      setLoggedOut(true);
+
+      return logoutAPI(apiUrl)
+        .then((response) => {
+          setUser(undefined);
+          setLoading(false);
+
+          return response;
+        })
+        .catch(() => {
+          setUser(undefined);
+          setLoading(false);
+        })
+        .finally(() => {
+          setLoading(false);
+          setLoggedOut(true);
+        });
     };
 
     useEffect(() => {
@@ -65,6 +89,8 @@ export function makeGenericUserStore<U extends unknown = User>() {
           user,
           loading,
           login,
+          logout,
+          loggedOut,
         }}
       >
         <CssBaseline />

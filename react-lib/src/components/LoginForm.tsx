@@ -46,6 +46,11 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     fontSize: '1rem',
     color: theme.palette.primary.main,
   },
+  loggedOutText: {
+    color: theme.palette.primary.main,
+    marginBottom: 35,
+    marginTop: -20,
+  },
 }));
 
 export enum Identifier {
@@ -64,7 +69,7 @@ export const makeLoginForm: (options: LoginFormOptions) => FC = ({
   identifier,
 }) => () => {
   const classes = useStyles();
-  const { login } = useUserStore();
+  const { login, loggedOut } = useUserStore();
   const [userIdentifier, setUserIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -80,6 +85,17 @@ export const makeLoginForm: (options: LoginFormOptions) => FC = ({
       >
         {strings.LoginForm.Login}
       </Typography>
+
+      {
+        loggedOut && (
+          <Typography
+            variant="body2"
+            className={classes.loggedOutText}
+          >
+            {strings.LoginForm.LogoutSuccess}
+          </Typography>
+        )
+      }
 
       <form
         onSubmit={(e) => {

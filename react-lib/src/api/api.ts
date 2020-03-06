@@ -4,6 +4,7 @@ import { User } from './types';
 axios.defaults.withCredentials = true;
 
 const loginSuffix = 'login/';
+const logoutSuffix = 'logout/';
 const meSuffix = 'me/';
 
 export const makeUrl = (apiUrl: string, suffix: string) => {
@@ -24,6 +25,14 @@ export const loginAPI = <U = User>(
   ident, password,
 }).then((response) => response.data);
 
+
+/**
+ * @description Send a login request to the backend .
+ * @param apiUrl - URL to the backend api -- including `/api/v?/`.
+ */
+export const logoutAPI = (
+  apiUrl: string,
+) => axios.post(makeUrl(apiUrl, logoutSuffix)).then((response) => response.data);
 
 export const meAPI = <U = User>(apiUrl: string) => (
   axios.get<U>(makeUrl(apiUrl, meSuffix))
