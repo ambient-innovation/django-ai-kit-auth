@@ -18,6 +18,8 @@ export const renderWithRouterAndUser = (
         user,
         loading: !!loading,
         login: jest.fn(),
+        logout: jest.fn(),
+        loggedOut: false,
       }}
       >
         <Router history={history}>

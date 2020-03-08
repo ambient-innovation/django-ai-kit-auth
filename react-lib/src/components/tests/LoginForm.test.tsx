@@ -12,6 +12,7 @@ const mockUser: User = ({
 const mockPassword = '1324qwer';
 
 const login = jest.fn();
+const logout = jest.fn();
 
 const renderFunction = (
   element?: JSX.Element,
@@ -20,6 +21,8 @@ const renderFunction = (
     value={{
       loading: false,
       login,
+      logout,
+      loggedOut: false,
     }}
   >
     { element || <LoginForm /> }
