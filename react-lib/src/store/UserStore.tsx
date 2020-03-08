@@ -19,7 +19,7 @@ export function makeGenericUserStore<U extends unknown = User>() {
   const GenericUserContext = createContext<UserStoreValue<U>>({
     loading: false,
     login: () => new Promise<U>(errorExecutor),
-    logout: () => new Promise<U>(errorExecutor),
+    logout: () => new Promise<unknown>(errorExecutor),
     loggedOut: false,
   });
 
@@ -45,7 +45,7 @@ export function makeGenericUserStore<U extends unknown = User>() {
         .finally(() => setLoading(false));
     };
 
-    const logout: () => Promise<U> = () => {
+    const logout: () => Promise<unknown> = () => {
       setLoading(true);
       setLoggedOut(true);
 
@@ -53,6 +53,7 @@ export function makeGenericUserStore<U extends unknown = User>() {
         .then((response) => {
           setUser(undefined);
           setLoading(false);
+          setLoggedOut(true);
 
           return response;
         })

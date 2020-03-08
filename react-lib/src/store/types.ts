@@ -5,7 +5,7 @@ export interface UserStoreValue<U = User> {
   user?: U;
   loading: boolean;
   login: (userIdentifier: string, password: string) => Promise<U>;
-  logout: () => Promise<U>;
+  logout: () => Promise<unknown>;
   loggedOut: boolean;
 }
 
