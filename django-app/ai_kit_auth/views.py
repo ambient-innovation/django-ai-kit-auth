@@ -1,11 +1,10 @@
-from django.conf import settings
 from django.contrib.auth import login, get_user_model, tokens
 from django.contrib.auth.password_validation import (
     get_password_validators,
     validate_password,
 )
 from django.core.exceptions import ValidationError as DjangoValidationError
-from rest_framework import status, generics
+from rest_framework import status, generics, views
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -86,7 +85,7 @@ class ValidatePassword(generics.GenericAPIView):
         return Response({}, status=status.HTTP_200_OK)
 
 
-class ActivateUser(generics.GenericAPIView):
+class ActivateUser(views.APIView):
     """
     Endpoint to validate the password without trying to register an account.
     Can be used to show the user error messages on the fly
@@ -94,7 +93,7 @@ class ActivateUser(generics.GenericAPIView):
 
     permission_classes = (AllowAny,)
 
-    def get(self, request, ident, token, *args, **kwargs):
+    def post(self, request, ident, token, *args, **kwargs):
         try:
             pk = services.scramble_id(int(ident))
             user = UserModel.objects.get(pk=pk)

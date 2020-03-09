@@ -4,7 +4,7 @@ from . import views
 urlpatterns = [
     re_path(r"^login/$", views.LoginView.as_view(), name="auth_login"),
     re_path(
-        r"^activate_email/(?P<ident>[0-9]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$",
+        r"^activate_email/(?P<ident>[^\/]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$",
         views.ActivateUser.as_view(),
         name="auth_activate",
     ),

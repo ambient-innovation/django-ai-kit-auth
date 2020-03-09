@@ -66,7 +66,7 @@ def send_user_activation_mail(user):
     template_html = get_template(api_settings.EMAIL_TEMPLATES.USER_CREATED.BODY_HTML)
     subject = get_template(api_settings.EMAIL_TEMPLATES.USER_CREATED.TITLE).render()
 
-    ident = str(scramble_id(user.id))
+    ident = str(scramble_id(user.pk))
     token_gen = PasswordResetTokenGenerator()
     token = token_gen.make_token(user)
 
