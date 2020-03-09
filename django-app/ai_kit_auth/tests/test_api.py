@@ -17,10 +17,17 @@ class LoginTests(APITestCase):
         self.user.save()
 
         self.login_url = reverse("auth_login")
+        self.logout_url = reverse("auth_logout")
         self.me_url = reverse("auth_me")
         self.validate_password_url = reverse("auth_validate_password")
+        self.client.logout()
+
+    def isLoggedIn(self) -> bool:
+        user_id = self.client.session.get("_auth_user_id", None)
+        return user_id is not None and int(user_id) == self.user.id
 
     def test_login_with_username(self):
+        self.assertFalse(self.isLoggedIn())
         response = self.client.post(
             self.login_url,
             {"ident": self.user.username, "password": PASSWORD},
@@ -30,8 +37,10 @@ class LoginTests(APITestCase):
         self.assertEqual(response.data["username"], self.user.username)
         self.assertEqual(response.data["id"], self.user.id)
         self.assertEqual(response.data["email"], self.user.email)
+        self.assertTrue(self.isLoggedIn())
 
     def test_login_with_email(self):
+        self.assertFalse(self.isLoggedIn())
         response = self.client.post(
             self.login_url,
             {"ident": self.user.email, "password": PASSWORD},
@@ -41,14 +50,17 @@ class LoginTests(APITestCase):
         self.assertEqual(response.data["username"], self.user.username)
         self.assertEqual(response.data["id"], self.user.id)
         self.assertEqual(response.data["email"], self.user.email)
+        self.assertTrue(self.isLoggedIn())
 
     def test_login_wrong_pw(self):
+        self.assertFalse(self.isLoggedIn())
         response = self.client.post(
             self.login_url,
             {"ident": self.user.email, "password": "wrong" + PASSWORD},
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertFalse(self.isLoggedIn())
 
     def test_access_protected(self):
         self.client.login(username=self.user.username, password=PASSWORD)
@@ -57,7 +69,15 @@ class LoginTests(APITestCase):
         self.assertEqual(response.data["email"], self.user.email)
         self.assertEqual(response.data["username"], self.user.username)
 
+    def test_logout(self):
+        self.client.login(username=self.user.username, password=PASSWORD)
+        self.assertTrue(self.isLoggedIn())
+        response = self.client.post(self.logout_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertFalse(self.isLoggedIn())
+
     def test_access_protected_fail(self):
+        self.assertFalse(self.isLoggedIn())
         response = self.client.get(self.me_url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 

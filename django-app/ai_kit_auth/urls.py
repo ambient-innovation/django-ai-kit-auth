@@ -9,6 +9,7 @@ from . import views
 
 urlpatterns = [
     re_path(r"^login/$", views.LoginView.as_view(), name="auth_login"),
+    re_path(r"^logout/$", views.LogoutView.as_view(), name="auth_logout"),
     re_path(r"^me/$", views.Me.as_view(), name="auth_me"),
     re_path(
         r"^validate_password/$",
