@@ -17,16 +17,16 @@ export const makeUrl = (apiUrl: string, suffix: string) => {
  */
 export const loginAPI = <U = User>(
   apiUrl: string, ident: string, password: string,
-) => axios.post<U>(makeUrl(apiUrl, '/login'), {
+) => axios.post<U>(makeUrl(apiUrl, 'login/'), {
   ident, password,
 }).then((response) => response.data);
 
 
 export const meAPI = <U = User>(apiUrl: string) => (
-  axios.get<U>(makeUrl(apiUrl, '/me'))
+  axios.get<U>(makeUrl(apiUrl, 'me/'))
     .then(({ data }) => data)
 );
 
 export const activateEmailAddressAPI = (apiUrl: string, ident: string, token: string) => (
-  axios.post(makeUrl(apiUrl, `/activate_email/${ident}/${token}`))
+  axios.post(makeUrl(apiUrl, `activate_email/${ident}/${token}/`))
 );
