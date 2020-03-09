@@ -9,6 +9,7 @@ from ai_kit_auth.admin import User, AIUserCreationForm, AIUserChangeForm
 EMAIL = "a@example.com"
 
 
+@patch("ai_kit_auth.admin.UserCreationForm.save", Mock())
 class CreateFormTests(TestCase):
     def test_clean_raises_if_email_exists(self):
         baker.make(User, email=EMAIL)
@@ -25,19 +26,16 @@ class CreateFormTests(TestCase):
         form.cleaned_data = {"email": EMAIL}
         self.assertEqual(AIUserCreationForm.clean_email(form), EMAIL)
 
-    @patch("ai_kit_auth.admin.UserCreationForm.save", Mock())
     @patch("ai_kit_auth.admin.send_user_activation_mail", Mock())
     def test_save_sets_inactive(self):
         instance = AIUserCreationForm().save()
         self.assertFalse(instance.is_active)
 
-    @patch("ai_kit_auth.admin.UserCreationForm.save", Mock())
     @patch("ai_kit_auth.admin.send_user_activation_mail")
     def test_creation_calls_mail_send_service(self, mock_send_mail):
         instance = AIUserCreationForm().save()
         mock_send_mail.assert_called_with(instance)
 
-    @patch("ai_kit_auth.admin.UserCreationForm.save", Mock())
     @patch("ai_kit_auth.admin.send_user_activation_mail")
     def test_creation_send_mail_with_saved_user(self, mock_send_mail):
         def check_if_instance_is_saved(ins):
@@ -45,6 +43,13 @@ class CreateFormTests(TestCase):
 
         mock_send_mail.side_effect = check_if_instance_is_saved
         instance = AIUserCreationForm().save()
+        mock_send_mail.assert_called_with(instance)
+
+    @patch("ai_kit_auth.admin.send_user_activation_mail")
+    def test_save_with_commit_false(self, mock_send_mail):
+        instance = AIUserCreationForm().save(commit=False)
+        mock_send_mail.assert_not_called()
+        instance.save()
         mock_send_mail.assert_called_with(instance)
 
 

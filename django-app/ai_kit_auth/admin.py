@@ -31,9 +31,17 @@ class AIUserCreationForm(UserCreationForm):
         instance.is_active = False
         if commit:
             instance.save()
-            if hasattr(self, "save_m2m"):
-                self.save_m2m()
             send_user_activation_mail(instance)
+        else:
+            # replace the save call, so that an email is send after
+            # saving the instance
+            bound_save_method = instance.save
+
+            def instance_save_hook(*args, **kwargs):
+                bound_save_method(*args, **kwargs)
+                send_user_activation_mail(instance)
+
+            instance.save = instance_save_hook
         return instance
 
 
