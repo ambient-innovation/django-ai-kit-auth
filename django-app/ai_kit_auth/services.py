@@ -1,6 +1,9 @@
-from django.conf import settings
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMultiAlternatives
+from django.template.loader import get_template
+from django.template import Context
+
+from .settings import api_settings as settings
 
 
 def feistel_chipher(seq_id):
@@ -37,6 +40,10 @@ def send_user_activation_mail(user):
     """
     Sends the initial mail for a nonactive user.
     """
+    template_plain = get_template(settings.EMAIL_TEMPLATES.USER_CREATED.BODY_PLAINTEXT)
+    template_html = get_template(settings.EMAIL_TEMPLATES.USER_CREATED.BODY_HTML)
+    subject = get_template(settings.EMAIL_TEMPLATES.USER_CREATED.TITLE)
+
     ident = str(feistel_chipher(user.id))
     token_gen = PasswordResetTokenGenerator()
     token = token_gen.make_token(user)
