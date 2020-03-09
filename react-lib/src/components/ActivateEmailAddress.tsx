@@ -27,7 +27,7 @@ export const makeActivateEmailAddress: <User>(
 
   return (
     <div>
-      {strings.EmailActivation.SucessMessage}
+      {strings.EmailActivation.SuccessMessage}
     </div>
   );
 };
