@@ -11,8 +11,8 @@ def scramble_id(seq_id):
     to prevent exposing backend details.
     It is its own inverse, so converting back is done by calling it again.
 
-    In case of an id other than an integer in the 32 bit range we assume its
-    a uuid or similar and we return it as is.
+    In case of an id other than an unsigned integer in the 32 bit range we
+    assume its a uuid or similar and we return it as is.
 
     further reading: https://wiki.postgresql.org/wiki/Pseudo_encrypt
     """
