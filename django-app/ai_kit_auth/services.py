@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.template.loader import get_template
@@ -6,21 +7,27 @@ from django.template import Context
 from .settings import api_settings as settings
 
 
-def feistel_chipher(seq_id):
+def scramble_id(seq_id):
     """
-    Creates a pseudo random, but unique identifier from a number.
+    This is called a feistel chipher.
+    It creates a pseudo random, but unique identifier from a number.
     It can be used instead of sequential primary keys in api functions
     to prevent exposing backend details.
     It is its own inverse, so converting back is done by calling it again.
 
+    In case of an id other than an unsigned integer in the 32 bit range we
+    assume its a uuid or similar and we return it as is.
+
     further reading: https://wiki.postgresql.org/wiki/Pseudo_encrypt
     """
+
+    if not isinstance(seq_id, int):
+        return seq_id
+
     val = int(seq_id) & 0xFFFFFFFF  # restrict to u32
 
-    if val != int(seq_id):  # Shouldn't come up in praxis
-        raise ValueError(
-            f"Input out of Range, id is {seq_id}, but must be in [0 .. 2^32)"
-        )
+    if val != int(seq_id):  # not in the range of 0 .. 2^32
+        return seq_id
 
     l1 = (val >> 16) & 0xFFFF
     r1 = val & 0xFFFF
@@ -44,7 +51,7 @@ def send_user_activation_mail(user):
     template_html = get_template(settings.EMAIL_TEMPLATES.USER_CREATED.BODY_HTML)
     subject = get_template(settings.EMAIL_TEMPLATES.USER_CREATED.TITLE)
 
-    ident = str(feistel_chipher(user.id))
+    ident = str(scramble_id(user.id))
     token_gen = PasswordResetTokenGenerator()
     token = token_gen.make_token(user)
     send_mail("Activation", f"{ident}/{token}", "from@example.com", [user.email])
