@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Switch } from 'react-router-dom';
 import {
-  UserStore, AuthRoutes, ProtectedRoute,
+  UserStore, ProtectedRoute, makeAuthRoutes,
 } from 'ai-kit-auth';
 
 const App: React.FC = () => (
@@ -10,7 +10,7 @@ const App: React.FC = () => (
   >
     <BrowserRouter>
       <Switch>
-        <AuthRoutes />
+        {makeAuthRoutes()}
         <ProtectedRoute exact path="/">
           <div>
             Django Test App
