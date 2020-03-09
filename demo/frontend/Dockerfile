@@ -18,6 +18,7 @@ RUN echo "installing npm packages" && \
     npm ci && \
     npm link /demo/frontend/node_modules/react && \
     npm link /demo/frontend/node_modules/react-router-dom && \
+    npm link /demo/frontend/node_modules/@material-ui/styles && \
     npm run build && \
     npm link && \
     cd - && \
