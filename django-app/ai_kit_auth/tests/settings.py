@@ -9,6 +9,7 @@ INSTALLED_APPS = (
     "django.contrib.messages",
     "django.contrib.admin",
     "rest_framework",
+    "ai_kit_auth",
 )
 
 REST_FRAMEWORK = {
