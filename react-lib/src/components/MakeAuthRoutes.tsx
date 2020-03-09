@@ -16,7 +16,8 @@ export const makeAuthRoutes = (basePath = '/auth') => {
       exact
       path={`${normPath}/activation`}
       component={ActivateEmailAddress}
+      key="activation"
     />,
-    <LoginRoute path={`${normPath}/login`} component={LoginView} />,
+    <LoginRoute path={`${normPath}/login`} component={LoginView} key="login" />,
   ];
 };
