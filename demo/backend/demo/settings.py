@@ -133,8 +133,10 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
 ]
 
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
 AI_KIT_AUTH = {
     "FRONTEND": {
-        "URL": "http://localhost:8000",
+        "URL": "http://localhost:3000",
     },
 }
