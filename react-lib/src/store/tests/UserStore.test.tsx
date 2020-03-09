@@ -23,7 +23,9 @@ beforeEach(() => {
 
 const StoreDisplay: FC = () => (
   <UserContext.Consumer>
-    { ({ user, loading, login, logout }) => {
+    { ({
+      user, loading, login, logout,
+    }) => {
       if (loading) return <div>loading</div>;
       if (!user) {
         return (
