@@ -19,5 +19,8 @@
         "UsernameOrEmail": "The combination of username or email and password is invalid. Please try again."
       }
     }
+  },
+  "EmailActivation": {
+    "SuccessMessage": "Your email address has been activated successfully"
   }
 }

@@ -27,5 +27,10 @@ export {
 } from './components/LoginView';
 
 export {
+  ActivateEmailAddress,
+  makeActivateEmailAddress,
+} from './components/ActivateEmailAddress';
+
+export {
   makeAuthRoutes,
 } from './components/MakeAuthRoutes';

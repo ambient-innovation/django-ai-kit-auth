@@ -18,6 +18,7 @@ interface UserStoreProps {
 export function makeGenericUserStore<U extends unknown = User>() {
   const GenericUserContext = createContext<UserStoreValue<U>>({
     loading: false,
+    apiUrl: '',
     login: () => new Promise<U>(errorExecutor),
   });
 
@@ -63,6 +64,7 @@ export function makeGenericUserStore<U extends unknown = User>() {
       <GenericUserContext.Provider
         value={{
           user,
+          apiUrl,
           loading,
           login,
         }}
