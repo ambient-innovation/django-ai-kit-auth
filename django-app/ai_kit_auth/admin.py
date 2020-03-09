@@ -29,11 +29,11 @@ class AIUserCreationForm(UserCreationForm):
     def save(self, commit=True):
         instance = super(AIUserCreationForm, self).save(commit=False)
         instance.is_active = False
-        send_user_activation_mail(instance)
         if commit:
             instance.save()
             if hasattr(self, "save_m2m"):
                 self.save_m2m()
+            send_user_activation_mail(instance)
         return instance
 
 

@@ -37,6 +37,16 @@ class CreateFormTests(TestCase):
         instance = AIUserCreationForm().save()
         mock_send_mail.assert_called_with(instance)
 
+    @patch("ai_kit_auth.admin.UserCreationForm.save", Mock())
+    @patch("ai_kit_auth.admin.send_user_activation_mail")
+    def test_creation_send_mail_with_saved_user(self, mock_send_mail):
+        def check_if_instance_is_saved(ins):
+            ins.save.assert_called()
+
+        mock_send_mail.side_effect = check_if_instance_is_saved
+        instance = AIUserCreationForm().save()
+        mock_send_mail.assert_called_with(instance)
+
 
 class ChangeFormTests(TestCase):
     def test_clean_raises_if_email_changes_to_already_taken_one(self):
