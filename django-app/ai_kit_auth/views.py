@@ -5,7 +5,7 @@ from django.contrib.auth.password_validation import (
     validate_password,
 )
 from django.core.exceptions import ValidationError as DjangoValidationError
-from rest_framework import status, generics
+from rest_framework import status, generics, views
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -35,7 +35,7 @@ class LoginView(generics.GenericAPIView):
         return response
 
 
-class LogoutView(generics.GenericAPIView):
+class LogoutView(views.APIView):
     permission_classes = (IsAuthenticated,)
 
     def post(self, request, *args, **kwargs):
