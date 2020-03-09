@@ -6,6 +6,7 @@ import { strings } from '../internationalization';
 import { UserContext } from '../store/types';
 import { UserContext as StandardUserContext } from '../store/UserStore';
 import { activateEmailAddressAPI } from '../api/api';
+import { ActivationView } from './AuthView';
 
 export const makeActivateEmailAddress: <User>(
   userContext: UserContext<User>,
@@ -26,9 +27,7 @@ export const makeActivateEmailAddress: <User>(
   if (loading) return <div>Loading</div>;
 
   return (
-    <div>
-      {strings.EmailActivation.SuccessMessage}
-    </div>
+    <ActivationView />
   );
 };
 

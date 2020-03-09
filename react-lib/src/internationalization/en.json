@@ -21,6 +21,8 @@
     }
   },
   "EmailActivation": {
-    "SuccessMessage": "Your email address has been activated successfully"
+    "SuccessTitle": "Your email address has been activated successfully",
+    "SuccessText": "Your account was successfully activated. Please continue to login to start using our service!",
+    "ButtonText": "To Login"
   }
 }

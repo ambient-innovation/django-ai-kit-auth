@@ -3,6 +3,7 @@ import React, { FC } from 'react';
 import { createStyles, Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { LoginForm } from './LoginForm';
+import { ActivationCard } from './ActivationCard';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   loginView: {
@@ -38,7 +39,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   },
 }));
 
-export const LoginView: FC = ({ children }) => {
+export const AuthView: FC = ({ children }) => {
   const classes = useStyles();
 
   return (
@@ -49,9 +50,21 @@ export const LoginView: FC = ({ children }) => {
 
       <Grid container item xs={12} lg={6} className={classes.loginFormContainer}>
         {
-          children || <LoginForm />
+          children
         }
       </Grid>
     </Grid>
   );
 };
+
+export const LoginView: FC = () => (
+  <AuthView>
+    <LoginForm />
+  </AuthView>
+);
+
+export const ActivationView: FC = () => (
+  <AuthView>
+    <ActivationCard />
+  </AuthView>
+);

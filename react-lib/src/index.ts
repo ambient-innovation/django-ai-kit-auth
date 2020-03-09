@@ -23,8 +23,14 @@ export {
 } from './components/LoginForm';
 
 export {
+  ActivationView,
+  AuthView,
   LoginView,
-} from './components/LoginView';
+} from './components/AuthView';
+
+export {
+  ActivationCard,
+} from './components/ActivationCard';
 
 export {
   ActivateEmailAddress,
