@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import { useHistory } from 'react-router-dom';
 import {
   Button,
   createStyles, Grid, Paper, Theme, Typography,
@@ -37,6 +38,14 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
 export const ActivationCard: FC = () => {
   const classes = useStyles();
+  const history = useHistory();
+
+  const handleRedirect = () => {
+    history.push(
+      '/auth/login',
+      { from: '/' },
+    );
+  };
 
   return (
     <Paper className={classes.PaperCard}>
@@ -51,7 +60,7 @@ export const ActivationCard: FC = () => {
         <Button
           variant="contained"
           color="primary"
-          onClick={() => alert('todo: redirect to Login')}
+          onClick={() => handleRedirect()}
         >
           {strings.EmailActivation.ButtonText}
         </Button>

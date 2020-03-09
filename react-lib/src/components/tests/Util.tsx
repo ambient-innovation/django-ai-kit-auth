@@ -18,6 +18,7 @@ export const renderWithRouterAndUser = (
         user,
         loading: !!loading,
         login: jest.fn(),
+        apiUrl: 'https://example.com/api/v1',
       }}
       >
         <Router history={history}>

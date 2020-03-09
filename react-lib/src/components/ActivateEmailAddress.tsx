@@ -2,7 +2,6 @@ import React, {
   FC, useContext, useEffect, useState,
 } from 'react';
 import { useParams } from 'react-router-dom';
-import { strings } from '../internationalization';
 import { UserContext } from '../store/types';
 import { UserContext as StandardUserContext } from '../store/UserStore';
 import { activateEmailAddressAPI } from '../api/api';
