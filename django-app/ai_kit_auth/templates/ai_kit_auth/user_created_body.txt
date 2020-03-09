@@ -2,4 +2,4 @@ Guten Tag {{ user.username }},
 
 Bitte folgen Sie folgendem Link, um Ihr Konto zu aktivieren:
 
-{{ url }}{{ route }}{{ ident }}/{{ token }}
+{{ url }}

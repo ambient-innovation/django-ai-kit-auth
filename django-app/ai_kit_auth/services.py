@@ -1,10 +1,12 @@
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from django.core.mail import send_mail, EmailMultiAlternatives
+from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
-from django.template import Context
 
-from .settings import api_settings as settings
+from .settings import api_settings
+
+User = get_user_model()
 
 
 def scramble_id(seq_id):
@@ -43,19 +45,47 @@ def scramble_id(seq_id):
     return ((r1 & 0xFFFF) << 16) + l1
 
 
+def send_email(subject, text, html, to_address):
+    from_address = settings.DEFAULT_FROM_EMAIL
+    msg = EmailMultiAlternatives(subject, text, from_address, [to_address])
+    msg.attach_alternative(html, "text/html")
+    msg.send()
+
+
+def make_url(*args):
+    return "/".join(s.strip("/") for s in args)
+
+
 def send_user_activation_mail(user):
     """
     Sends the initial mail for a nonactive user.
     """
-    template_plain = get_template(settings.EMAIL_TEMPLATES.USER_CREATED.BODY_PLAINTEXT)
-    template_html = get_template(settings.EMAIL_TEMPLATES.USER_CREATED.BODY_HTML)
-    subject = get_template(settings.EMAIL_TEMPLATES.USER_CREATED.TITLE)
+    template_plain = get_template(
+        api_settings.EMAIL_TEMPLATES.USER_CREATED.BODY_PLAINTEXT
+    )
+    template_html = get_template(api_settings.EMAIL_TEMPLATES.USER_CREATED.BODY_HTML)
+    subject = get_template(api_settings.EMAIL_TEMPLATES.USER_CREATED.TITLE).render()
 
     ident = str(scramble_id(user.id))
     token_gen = PasswordResetTokenGenerator()
     token = token_gen.make_token(user)
-    send_mail("Activation", f"{ident}/{token}", "from@example.com", [user.email])
-    return (ident, token)
+
+    url = make_url(
+        api_settings.FRONTEND.URL, api_settings.FRONTEND.ACTIVATION_ROUTE, ident, token
+    )
+
+    context = {
+        "user": user,
+        "url": url,
+    }
+
+    send_email(
+        subject.replace("\n", " "),
+        template_plain.render(context),
+        template_html.render(context),
+        getattr(user, User.EMAIL_FIELD),
+    )
+    return ident, token
 
 
 def send_user_password_reset_mail(sender, instance, created, **kwargs):
@@ -67,7 +97,8 @@ def send_user_password_reset_mail(sender, instance, created, **kwargs):
     form = PasswordResetForm({"email": instance.email})
     form.is_valid()
     form.save(
-        domain_override=settings.FRONTEND_PASSWORD_RESET_URL,
+        domain_override=api_settings.FRONTEND.URL
+        + api_settings.FRONTEND.PASSWORD_RESET_ROUTE,
         subject_template_name="new_user_mail/title.txt",
         email_template_name="new_user_mail/body.txt",
         from_email=settings.DEFAULT_FROM_EMAIL,
