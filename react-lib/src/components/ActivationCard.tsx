@@ -26,10 +26,12 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   },
   CheckIcon: {
     verticalAlign: 'sub',
-    marginLeft: 8,
   },
   SuccessTitle: {
     marginBottom: 47,
+    '& span': {
+      marginRight: 8,
+    },
   },
   SuccessText: {
     marginBottom: 30,
