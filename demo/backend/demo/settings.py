@@ -134,6 +134,7 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 AI_KIT_AUTH = {
-    "ACTIVATION_ROUTE": "aktivierung",
-    "FRONTEND_URL": "example.com",
+    "FRONTEND": {
+        "URL": "http://localhost:8000",
+    },
 }

@@ -25,3 +25,7 @@ export {
 export {
   LoginView,
 } from './components/LoginView';
+
+export {
+  AuthRoutes,
+} from './components/AuthRoutes';
