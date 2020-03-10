@@ -3,9 +3,6 @@ import { User } from './types';
 
 axios.defaults.withCredentials = true;
 
-const loginSuffix = 'login/';
-const meSuffix = 'me/';
-
 export const makeUrl = (apiUrl: string, suffix: string) => {
   const separator = apiUrl.endsWith('/') ? '' : '/';
 
@@ -20,12 +17,16 @@ export const makeUrl = (apiUrl: string, suffix: string) => {
  */
 export const loginAPI = <U = User>(
   apiUrl: string, ident: string, password: string,
-) => axios.post<U>(makeUrl(apiUrl, loginSuffix), {
+) => axios.post<U>(makeUrl(apiUrl, 'login/'), {
   ident, password,
 }).then((response) => response.data);
 
 
 export const meAPI = <U = User>(apiUrl: string) => (
-  axios.get<U>(makeUrl(apiUrl, meSuffix))
+  axios.get<U>(makeUrl(apiUrl, 'me/'))
     .then(({ data }) => data)
+);
+
+export const activateEmailAddressAPI = (apiUrl: string, ident: string, token: string) => (
+  axios.post(makeUrl(apiUrl, `activate_email/${ident}/${token}/`))
 );

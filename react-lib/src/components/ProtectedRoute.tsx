@@ -4,7 +4,7 @@ import React, {
 import { Redirect, Route, RouteProps } from 'react-router-dom';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { UserContext } from '../store/types';
-import { UserContext as StardardUserContext } from '../store/UserStore';
+import { UserContext as StandardUserContext } from '../store/UserStore';
 
 export interface ProtectedRouteOptions<User> {
   userContext: UserContext<User>;
@@ -52,6 +52,6 @@ export const makeProtectedRoute: <User>(
 };
 
 export const ProtectedRoute = makeProtectedRoute({
-  userContext: StardardUserContext,
+  userContext: StandardUserContext,
   loadingIndicator: () => <CircularProgress />,
 });

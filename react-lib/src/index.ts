@@ -23,5 +23,25 @@ export {
 } from './components/LoginForm';
 
 export {
+  ActivationView,
+  AuthView,
   LoginView,
-} from './components/LoginView';
+  ErrorView,
+} from './components/AuthView';
+
+export {
+  ActivationCard,
+} from './components/ActivationCard';
+
+export {
+  ErrorCard,
+} from './components/ErrorCard';
+
+export {
+  ActivateEmailAddress,
+  makeActivateEmailAddress,
+} from './components/ActivateEmailAddress';
+
+export {
+  makeAuthRoutes,
+} from './components/MakeAuthRoutes';
