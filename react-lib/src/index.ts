@@ -26,11 +26,16 @@ export {
   ActivationView,
   AuthView,
   LoginView,
+  ErrorView,
 } from './components/AuthView';
 
 export {
   ActivationCard,
 } from './components/ActivationCard';
+
+export {
+  ErrorCard,
+} from './components/ErrorCard';
 
 export {
   ActivateEmailAddress,

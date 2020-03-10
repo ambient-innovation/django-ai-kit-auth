@@ -1,3 +1,4 @@
+import CircularProgress from '@material-ui/core/CircularProgress';
 import React, {
   FC, useContext, useEffect, useState,
 } from 'react';
@@ -11,11 +12,22 @@ import { strings } from '../internationalization';
 
 const Errors = strings.EmailActivation.Errors as { [key: string]: string };
 
+interface ActivateEmailAddressOptions<User> {
+  userContext: UserContext<User>;
+  loadingIndicator: () => JSX.Element;
+  errorView: (title: string, message: string) => JSX.Element;
+  successView: () => JSX.Element;
+}
+
 export const makeActivateEmailAddress: <User>(
-  userContext: UserContext<User>,
-) => FC = (
+  options: ActivateEmailAddressOptions<User>,
+) => FC = ({
   userContext,
-) => () => {
+  loadingIndicator,
+  errorView,
+  successView,
+
+}) => () => {
   const { ident, token } = useParams();
   const { apiUrl } = useContext(userContext);
   const [error, setError] = useState<string|undefined>(undefined);
@@ -33,22 +45,21 @@ export const makeActivateEmailAddress: <User>(
     }
   }, [apiUrl, ident, token]);
 
-  if (loading) return <div>Loading</div>;
+  if (loading) return loadingIndicator();
 
   if (error) {
-    return (
-      <ErrorView
-        title={strings.EmailActivation.ErrorTitle}
-        message={Errors[error] || Errors.general}
-      />
+    return errorView(
+      strings.EmailActivation.ErrorTitle,
+      Errors[error] || Errors.general,
     );
   }
 
-  return (
-    <ActivationView />
-  );
+  return successView();
 };
 
-export const ActivateEmailAddress = makeActivateEmailAddress(
-  StandardUserContext,
-);
+export const ActivateEmailAddress = makeActivateEmailAddress({
+  userContext: StandardUserContext,
+  loadingIndicator: () => <CircularProgress />,
+  errorView: ((title, message) => <ErrorView title={title} message={message} />),
+  successView: () => <ActivationView />,
+});
