@@ -4,7 +4,7 @@ import { createStyles, Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { LoginForm } from './LoginForm';
 import { ActivationCard } from './ActivationCard';
-import { ErrorCard, ErrorCardProps } from "./ErrorCard";
+import { ErrorCard, ErrorCardProps } from './ErrorCard';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   loginView: {
@@ -76,4 +76,4 @@ export const ErrorView: FC<ErrorCardProps> = (
   <AuthView>
     <ErrorCard {...errorCardProps} />
   </AuthView>
-)
+);
