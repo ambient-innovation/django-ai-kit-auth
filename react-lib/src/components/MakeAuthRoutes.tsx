@@ -14,10 +14,10 @@ export const makeAuthRoutes = (basePath = '/auth') => {
   return [
     <Route
       exact
-      path={`${normPath}/activation`}
+      path={`${normPath}/activation/:ident/:token([0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})`}
       component={ActivateEmailAddress}
       key="activation"
     />,
-    <LoginRoute path={`${normPath}/login`} component={LoginView} key="login" />,
+    <LoginRoute exact path={`${normPath}/login`} component={LoginView} key="login" />,
   ];
 };
