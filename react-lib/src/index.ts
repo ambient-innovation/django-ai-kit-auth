@@ -1,5 +1,9 @@
 
 export {
+  makeAuthRoutes,
+} from './components/MakeAuthRoutes';
+
+export {
   UserStore,
   useUserStore,
   UserContext,
@@ -41,7 +45,3 @@ export {
   ActivateEmailAddress,
   makeActivateEmailAddress,
 } from './components/ActivateEmailAddress';
-
-export {
-  makeAuthRoutes,
-} from './components/MakeAuthRoutes';
