@@ -17,7 +17,7 @@ UserModel = get_user_model()
 
 class FeistelChipherTest(TestCase):
     def test_invertable(self):
-        for i in [0, 1000, 4020, 19432, 599299398]:
+        for i in list(range(1000)) + [4020, 19432, 599299398]:
             encoded = scramble_id(i)
             self.assertNotEqual(i, encoded)
             self.assertEqual(i, scramble_id(encoded))
