@@ -23,7 +23,9 @@ beforeEach(() => {
 
 const StoreDisplay: FC = () => (
   <UserContext.Consumer>
-    { ({ user, loading, login }) => {
+    { ({
+      user, loading, login, logout,
+    }) => {
       if (loading) return <div>loading</div>;
       if (!user) {
         return (
@@ -45,6 +47,13 @@ const StoreDisplay: FC = () => (
           <div>{user.username}</div>
           <div>{user.email}</div>
           <div>{user.id}</div>
+          <button
+            type="button"
+            onClick={() => logout()
+              .catch(() => null)}
+          >
+            Logout
+          </button>
         </div>
       );
     }}
@@ -117,4 +126,27 @@ test('UserStore behaviour when login fails', async () => {
   await waitForElement(() => renderObject.getByText('Login'));
   fireEvent.click(renderObject.getByText('Login'));
   await waitForElement(() => renderObject.getByText('no user'));
+});
+
+// eslint-disable-next-line jest/expect-expect
+test('UserStore sends logout', async () => {
+  maxios.onGet('/me/').reply(200, mockUser);
+  maxios.onPost('/logout/').reply(200);
+  const renderObject = renderStoreValue();
+  await waitForElement(() => renderObject.getByText('Logout'));
+  fireEvent.click(renderObject.getByText('Logout'));
+  await waitForElement(() => renderObject.getByText('no user'));
+});
+
+test('UserStore shows loading while logging out', async () => {
+  maxios.onGet('/me/').reply(200, mockUser);
+  maxios.onPost('/logout/').reply(async () => {
+    await sleep();
+
+    return [200];
+  });
+  const renderObject = renderStoreValue();
+  await waitForElement(() => renderObject.getByText('Logout'));
+  fireEvent.click(renderObject.getByText('Logout'));
+  expect(renderObject.getByText('loading')).toBeInTheDocument();
 });

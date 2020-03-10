@@ -22,6 +22,14 @@ export const loginAPI = <U = User>(
 }).then((response) => response.data);
 
 
+/**
+ * @description Send a logout request to the backend.
+ * @param apiUrl - URL to the backend api -- including `/api/v?/`.
+ */
+export const logoutAPI = (
+  apiUrl: string,
+) => axios.post(makeUrl(apiUrl, 'logout/')).then((response) => response.data);
+
 export const meAPI = <U = User>(apiUrl: string) => (
   axios.get<U>(makeUrl(apiUrl, 'me/'))
     .then(({ data }) => data)

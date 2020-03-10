@@ -9,6 +9,7 @@
     "UsernameOrEmail": "Username or Email",
     "Password": "Password",
     "Login": "Login",
+    "LogoutSuccess": "You have been logged out successfully.",
     "FieldErrors": {
       "blank": "This field may not be blank."
     },

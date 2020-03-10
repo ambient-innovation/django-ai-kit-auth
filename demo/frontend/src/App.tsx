@@ -3,6 +3,7 @@ import { BrowserRouter, Switch } from 'react-router-dom';
 import {
   UserStore, ProtectedRoute, makeAuthRoutes,
 } from 'ai-kit-auth';
+import { Dashboard } from './Dashboard';
 
 const App: React.FC = () => (
   <UserStore
@@ -11,11 +12,7 @@ const App: React.FC = () => (
     <BrowserRouter>
       <Switch>
         {makeAuthRoutes()}
-        <ProtectedRoute exact path="/">
-          <div>
-            Django Test App
-          </div>
-        </ProtectedRoute>
+        <ProtectedRoute exact path="/" component={Dashboard} />
       </Switch>
     </BrowserRouter>
   </UserStore>

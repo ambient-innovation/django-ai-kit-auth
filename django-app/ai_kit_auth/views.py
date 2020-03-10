@@ -1,4 +1,4 @@
-from django.contrib.auth import login, get_user_model, tokens
+from django.contrib.auth import login, logout, get_user_model, tokens
 from django.contrib.auth.password_validation import (
     get_password_validators,
     validate_password,
@@ -34,6 +34,14 @@ class LoginView(generics.GenericAPIView):
         response = Response(user_serializer.data, status=status.HTTP_200_OK)
 
         return response
+
+
+class LogoutView(views.APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, *args, **kwargs):
+        logout(request)
+        return Response(status=status.HTTP_200_OK)
 
 
 class Me(generics.GenericAPIView):
