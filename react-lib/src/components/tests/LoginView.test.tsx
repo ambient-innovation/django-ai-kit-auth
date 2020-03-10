@@ -3,7 +3,7 @@ import * as React from 'react';
 import { render } from '@testing-library/react';
 import { AuthView } from '../AuthView';
 
-test('renders login view', () => {
+test('renders auth view', () => {
   const renderObject = render(<AuthView />);
   expect(renderObject.baseElement).toBeInTheDocument();
 });
