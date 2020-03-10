@@ -43,7 +43,7 @@ export const ActivationCard: FC = () => {
   const history = useHistory();
 
   const handleRedirect = () => {
-    history.push(
+    history.replace(
       '/auth/login',
       { from: '/' },
     );
