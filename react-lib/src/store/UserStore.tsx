@@ -47,23 +47,19 @@ export function makeGenericUserStore<U extends unknown = User>() {
 
     const logout: () => Promise<unknown> = () => {
       setLoading(true);
-      setLoggedOut(true);
 
       return logoutAPI(apiUrl)
         .then((response) => {
           setUser(undefined);
-          setLoading(false);
           setLoggedOut(true);
 
           return response;
         })
         .catch(() => {
-          setUser(undefined);
-          setLoading(false);
+          // TODO
         })
         .finally(() => {
           setLoading(false);
-          setLoggedOut(true);
         });
     };
 
