@@ -1,5 +1,5 @@
 from semantic_release.history.parser_angular import parse_commit_message
-from unittest.mock import patch
+
 
 
 def django_parser(commit_msg):

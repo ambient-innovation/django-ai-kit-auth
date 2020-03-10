@@ -20,5 +20,15 @@
         "UsernameOrEmail": "The combination of username or email and password is invalid. Please try again."
       }
     }
+  },
+  "EmailActivation": {
+    "SuccessTitle": "Your email address has been activated successfully",
+    "SuccessText": "Your account was successfully activated. Please continue to login to start using our service!",
+    "ButtonText": "To Login",
+    "ErrorTitle": "Something went wrong",
+    "Errors": {
+      "activation_link_invalid": "The activation link you tried to use is invalid. This may be due to a typo, or because it has been used already.",
+      "general": "An error occurred during activation of your email address."
+    }
   }
 }

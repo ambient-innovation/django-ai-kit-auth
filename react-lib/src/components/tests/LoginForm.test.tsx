@@ -19,6 +19,7 @@ const renderFunction = (
 ) => render(
   <UserContext.Provider
     value={{
+      apiUrl: '',
       loading: false,
       login,
       logout,

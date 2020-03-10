@@ -7,9 +7,12 @@ import { UserContext } from '../..';
 import { User } from '../../api/types';
 
 export const renderWithRouterAndUser = (
-  element: JSX.Element, user?: User, loading?: boolean,
+  element: JSX.Element,
+  user?: User,
+  loading?: boolean,
+  initialEntries: string[] = ['/auth/login'],
 ) => {
-  const history = createMemoryHistory({ initialEntries: ['/auth/login'] });
+  const history = createMemoryHistory({ initialEntries });
 
   return ({
     history,
@@ -20,6 +23,7 @@ export const renderWithRouterAndUser = (
         login: jest.fn(),
         logout: jest.fn(),
         loggedOut: false,
+        apiUrl: 'https://example.com/api/v1',
       }}
       >
         <Router history={history}>
