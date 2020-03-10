@@ -93,36 +93,30 @@ export const makeLoginForm: (options: LoginFormOptions) => FC = ({
         }}
       >
         <TextField
-          className={classes.inputField}
           autoFocus
+          className={classes.inputField}
+          error={!!errorMessage.ident}
           fullWidth
-          id="login_userIdentifier"
-          label={strings.LoginForm[Identifier[identifier] as IdentifierType]}
-          variant="outlined"
-          type={identifier === Identifier.Email ? 'email' : 'text'}
-          value={userIdentifier}
           helperText={errorMessage.ident ? errorMessage.ident.map((message: string) => (
             fieldErrors[message])) : ''}
-          error={!!errorMessage.ident}
+          id="login_userIdentifier"
+          label={strings.LoginForm[Identifier[identifier] as IdentifierType]}
           onChange={(event) => {
             setUserIdentifier(event.target.value);
           }}
+          required
+          type={identifier === Identifier.Email ? 'email' : 'text'}
+          value={userIdentifier}
+          variant="outlined"
         />
 
         <TextField
           className={classes.inputField}
+          error={!!errorMessage.password}
           fullWidth
-          id="login_password"
-          label={strings.LoginForm.Password}
-          variant="outlined"
-          value={password}
-          type={showPassword ? 'text' : 'password'}
           helperText={errorMessage.password ? errorMessage.password.map((message: string) => (
             fieldErrors[message])) : ''}
-          error={!!errorMessage.password}
-          onChange={(event) => {
-            setPassword(event.target.value);
-          }}
+          id="login_password"
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -136,6 +130,14 @@ export const makeLoginForm: (options: LoginFormOptions) => FC = ({
               </InputAdornment>
             ),
           }}
+          label={strings.LoginForm.Password}
+          onChange={(event) => {
+            setPassword(event.target.value);
+          }}
+          required
+          type={showPassword ? 'text' : 'password'}
+          value={password}
+          variant="outlined"
         />
 
         {
