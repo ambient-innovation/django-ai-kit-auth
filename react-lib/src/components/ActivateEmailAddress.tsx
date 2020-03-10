@@ -14,19 +14,18 @@ const Errors = strings.EmailActivation.Errors as { [key: string]: string };
 
 interface ActivateEmailAddressOptions<User> {
   userContext: UserContext<User>;
-  loadingIndicator: () => JSX.Element;
-  errorView: (title: string, message: string) => JSX.Element;
-  successView: () => JSX.Element;
+  loadingIndicator?: () => JSX.Element;
+  errorView?: (title: string, message: string) => JSX.Element;
+  successView?: () => JSX.Element;
 }
 
 export const makeActivateEmailAddress: <User>(
   options: ActivateEmailAddressOptions<User>,
 ) => FC = ({
   userContext,
-  loadingIndicator,
-  errorView,
-  successView,
-
+  loadingIndicator = () => <CircularProgress />,
+  errorView = ((title, message) => <ErrorView title={title} message={message} />),
+  successView = () => <ActivationView />,
 }) => () => {
   const { ident, token } = useParams();
   const { apiUrl } = useContext(userContext);
@@ -59,7 +58,4 @@ export const makeActivateEmailAddress: <User>(
 
 export const ActivateEmailAddress = makeActivateEmailAddress({
   userContext: StandardUserContext,
-  loadingIndicator: () => <CircularProgress />,
-  errorView: ((title, message) => <ErrorView title={title} message={message} />),
-  successView: () => <ActivationView />,
 });
