@@ -27,7 +27,7 @@ export const loginAPI = <U = User>(
 
 
 /**
- * @description Send a login request to the backend .
+ * @description Send a logout request to the backend.
  * @param apiUrl - URL to the backend api -- including `/api/v?/`.
  */
 export const logoutAPI = (
