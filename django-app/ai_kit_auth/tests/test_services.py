@@ -22,6 +22,16 @@ class FeistelChipherTest(TestCase):
             self.assertNotEqual(i, encoded)
             self.assertEqual(i, scramble_id(encoded))
 
+    def test_int_as_string(self):
+        for i in list(range(1000)) + [4020, 19432, 599299398]:
+            encoded = scramble_id(str(i))
+            self.assertNotEqual(i, encoded)
+            self.assertEqual(i, scramble_id(encoded))
+
+    def test_identity_if_not_int(self):
+        ident = "test"
+        self.assertEqual(ident, scramble_id(ident))
+
     def test_out_of_range(self):
         for i in [-1, 0x100000000, 0x29943929990, "string", uuid.uuid4()]:
             self.assertEqual(i, scramble_id(i))

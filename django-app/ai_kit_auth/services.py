@@ -23,12 +23,14 @@ def scramble_id(seq_id):
     further reading: https://wiki.postgresql.org/wiki/Pseudo_encrypt
     """
 
-    if not isinstance(seq_id, int):
+    try:
+        val = int(seq_id) & 0xFFFFFFFF  # restrict to u32
+    except ValueError:
+        # not an int, return as is
         return seq_id
 
-    val = int(seq_id) & 0xFFFFFFFF  # restrict to u32
-
-    if val != int(seq_id):  # not in the range of 0 .. 2^32
+    if val != int(seq_id):
+        # not in the range of 0 .. 2^32, also return as is
         return seq_id
 
     l1 = (val >> 16) & 0xFFFF

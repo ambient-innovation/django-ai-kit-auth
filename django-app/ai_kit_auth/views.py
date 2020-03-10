@@ -95,7 +95,7 @@ class ActivateUser(views.APIView):
 
     def post(self, request, ident, token, *args, **kwargs):
         try:
-            pk = services.scramble_id(int(ident))
+            pk = services.scramble_id(ident)
             user = UserModel.objects.get(pk=pk)
             assert tokens.PasswordResetTokenGenerator().check_token(user, token)
         except (
