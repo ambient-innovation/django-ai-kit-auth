@@ -8,6 +8,7 @@ export const Dashboard: FC = () => {
   const { logout, user } = useContext(UserContext);
 
   const unAuthorizedFetch = () => {
+    // TODO: use apiUrl after !45 (https://gitlab.ambient-innovation.com/ai/ai.kit/authentication/merge_requests/45) is merged
     fetch('http://localhost:8000/api/v1/unauthorized')
       .then((response) => (response.json()))
       .catch(logout);
