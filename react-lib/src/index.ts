@@ -1,5 +1,6 @@
 
 export {
+  AuthFunctionContext,
   UserStore,
   useUserStore,
   UserContext,

@@ -4,37 +4,33 @@ import React, {
 } from 'react';
 import { AxiosError } from 'axios';
 import { useParams } from 'react-router-dom';
-import { UserContext } from '../store/types';
-import { UserContext as StandardUserContext } from '../store/UserStore';
-import { activateEmailAddressAPI } from '../api/api';
+import { AuthFunctionContext } from '../store/UserStore';
 import { ActivationView, ErrorView } from './AuthView';
 import { strings } from '../internationalization';
 
 const Errors = strings.EmailActivation.Errors as { [key: string]: string };
 
-interface ActivateEmailAddressOptions<User> {
-  userContext: UserContext<User>;
+interface ActivateEmailAddressOptions {
   loadingIndicator?: () => JSX.Element;
   errorView?: (title: string, message: string) => JSX.Element;
   successView?: () => JSX.Element;
 }
 
-export const makeActivateEmailAddress: <User>(
-  options: ActivateEmailAddressOptions<User>,
+export const makeActivateEmailAddress: (
+  options: ActivateEmailAddressOptions,
 ) => FC = ({
-  userContext,
   loadingIndicator = () => <CircularProgress />,
   errorView = ((title, message) => <ErrorView title={title} message={message} />),
   successView = () => <ActivationView />,
 }) => () => {
   const { ident, token } = useParams();
-  const { apiUrl } = useContext(userContext);
+  const { activateEmailAddress } = useContext(AuthFunctionContext);
   const [error, setError] = useState<string|undefined>(undefined);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (ident && token) {
-      activateEmailAddressAPI(apiUrl, ident, token)
+      activateEmailAddress(ident, token)
         .catch((error_: AxiosError) => {
           if (error_.response?.status === 400) {
             setError(error_.response.data.error);
@@ -42,7 +38,7 @@ export const makeActivateEmailAddress: <User>(
         })
         .finally(() => setLoading(false));
     }
-  }, [apiUrl, ident, token]);
+  });
 
   if (loading) return loadingIndicator();
 
@@ -56,6 +52,4 @@ export const makeActivateEmailAddress: <User>(
   return successView();
 };
 
-export const ActivateEmailAddress = makeActivateEmailAddress({
-  userContext: StandardUserContext,
-});
+export const ActivateEmailAddress = makeActivateEmailAddress({});

@@ -69,7 +69,7 @@ export const makeLoginForm: (options: LoginFormOptions) => FC = ({
   identifier,
 }) => () => {
   const classes = useStyles();
-  const { login, loggedOut } = useUserStore();
+  const { login, justLoggedOut } = useUserStore();
   const [userIdentifier, setUserIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -87,7 +87,7 @@ export const makeLoginForm: (options: LoginFormOptions) => FC = ({
       </Typography>
 
       {
-        loggedOut && (
+        justLoggedOut && (
           <Typography
             variant="body2"
             className={classes.loggedOutText}
