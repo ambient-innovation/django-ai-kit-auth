@@ -1,14 +1,14 @@
 
 export {
-  makeAuthRoutes,
-} from './components/MakeAuthRoutes';
-
-export {
   UserStore,
   useUserStore,
   UserContext,
   makeGenericUserStore,
 } from './store/UserStore';
+
+export {
+  makeAuthRoutes,
+} from './components/MakeAuthRoutes';
 
 export {
   ProtectedRoute,

@@ -16,7 +16,45 @@ Using yarn, run
 yarn add ai-kit-auth
 ```
 
-## Usage
+## Quickstart
+
+While it is possible to customize many aspects of appearance and behaviou,
+the fastest way to get a functioning authentication module is to use the standard
+components provided by this library.
+You can set them up in your `App.tsx` (or `App.jsx`) like so:
+
+```typescript jsx
+import React from 'react';
+import { BrowserRouter, Switch } from 'react-router-dom';
+import { UserStore, makeAuthRoutes, ProtectedRoute } from 'ai-kit-auth';
+
+import MainPage from './components/MainPage';
+
+const App: React.FC = () => (
+  <UserStore
+    apiUrl="http://localhost:8000/api/v1/"
+  >
+    <BrowserRouter>
+        <Switch>
+            {makeAuthRoutes()}
+            <ProtectedRoute exact path="/" component={MainPage} />
+        </Switch>
+    </BrowserRouter>
+  </UserStore>
+);
+
+export default App;
+```
+
+Let's break this down: the most important component is [`UserStore`](#UserStore), which
+stores user data and provides login/logout etc. functions.
+[`makeAuthRoutes`](#makeauthRoutes) returns a list of important routes which enable
+basic authentication functionality.
+[`ProtectedRoute`](#ProtectedRoute) provides a quick way to force users to log in if
+they want to access specific pages.
+See the [API reference](#API Reference) for more information.
+
+## API Reference
 
 AI-KIT: Authentication provides the following components and functions:
 * UserStore
@@ -39,6 +77,11 @@ AI-KIT: Authentication provides the following components and functions:
 * ActivationView
     * [ActivateEmailAddress](#ActivateEmailAddress)
     * [makeActivateEmailAddress](#makeActivateEmailAddress)
+    * [ActivationCard](#ActivationCard)
+    * [ActivationView](#ActivationView)
+* Errors
+    * [ErrorCard](#ErrorCard)
+    * [ErrorView](#ErrorView)
 
 ### UserStore
 
@@ -100,6 +143,7 @@ Depending on the configuration, the backend accepts either one or only one of th
 
 The `UserContext` is a react context and can be used as such. `UserStore` internally creates
 a `UserContext.Provider`, and `useUserStore()` is a shorthand for `useContext(UserContext)`.
+A `UserContext.Consumer` is able to consume the same parameters as [`useUserStore`](#useUserStore).
 
 ### makeGenericUserStore
 
@@ -110,10 +154,11 @@ additional fields from the standard user store.
 In order to get typescript to use the correct types, you need to define your own `User` interface
 containing all data fields, and then use `makeGenericUserStore` to create a custom set of
 `UserStore`, `useUserStore` etc.
-Example:
+
+#### Example
 
 ```typescript
-interface MyUser {
+export interface MyUser {
   username: string;
   email: string;
   group: string;
