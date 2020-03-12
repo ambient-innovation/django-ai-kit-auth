@@ -1,10 +1,15 @@
 
 export {
+  AuthFunctionContext,
   UserStore,
   useUserStore,
   UserContext,
   makeGenericUserStore,
 } from './store/UserStore';
+
+export {
+  makeAuthRoutes,
+} from './components/MakeAuthRoutes';
 
 export {
   ProtectedRoute,
@@ -41,7 +46,3 @@ export {
   ActivateEmailAddress,
   makeActivateEmailAddress,
 } from './components/ActivateEmailAddress';
-
-export {
-  makeAuthRoutes,
-} from './components/MakeAuthRoutes';

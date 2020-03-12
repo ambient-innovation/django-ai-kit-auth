@@ -11,7 +11,7 @@ const mockUser: User = ({
 test('redirects to main page when logged in', () => {
   const renderObject = renderWithRouterAndUser(
     <LoginRoute />,
-    mockUser,
+    { user: mockUser },
   );
   expect(renderObject.history.location.pathname).toEqual('/');
 });
@@ -25,7 +25,7 @@ test('redirects to referrer', () => {
       state: { from: { pathname: '/fromHere' } },
     }}
     />,
-    mockUser,
+    { user: mockUser },
   );
   expect(renderObject.history.location.pathname).toEqual('/fromHere');
 });

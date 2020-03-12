@@ -4,25 +4,31 @@ import React, {
 import { AxiosError } from 'axios';
 import { CssBaseline, Theme, ThemeProvider } from '@material-ui/core';
 import { User } from '../api/types';
-import { loginAPI, logoutAPI, meAPI } from '../api/api';
-import { UserStoreValue } from './types';
+import {
+  activateEmailAddressAPI, loginAPI, logoutAPI, meAPI,
+} from '../api/api';
+import { AuthFunctionContextValue, UserStoreValue } from './types';
 import { defaultTheme } from '../styles/styles';
 
-const errorExecutor = () => { throw new Error('No User Store provided!'); };
+const errorPromise = () => new Promise<void>(() => { throw new Error('No User Store provided!'); });
 
 interface UserStoreProps {
   apiUrl: string;
   customTheme?: Theme;
 }
 
+export const AuthFunctionContext = createContext<AuthFunctionContextValue>({
+  loading: false,
+  apiUrl: '',
+  login: errorPromise,
+  loggedIn: false,
+  logout: errorPromise,
+  justLoggedOut: false,
+  activateEmailAddress: errorPromise,
+});
+
 export function makeGenericUserStore<U extends unknown = User>() {
-  const GenericUserContext = createContext<UserStoreValue<U>>({
-    loading: false,
-    apiUrl: '',
-    login: () => new Promise<U>(errorExecutor),
-    logout: () => new Promise<unknown>(errorExecutor),
-    loggedOut: false,
-  });
+  const GenericUserContext = createContext<UserStoreValue<U>>({});
 
   const GenericUserStore: FC<UserStoreProps> = ({
     children, apiUrl, customTheme,
@@ -31,7 +37,7 @@ export function makeGenericUserStore<U extends unknown = User>() {
     const [loading, setLoading] = useState(true);
     const [user, setUser] = useState<U|undefined>(undefined);
 
-    const login: (userIdentifier: string, password: string) => Promise<U> = (
+    const login: (userIdentifier: string, password: string) => Promise<void> = (
       userIdentifier, password,
     ) => {
       setLoading(true);
@@ -40,21 +46,17 @@ export function makeGenericUserStore<U extends unknown = User>() {
         .then((loginUser) => {
           setUser(loginUser);
           setLoading(false);
-
-          return loginUser;
         })
         .finally(() => setLoading(false));
     };
 
-    const logout: () => Promise<unknown> = () => {
+    const logout: () => Promise<void> = () => {
       setLoading(true);
 
       return logoutAPI(apiUrl)
-        .then((response) => {
+        .then(() => {
           setUser(undefined);
           setLoggedOut(true);
-
-          return response;
         })
         .catch(() => {
           // TODO
@@ -63,6 +65,14 @@ export function makeGenericUserStore<U extends unknown = User>() {
           setLoading(false);
         });
     };
+
+    const activateEmailAddress: (
+      userIdentifier: string, token: string,
+    ) => Promise<void> = (
+      userIdentifier, token,
+    ) => activateEmailAddressAPI(apiUrl, userIdentifier, token)
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      .then(() => {});
 
     useEffect(() => {
       // If we don't have a user, we need to obtain it via  the me endpoint
@@ -85,24 +95,32 @@ export function makeGenericUserStore<U extends unknown = User>() {
       <GenericUserContext.Provider
         value={{
           user,
-          apiUrl,
-          loading,
-          login,
-          logout,
-          loggedOut,
         }}
       >
-        <CssBaseline />
-        <ThemeProvider theme={customTheme || defaultTheme}>
-          {children}
-        </ThemeProvider>
+        <AuthFunctionContext.Provider
+          value={{
+            apiUrl,
+            loading,
+            login,
+            loggedIn: !!user,
+            logout,
+            justLoggedOut: loggedOut,
+            activateEmailAddress,
+          }}
+        >
+          <CssBaseline />
+          <ThemeProvider theme={customTheme || defaultTheme}>
+            {children}
+          </ThemeProvider>
+        </AuthFunctionContext.Provider>
       </GenericUserContext.Provider>
     );
   };
 
-  const useGenericUserStore: () => UserStoreValue<U> = () => (
-    useContext(GenericUserContext)
-  );
+  const useGenericUserStore: () => UserStoreValue<U>&AuthFunctionContextValue = () => ({
+    ...useContext(GenericUserContext),
+    ...useContext(AuthFunctionContext),
+  });
 
   return {
     UserStore: GenericUserStore,
