@@ -126,3 +126,12 @@ test('Email type in ident input field', () => {
   expect(renderOptions.getByLabelText(strings.LoginForm.Email))
     .toHaveProperty('type', 'email');
 });
+
+test('reset link leads to correct url', () => {
+  const pathToReset = '/path/to/reset';
+  const ResetLoginForm = makeLoginForm({ pathToReset });
+  const renderObject = renderFunction(<ResetLoginForm />);
+  fireEvent.click(renderObject.getByText(strings.LoginForm.ResetPassword));
+  const { entries } = renderObject.history;
+  expect(entries[entries.length - 1].pathname).toEqual(pathToReset);
+});
