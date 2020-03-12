@@ -2,11 +2,15 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
+import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import Link from '@material-ui/core/Link';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { FC, useState } from 'react';
-import { Grid, Paper, Typography } from '@material-ui/core';
+import { Link as RouterLink } from 'react-router-dom';
 import { AxiosError } from 'axios';
 import { useUserStore } from '../store/UserStore';
 import { strings } from '../internationalization';
@@ -20,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     paddingTop: 35,
     paddingLeft: 47,
     paddingRight: 30,
-    paddingBottom: 36,
+    paddingBottom: 40,
     boxShadow: '0 1px 36px 0 rgba(211, 211, 211, 0.5)',
     width: '100%',
     [theme.breakpoints.down('md')]: {
@@ -63,10 +67,12 @@ type IdentifierType = keyof typeof Identifier;
 
 export interface LoginFormOptions {
   identifier: Identifier;
+  pathToReset?: string;
 }
 
 export const makeLoginForm: (options: LoginFormOptions) => FC = ({
   identifier,
+  pathToReset = '/auth/reset',
 }) => () => {
   const classes = useStyles();
   const { login, loggedOut } = useUserStore();
@@ -176,6 +182,18 @@ export const makeLoginForm: (options: LoginFormOptions) => FC = ({
           >
             {strings.LoginForm.Login}
           </Button>
+        </Grid>
+
+        <Grid style={{ marginTop: 24 }} container item xs={12} justify="center">
+          <Link
+            id="login_password_reset"
+            variant="body1"
+            color="textPrimary"
+            component={RouterLink}
+            to={pathToReset}
+          >
+            {strings.LoginForm.ResetPassword}
+          </Link>
         </Grid>
       </form>
     </Paper>
