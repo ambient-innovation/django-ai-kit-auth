@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
 import { LoginRoute } from './LoginRoute';
-import {ForgotPasswordView, LoginView} from './AuthView';
+import { ForgotPasswordView, LoginView } from './AuthView';
 import { ActivateEmailAddress } from './ActivateEmailAddress';
 
 export const normalizePath = (path: string) => `${path.replace(

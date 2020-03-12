@@ -5,10 +5,10 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import React, {FC, useContext, useState} from 'react';
+import React, { FC, useContext, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { strings } from '../internationalization';
-import {AuthFunctionContext} from "../store/UserStore";
+import { AuthFunctionContext } from '../store/UserStore';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   form: {
