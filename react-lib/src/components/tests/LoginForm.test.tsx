@@ -1,10 +1,10 @@
 import * as React from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { render, fireEvent, waitForElement } from '@testing-library/react';
+import { fireEvent, waitForElement } from '@testing-library/react';
 import { Identifier, LoginForm, makeLoginForm } from '../LoginForm';
-import { UserContext } from '../..';
 import { strings } from '../../internationalization';
 import { User } from '../../api/types';
+import { renderWithRouterAndUser } from './Util';
 
 const mockUser: User = ({
   id: 42, username: 'Donald', email: 'donald@example.com',
@@ -12,23 +12,10 @@ const mockUser: User = ({
 const mockPassword = '1324qwer';
 
 const login = jest.fn();
-const logout = jest.fn();
 
 const renderFunction = (
-  element?: JSX.Element,
-) => render(
-  <UserContext.Provider
-    value={{
-      apiUrl: '',
-      loading: false,
-      login,
-      logout,
-      loggedOut: false,
-    }}
-  >
-    { element || <LoginForm /> }
-  </UserContext.Provider>,
-);
+  element: JSX.Element = <LoginForm />,
+) => renderWithRouterAndUser(element, { login });
 
 beforeEach(() => {
   login.mockReturnValue(new Promise(() => mockUser));

@@ -3,34 +3,31 @@ import React, {
 } from 'react';
 import { Redirect, Route, RouteProps } from 'react-router-dom';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { UserContext } from '../store/types';
-import { UserContext as StandardUserContext } from '../store/UserStore';
+import { AuthFunctionContext } from '../store/UserStore';
 
-export interface ProtectedRouteOptions<User> {
-  userContext: UserContext<User>;
+export interface ProtectedRouteOptions {
   pathToLogin?: string;
   pathToMainPage?: string;
-  loadingIndicator: ComponentType;
+  loadingIndicator?: ComponentType;
 }
 
-export const makeProtectedRoute: <User>(
-  options: ProtectedRouteOptions<User>,
+export const makeProtectedRoute: (
+  options: ProtectedRouteOptions,
 ) => FC<RouteProps> = ({
-  userContext,
   pathToLogin = '/auth/login',
   pathToMainPage = '/',
-  loadingIndicator,
+  loadingIndicator = () => <CircularProgress />,
 }) => ({
   component,
   render,
   children,
   ...routerProps
 }) => {
-  const { user, loading } = useContext(userContext);
+  const { loggedIn, loading } = useContext(AuthFunctionContext);
   const pathname = routerProps.location?.pathname || pathToMainPage;
 
   if (loading) return <Route {...routerProps} component={loadingIndicator} />;
-  if (!user) {
+  if (!loggedIn) {
     return (
       <Redirect to={{
         pathname: pathToLogin,
@@ -51,7 +48,4 @@ export const makeProtectedRoute: <User>(
   );
 };
 
-export const ProtectedRoute = makeProtectedRoute({
-  userContext: StandardUserContext,
-  loadingIndicator: () => <CircularProgress />,
-});
+export const ProtectedRoute = makeProtectedRoute({});

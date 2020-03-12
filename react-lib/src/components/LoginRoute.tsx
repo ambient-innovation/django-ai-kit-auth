@@ -6,8 +6,7 @@ import {
 } from 'react-router-dom';
 import { Location } from 'history';
 
-import { UserContext } from '../store/types';
-import { UserContext as StandardUserContext } from '../store/UserStore';
+import { AuthFunctionContext } from '../store/UserStore';
 
 export interface LocationState {
   from: {
@@ -18,25 +17,23 @@ export interface LoginRouteProps extends RouteProps {
   location?: Location<LocationState>;
 }
 
-export interface LoginRouteOptions<User> {
-  userContext: UserContext<User>;
+export interface LoginRouteOptions {
   pathToMainPage?: string;
 }
 
-export const makeLoginRoute: <User>(
-  options: LoginRouteOptions<User>,
+export const makeLoginRoute: (
+  options: LoginRouteOptions,
 ) => FC<LoginRouteProps> = ({
-  userContext,
   pathToMainPage = '/',
 }) => ({
   children,
   ...routeProps
 }) => {
-  const { user } = useContext(userContext);
+  const { loggedIn } = useContext(AuthFunctionContext);
   const { from } = routeProps.location?.state
     || { from: { pathname: pathToMainPage } };
 
-  if (user) return <Redirect to={from} />;
+  if (loggedIn) return <Redirect to={from} />;
 
   return (
     <Route {...routeProps}>
@@ -45,6 +42,4 @@ export const makeLoginRoute: <User>(
   );
 };
 
-export const LoginRoute = makeLoginRoute({
-  userContext: StandardUserContext,
-});
+export const LoginRoute = makeLoginRoute({});

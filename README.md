@@ -53,6 +53,19 @@ the either one must contain `BREAKING CHANGE:` with a following description
 of what is changing. `body` and `footer` are not required if the type is not
 `fix` or `feat`.
 
+## Local Development
+
+Start the demo project with docker-compose
+
+    cd demo
+    docker-compose up --build -d
+
+Start the npm watch script in the react-lib folder
+
+    npm run watch
+
+Changes to the library will automatically be shown and updated in the demo project
+
 ## E2E-Testing
 
 In order to perform end-to-end tests, both libraries are use in the demo project.

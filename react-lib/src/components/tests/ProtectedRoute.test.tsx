@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { FC } from 'react';
 import { User } from '../../api/types';
-import { UserContext } from '../..';
 import { ProtectedRoute, makeProtectedRoute } from '../ProtectedRoute';
 import { renderWithRouterAndUser } from './Util';
 
@@ -33,13 +32,11 @@ test('redirect passes referral location', () => {
 
 test('shows loading indicator when loading', () => {
   const SimpleProtected = makeProtectedRoute({
-    userContext: UserContext,
     loadingIndicator: () => <div>loading</div>,
   });
   const renderObject = renderWithRouterAndUser(
     <SimpleProtected />,
-    undefined,
-    true,
+    { loading: true },
   );
   expect(renderObject.getByText('loading')).toBeInTheDocument();
 });
@@ -49,7 +46,7 @@ test('renders children when logged in', () => {
     <ProtectedRoute>
       content
     </ProtectedRoute>,
-    mockUser,
+    { user: mockUser },
   );
   expect(renderObject.getByText('content')).toBeInTheDocument();
 });
@@ -58,7 +55,7 @@ test('renders component when logged in', () => {
   const Content: FC = () => <div>content</div>;
   const renderObject = renderWithRouterAndUser(
     <ProtectedRoute component={Content} />,
-    mockUser,
+    { user: mockUser },
   );
   expect(renderObject.getByText('content')).toBeInTheDocument();
 });

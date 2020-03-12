@@ -8,7 +8,7 @@ import {
   render, waitForElement, fireEvent, act,
 } from '@testing-library/react';
 
-import { UserStore, UserContext } from '../UserStore';
+import { UserStore, useUserStore } from '../UserStore';
 import { User } from '../../api/types';
 
 const maxios = new MockAdapter(axios);
@@ -21,44 +21,42 @@ beforeEach(() => {
   maxios.reset();
 });
 
-const StoreDisplay: FC = () => (
-  <UserContext.Consumer>
-    { ({
-      user, loading, login, logout,
-    }) => {
-      if (loading) return <div>loading</div>;
-      if (!user) {
-        return (
-          <div>
-            no user
-            <button
-              type="button"
-              onClick={() => login(mockUser.username, 'pass')
-                .catch(() => null)}
-            >
-              Login
-            </button>
-          </div>
-        );
-      }
+const StoreDisplay: FC = () => {
+  const {
+    user, loading, login, logout,
+  } = useUserStore();
 
-      return (
-        <div>
-          <div>{user.username}</div>
-          <div>{user.email}</div>
-          <div>{user.id}</div>
-          <button
-            type="button"
-            onClick={() => logout()
-              .catch(() => null)}
-          >
-            Logout
-          </button>
-        </div>
-      );
-    }}
-  </UserContext.Consumer>
-);
+  if (loading) return <div>loading</div>;
+  if (!user) {
+    return (
+      <div>
+        no user
+        <button
+          type="button"
+          onClick={() => login(mockUser.username, 'pass')
+            .catch(() => null)}
+        >
+          Login
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <div>{user.username}</div>
+      <div>{user.email}</div>
+      <div>{user.id}</div>
+      <button
+        type="button"
+        onClick={() => logout()
+          .catch(() => null)}
+      >
+        Logout
+      </button>
+    </div>
+  );
+};
 
 const renderStoreValue = () => render(
   <UserStore apiUrl="">

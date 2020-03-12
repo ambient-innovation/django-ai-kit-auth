@@ -66,16 +66,16 @@ export enum Identifier {
 type IdentifierType = keyof typeof Identifier;
 
 export interface LoginFormOptions {
-  identifier: Identifier;
   pathToReset?: string;
+  identifier?: Identifier;
 }
 
 export const makeLoginForm: (options: LoginFormOptions) => FC = ({
-  identifier,
+  identifier = Identifier.UsernameOrEmail,
   pathToReset = '/auth/reset',
 }) => () => {
   const classes = useStyles();
-  const { login, loggedOut } = useUserStore();
+  const { login, justLoggedOut } = useUserStore();
   const [userIdentifier, setUserIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -93,7 +93,7 @@ export const makeLoginForm: (options: LoginFormOptions) => FC = ({
       </Typography>
 
       {
-        loggedOut && (
+        justLoggedOut && (
           <Typography
             variant="body2"
             className={classes.loggedOutText}
@@ -200,6 +200,4 @@ export const makeLoginForm: (options: LoginFormOptions) => FC = ({
   );
 };
 
-export const LoginForm = makeLoginForm({
-  identifier: Identifier.UsernameOrEmail,
-});
+export const LoginForm = makeLoginForm({});
