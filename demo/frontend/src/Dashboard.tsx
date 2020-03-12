@@ -1,11 +1,11 @@
-import React, { FC, useContext } from 'react';
+import React, { FC } from 'react';
 import {
   Button, Grid, Typography,
 } from '@material-ui/core';
-import { UserContext } from 'ai-kit-auth';
+import { useUserStore } from 'ai-kit-auth';
 
 export const Dashboard: FC = () => {
-  const { apiUrl, logout, user } = useContext(UserContext);
+  const { apiUrl, logout, user } = useUserStore();
 
   const unAuthorizedFetch = () => {
     fetch(`${apiUrl}unauthorized`)
