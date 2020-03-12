@@ -62,11 +62,11 @@ export enum Identifier {
 type IdentifierType = keyof typeof Identifier;
 
 export interface LoginFormOptions {
-  identifier: Identifier;
+  identifier?: Identifier;
 }
 
 export const makeLoginForm: (options: LoginFormOptions) => FC = ({
-  identifier,
+  identifier = Identifier.UsernameOrEmail,
 }) => () => {
   const classes = useStyles();
   const { login, justLoggedOut } = useUserStore();
@@ -182,6 +182,4 @@ export const makeLoginForm: (options: LoginFormOptions) => FC = ({
   );
 };
 
-export const LoginForm = makeLoginForm({
-  identifier: Identifier.UsernameOrEmail,
-});
+export const LoginForm = makeLoginForm({});

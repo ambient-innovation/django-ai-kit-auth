@@ -60,7 +60,8 @@ AI-KIT: Authentication provides the following components and functions:
 * UserStore
     * [UserStore](#userstore)
     * [useUserStore](#useuserstore)
-    * [UserContext](#usercontext)
+    * [UserContext](#Usercontext)
+    * [AuthFunctionContext](#AuthFunctionContext)
     * [makeGenericUserStore](#makegenericuserstore)
 * Routes
     * [makeAuthRoutes](#makeAuthRoutes)
@@ -120,15 +121,21 @@ export default App;
 ### useUserStore
 
 `useUserStore` is a react hook, which can be used to obtain user information and helper
-functions stored in the `UserStore`. It returns an object containing the following entries:
-
-* `user: { username: string; email: string; } | undefined`
-* `apiUrl: string`
-* `loading: boolean`
-* `login: (userIdentifier: string, password: string) => Promise<{ username: string; email: string; }>`
-
+functions stored in the `UserStore`.
+It returns an object containing a  `user: { username: string; email: string; } | undefined` object.
 The `user` object contains basic information about the user.
 If it is undefined, the login was not yet successful, or the user has been logged out already.
+
+
+### AuthFunctionContext
+
+* `apiUrl: string`
+* `loading: boolean`
+* `login: (userIdentifier: string, password: string) => Promise<void>`
+* `loggedIn: boolean`
+* `logout: () => Promise<void>`
+* `justLoggedOut: boolean`
+* `activateEmailAddress: (userIdentifier: string, token: string) => Promise<void>`
 
 `apiUrl` contains the url of the backend. This is exactly the same as the `apiUrl` prop passed
 to `UserStore`
@@ -155,6 +162,14 @@ In order to get typescript to use the correct types, you need to define your own
 containing all data fields, and then use `makeGenericUserStore` to create a custom set of
 `UserStore`, `useUserStore` etc.
 
+#### Parameters
+
+Requires a type parameter for the user type.
+
+#### Returns
+
+An object containing custom `{ UserStore, useUserStore, UserContext }`
+
 #### Example
 
 ```typescript
@@ -169,6 +184,11 @@ export const { UserStore, useUserStore } = makeGenericUserStore<MyUser>();
 
 After this you can use the returned values just like the standard ones, except that the
 `user` object is of type `MyUser` instead of `{ username: string; email: string; }`
+
+#### Note
+
+If you don't use typescript, there is no need to use this function. It is merely a means to
+tell typescript about your own user type.
 
 ### makeAuthRoutes
 
@@ -207,8 +227,9 @@ export default App;
 A wrapper for [\<Route\>](https://reacttraining.com/react-router/web/api/Route) routes that should only be available to users that are logged in.
 It checks with the UserContext if the user is in fact logged in. If not, it will redirect to `/auth/login`.
 During the check a loading spinner is shown.
-To use a custom UserContext, custom paths or a custom loading indicator, please use [makeProtectedRoute](#makeprotectedroute).
-Example usage:
+To use custom paths or a custom loading indicator, please use [makeProtectedRoute](#makeprotectedroute).
+
+#### Example
 
 ```typescript jsx
 <UserStore
@@ -228,15 +249,27 @@ Example usage:
 ```
 
 ### makeProtectedRoute()
-Returns a [ProtectedRoute](#protectedroute) Component. Requires you to pass the UserContext you are using, as well as a loading indicator
-and allows you to pass a path for the `main page` and `login page`.
-Example usage:
+
+This function enables you to customize the standard [ProtectedRoute](#protectedroute) Component.
+
+#### Parameters
+
+This function requires a single options object as parameter containing any of these parameters:
+
+* `pathToLogin: string`, default: `'/auth/login'`
+* `pathToMainPage: string`, default: `'/'`
+* `loading indicator: () => JSX.Element`, defautl: `() => <CircularProgress />`
+
+You can provide the `path*` options if you do not use the default base path or some
+specific route for your main page. The `loadingIndicator` is configurable for the case that you
+don't want to use Material-UI.
+
+#### Example
 
 ```typescript jsx
 const CustomProtectedRoute = makeProtectedRoute({
-  userContext: StardardUserContext,
-  loadingIndicator: () => <CircularProgress />,
-  pathToLogin: '/auth/login',
+  loadingIndicator: () => <div>Loading...</div>,
+  pathToLogin: '/authentication/login',
   pathToMainPage: '/dashboard'
 });
 
@@ -264,9 +297,11 @@ as Route for a login page, if you are not using [`makeAuthRoutes`](#makeAuthRout
 It uses the [`UserContext`](#UserContext) to see if a user is logged in or not.
 When the user is logged in it redirects to it's referrer.
 If there is no referrer, it redirects to the `main page` (default '/').
-If you want to use LoginRoute with a custom [`UserContext`](#UserContext) or a different `main page`,
-please use [makeLoginRoute](#makeloginroute)
-Example usage:
+If you want to use LoginRoute with different `main page` route,
+please use [makeLoginRoute](#makeloginroute).
+[`makeAuthRoutes`](#makeAuthRoutes) includes this component already.
+
+#### Example
 
 ```typescript jsx
 <UserStore
@@ -282,12 +317,19 @@ Example usage:
 ```
 
 ### makeLoginRoute()
-Returns a [LoginRoute](#loginroute) Component. Requires you to pass the UserContext you are using and allows you to pass a path for the `main page`.
-Example usage:
+
+Returns a customized [LoginRoute](#loginroute) Component.
+
+#### Parameters
+
+This function requires a single options object as parameter containing any of these parameters:
+
+* `pathToMainPage: string`, default: `/`
+
+#### Example
 
 ```typescript jsx
 const MyLoginRoute = makeLoginRoute({
-  userContext: myUserContext,
   pathToMainPage: '/dashboard',
 });
 
@@ -305,10 +347,10 @@ const MyLoginRoute = makeLoginRoute({
 ```
 
 ### LoginView
-Styled page wrapper for a LoginForm. You can pass your own [LoginForm](#loginform) Component
-created with [makeLoginForm](#makeloginform) as a child if you do not want the default [LoginForm](#loginform) Component.
 
-Example usage with default LoginForm (Username and Email):
+Styled page wrapper for a LoginForm.
+
+#### Example
 
 ```typescript jsx
 const App: React.FC = () => (
@@ -319,29 +361,29 @@ const App: React.FC = () => (
   </UserStore>
 );
 ```
- Example usage with custom LoginForm (Email only):
 
-```typescript jsx
-const MyLogin = makeLoginForm({ identifier: Identifier.Email });
-
-const App: React.FC = () => (
-  <UserStore
-    apiUrl="http://localhost:8000/api/v1/"
-  >
-    <LoginView>
-      <MyLogin />
-    </LoginView>
-  </UserStore>
-);
-```
 ### LoginForm
 
-`LoginForm` is a react component that provides a [Material UI Paper](https://material-ui.com/components/paper/) wrapper and contains two input fields (username/email and password) and a submit button.
-If the login should only be possible using a username or email only, please use [makeLoginForm](#makeloginform).
+`LoginForm` is a react component that provides a
+[Material UI Paper](https://material-ui.com/components/paper/) wrapper and contains two
+input fields (username/email and password) and a submit button.
+If the login should only be possible using a username or email only, please use
+[makeLoginForm](#makeloginform).
 
-### makeLoginForm()
-`makeLoginForm` returns a [LoginForm](#loginform) component and requires you to pass an `Identifier` (Username, Email or UsernameAndEmail).
-Example Usage:
+### makeLoginForm
+
+This function creates a custom  [LoginForm](#loginform) component.
+
+#### Parameters
+
+This function requires a single options object as parameter containing any of these parameters:
+
+* `identifier: Identifier`, default: `Identifier.UsernameOrEmail`
+
+`Identifier` is an enum that is also exported by `ai-kit-auth`, and contains
+`Username`, `Email` and `UsernameAndEmail`.
+
+#### Example
 
 ```typescript jsx
 const MyLogin = makeLoginForm({ identifier: Identifier.Email });
@@ -365,9 +407,9 @@ of that request is rendered as error or success view. While waiting for the requ
 a loading indicator is shown.
 This component needs to be placed within a `Route` with parameters `ident` and `token`,
 and also needs a `UserStore` as parent somewhere in the tree, so that it can find the
-`apiUrl`.
+`activateEmailAddress` function.
 
-You can you `ActivateEmailAddress` like this:
+#### Example
 
 ```typescript jsx
     <Route
@@ -378,30 +420,34 @@ You can you `ActivateEmailAddress` like this:
     />,
 
 ```
-Be aware that `ActivateEmailAddress` does not reside inside a `ProtectedRoute`, as it needs to be
+
+#### Note
+
+Be aware that `ActivateEmailAddress` should not reside inside a `ProtectedRoute`, as it needs to be
 accessible to users who are not logged in.
+
 
 ### makeActivateEmailAddress
 
 Use this function to create a customized version of `ActivateEmailAddress`.
 
-#### Parateters
+#### Parameters
 
-* `options`: an object containing the configuration options for the new component:
-    * `userContext: UserContext<User>`: the `UserContext` used by the parent `UserStore`
-    * `loadingIndicator: () => JSX.Element`: a function returning a view that conveys to the user,
-      that the page is loading
-    * `errorView: (title: string, message: string) => JSX.Element`: a function returning a view
-      which displays an error message to the user
-    * `successView: () => JSX.Element`: a function returning a view which tells the user that
-      everything worked and that they can now log into their account
+This function requires a single options object as parameter containing any of these parameters:
+
+* `loadingIndicator: () => JSX.Element`: a function returning a view that conveys to the user,
+  that the page is loading
+* `errorView: (title: string, message: string) => JSX.Element`: a function returning a view
+  which displays an error message to the user
+* `successView: () => JSX.Element`: a function returning a view which tells the user that
+  everything worked and that they can now log into their account
 
 #### Returns
 
 A react functional component akin to `ActivateEmailAddress`, which can be used instead of the
 standard one.
 
-#### Example Usage
+#### Example
 
 ```typescript jsx
 export const MyActiveEmailAddress = makeActivateEmailAddress({
