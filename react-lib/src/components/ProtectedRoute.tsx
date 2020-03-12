@@ -16,7 +16,7 @@ export const makeProtectedRoute: (
 ) => FC<RouteProps> = ({
   pathToLogin = '/auth/login',
   pathToMainPage = '/',
-  loadingIndicator= () => <CircularProgress />,
+  loadingIndicator = () => <CircularProgress />,
 }) => ({
   component,
   render,
