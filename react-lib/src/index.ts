@@ -28,9 +28,15 @@ export {
 } from './components/LoginForm';
 
 export {
+  ForgotPasswordForm,
+  makeForgotPasswordForm,
+} from './components/ForgotPasswordForm';
+
+export {
   ActivationView,
   AuthView,
   LoginView,
+  ForgotPasswordView,
   ErrorView,
 } from './components/AuthView';
 

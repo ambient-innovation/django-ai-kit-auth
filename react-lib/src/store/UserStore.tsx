@@ -25,6 +25,7 @@ export const AuthFunctionContext = createContext<AuthFunctionContextValue>({
   logout: errorPromise,
   justLoggedOut: false,
   activateEmailAddress: errorPromise,
+  requestPasswordReset: errorPromise,
 });
 
 export function makeGenericUserStore<U extends unknown = User>() {
@@ -74,6 +75,15 @@ export function makeGenericUserStore<U extends unknown = User>() {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       .then(() => {});
 
+    // TODO: replace this with an actual API call
+    // eslint-disable-next-line unicorn/consistent-function-scoping
+    const requestPasswordReset = (email: string) => new Promise<void>(
+      (resolve) => {
+        console.log('requestPasswordReset for', email);
+        resolve();
+      },
+    );
+
     useEffect(() => {
       // If we don't have a user, we need to obtain it via  the me endpoint
       if (!user) {
@@ -106,6 +116,7 @@ export function makeGenericUserStore<U extends unknown = User>() {
             logout,
             justLoggedOut: loggedOut,
             activateEmailAddress,
+            requestPasswordReset,
           }}
         >
           <CssBaseline />

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
 import { LoginRoute } from './LoginRoute';
-import { LoginView } from './AuthView';
+import {ForgotPasswordView, LoginView} from './AuthView';
 import { ActivateEmailAddress } from './ActivateEmailAddress';
 
 export const normalizePath = (path: string) => `${path.replace(
@@ -19,5 +19,11 @@ export const makeAuthRoutes = (basePath = '/auth') => {
       key="activation"
     />,
     <LoginRoute exact path={`${normPath}/login`} component={LoginView} key="login" />,
+    <LoginRoute
+      exact
+      path={`${normPath}/forgot-password`}
+      component={ForgotPasswordView}
+      key="forgot-password"
+    />,
   ];
 };

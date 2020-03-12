@@ -5,6 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { LoginForm } from './LoginForm';
 import { ActivationCard } from './ActivationCard';
 import { ErrorCard, ErrorCardProps } from './ErrorCard';
+import {ForgotPasswordForm} from "./ForgotPasswordForm";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   loginView: {
@@ -61,6 +62,12 @@ export const AuthView: FC = ({ children }) => {
 export const LoginView: FC = () => (
   <AuthView>
     <LoginForm />
+  </AuthView>
+);
+
+export const ForgotPasswordView: FC = () => (
+  <AuthView>
+    <ForgotPasswordForm />
   </AuthView>
 );
 

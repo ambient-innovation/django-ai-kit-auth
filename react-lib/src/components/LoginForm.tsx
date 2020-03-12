@@ -66,13 +66,13 @@ export enum Identifier {
 type IdentifierType = keyof typeof Identifier;
 
 export interface LoginFormOptions {
-  pathToReset?: string;
+  pathToForgotPassword?: string;
   identifier?: Identifier;
 }
 
 export const makeLoginForm: (options: LoginFormOptions) => FC = ({
   identifier = Identifier.UsernameOrEmail,
-  pathToReset = '/auth/reset',
+  pathToForgotPassword = '/auth/forgot-password',
 }) => () => {
   const classes = useStyles();
   const { login, justLoggedOut } = useUserStore();
@@ -190,7 +190,7 @@ export const makeLoginForm: (options: LoginFormOptions) => FC = ({
             variant="body1"
             color="textPrimary"
             component={RouterLink}
-            to={pathToReset}
+            to={pathToForgotPassword}
           >
             {strings.LoginForm.ResetPassword}
           </Link>

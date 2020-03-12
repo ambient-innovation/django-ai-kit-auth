@@ -7,6 +7,8 @@ import { AuthFunctionContext, UserContext } from '../../store/UserStore';
 import { User } from '../../api/types';
 import { AuthFunctionContextValue, UserStoreValue } from '../../store/types';
 
+const successPromise = () => new Promise<void>((r) => r());
+
 export const renderWithRouterAndUser = (
   element: JSX.Element,
   testContext?: Partial<UserStoreValue<User>&AuthFunctionContextValue>,
@@ -21,11 +23,12 @@ export const renderWithRouterAndUser = (
         <AuthFunctionContext.Provider
           value={{
             loading: !!testContext?.loading,
-            login: testContext?.login || jest.fn(),
+            login: testContext?.login || successPromise,
             loggedIn: !!testContext?.user,
-            logout: testContext?.logout || jest.fn(),
+            logout: testContext?.logout || successPromise,
             justLoggedOut: !!testContext?.justLoggedOut,
-            activateEmailAddress: testContext?.activateEmailAddress || jest.fn(),
+            activateEmailAddress: testContext?.activateEmailAddress || successPromise,
+            requestPasswordReset: testContext?.requestPasswordReset || successPromise,
             apiUrl: testContext?.apiUrl || 'https://example.com/api/v1',
           }}
         >

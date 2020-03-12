@@ -22,6 +22,13 @@
       }
     }
   },
+  "ForgotPassword": {
+    "ForgotPassword": "Forgot Password",
+    "Description": "Please enter the email address you registered with. We will send you an email with a link to a page, where you can reset your password.",
+    "InputLabel": "Email",
+    "ButtonText": "Send Email",
+    "BackToLogin": "Back to Login"
+  },
   "EmailActivation": {
     "SuccessTitle": "Your email address has been activated successfully",
     "SuccessText": "Your account was successfully activated. Please continue to login to start using our service!",

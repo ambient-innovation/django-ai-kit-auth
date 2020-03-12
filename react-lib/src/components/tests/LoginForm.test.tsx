@@ -129,7 +129,7 @@ test('Email type in ident input field', () => {
 
 test('reset link leads to correct url', () => {
   const pathToReset = '/path/to/reset';
-  const ResetLoginForm = makeLoginForm({ pathToReset });
+  const ResetLoginForm = makeLoginForm({ pathToForgotPassword: pathToReset });
   const renderObject = renderFunction(<ResetLoginForm />);
   fireEvent.click(renderObject.getByText(strings.LoginForm.ResetPassword));
   const { entries } = renderObject.history;
