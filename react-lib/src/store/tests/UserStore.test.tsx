@@ -78,7 +78,7 @@ test('UserStore is loading initially', () => {
     // wait for some time, so that the loading can actually be shown
     await sleep();
 
-    return [200, mockUser];
+    return [400];
   });
   const renderObject = renderStoreValue();
   expect(renderObject.getByText('loading')).toBeInTheDocument();
@@ -108,7 +108,7 @@ test('UserStore shows loading while logging in', async () => {
   maxios.onPost('/login/').reply(async () => {
     await sleep();
 
-    return [200, mockUser];
+    return [400];
   });
   const renderObject = renderStoreValue();
   await waitForElement(() => renderObject.getByText('Login'));
@@ -141,7 +141,7 @@ test('UserStore shows loading while logging out', async () => {
   maxios.onPost('/logout/').reply(async () => {
     await sleep();
 
-    return [200];
+    return [400];
   });
   const renderObject = renderStoreValue();
   await waitForElement(() => renderObject.getByText('Logout'));

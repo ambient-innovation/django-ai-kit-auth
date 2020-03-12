@@ -43,7 +43,7 @@ test('shows error message', async () => {
   ));
 });
 
-const sleep = () => new Promise<void>((r) => { setTimeout(r, 200); });
+const sleep = () => new Promise<void>((resolve, reject) => { setTimeout(reject, 200); });
 
 // eslint-disable-next-line jest/expect-expect
 test('shows loading indicator', async () => {
