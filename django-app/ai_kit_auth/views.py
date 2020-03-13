@@ -22,8 +22,6 @@ class LoginView(generics.GenericAPIView):
     user_serializer = serializers.UserSerializer
 
     def post(self, request, *args, **kwargs):
-        csrf_token = csrf.get_token(request)
-
         serializer = self.serializer_class(
             data=self.request.data, context={"request": request}
         )
@@ -34,6 +32,9 @@ class LoginView(generics.GenericAPIView):
         user_serializer = self.user_serializer(
             instance=user, context={"request": request}
         )
+
+        csrf_token = csrf.get_token(request)
+
         return Response(
             {"user": user_serializer.data, "csrf": csrf_token,},
             status=status.HTTP_200_OK,
