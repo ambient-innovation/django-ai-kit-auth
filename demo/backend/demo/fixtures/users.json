@@ -9,7 +9,7 @@
             "username":"root",
             "first_name":"",
             "last_name":"",
-            "email":"root@root.de",
+            "email":"root@example.com",
             "is_staff":true,
             "is_active":true,
             "date_joined":"2020-02-25T07:55:43.852Z",
