@@ -88,21 +88,3 @@ def send_user_activation_mail(user):
         getattr(user, User.EMAIL_FIELD),
     )
     return ident, token
-
-
-def send_user_password_reset_mail(sender, instance, created, **kwargs):
-    """
-    Sends the initial mail for an deactivated user.
-    """
-    from django.contrib.auth.forms import PasswordResetForm
-
-    form = PasswordResetForm({"email": instance.email})
-    form.is_valid()
-    form.save(
-        domain_override=api_settings.FRONTEND.URL
-        + api_settings.FRONTEND.PASSWORD_RESET_ROUTE,
-        subject_template_name="new_user_mail/title.txt",
-        email_template_name="new_user_mail/body.txt",
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        extra_email_context={"name": instance.display_name},
-    )

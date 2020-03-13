@@ -1,5 +1,5 @@
 from django.urls import reverse
-
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -22,6 +22,7 @@ class LoginTests(APITestCase):
         self.me_url = reverse("auth_me")
         self.validate_password_url = reverse("auth_validate_password")
         self.init_pw_reset_url = reverse("auth_init_pw_reset")
+        self.pw_reset_url = reverse("auth_pw_reset")
         self.client.logout()
 
     def isLoggedIn(self) -> bool:
@@ -114,5 +115,36 @@ class LoginTests(APITestCase):
     def test_init_password_reset_fail(self):
         response = self.client.post(
             self.init_pw_reset_url, {"email": "invalid_email@example.com"}
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_reset_password(self):
+        new_password = "new_awesome_password"
+        # manually create reset session
+        ident = str(services.scramble_id(self.user.pk))
+        token_gen = PasswordResetTokenGenerator()
+        token = token_gen.make_token(self.user)
+
+        response = self.client.post(
+            self.pw_reset_url,
+            {"password": new_password, "ident": ident, "token": token},
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertFalse(self.isLoggedIn())
+        self.client.post(
+            self.login_url,
+            {"ident": self.user.username, "password": new_password},
+            format="json",
+        )
+        self.assertTrue(self.isLoggedIn())
+
+    def test_reset_password_fail(self):
+        new_password = "new_awesome_password"
+        ident = str(services.scramble_id(self.user.pk))
+        response = self.client.post(
+            self.pw_reset_url,
+            {"password": new_password, "ident": ident, "token": "notavalidtoken"},
+            format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

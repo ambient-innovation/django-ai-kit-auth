@@ -1,6 +1,13 @@
 from django.contrib.auth import authenticate, get_user_model
+from django.contrib.auth.password_validation import (
+    get_password_validators,
+    validate_password,
+)
+from django.conf import settings
+from django.core.exceptions import ValidationError as DjangoValidationError
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
+
 
 UserModel = get_user_model()
 
@@ -43,6 +50,27 @@ class ValidatePasswordSerializer(serializers.Serializer):
     ident = serializers.CharField(required=True)
     password = serializers.CharField(required=True)
 
+    def validate(self, attrs):
+        try:
+            validators = get_password_validators(settings.AUTH_PASSWORD_VALIDATORS)
+        except:
+            validators = None
+        try:
+            validate_password(
+                attrs["password"], user=attrs["ident"], password_validators=validators,
+            )
+        except DjangoValidationError as e:
+            # convert to error codes since translations are implemented in the
+            # frontend
+            raise ValidationError([error.code for error in e.error_list])
+        return attrs
+
 
 class InitiatePasswordResetSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
+
+
+class PasswordResetSerializer(serializers.Serializer):
+    ident = serializers.CharField(required=True)
+    token = serializers.CharField(required=True)
+    password = serializers.CharField(required=True)
