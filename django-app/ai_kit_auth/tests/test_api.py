@@ -35,9 +35,10 @@ class LoginTests(APITestCase):
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["username"], self.user.username)
-        self.assertEqual(response.data["id"], self.user.id)
-        self.assertEqual(response.data["email"], self.user.email)
+        self.assertTrue("csrf" in response.data)
+        self.assertEqual(response.data["user"]["username"], self.user.username)
+        self.assertEqual(response.data["user"]["id"], self.user.id)
+        self.assertEqual(response.data["user"]["email"], self.user.email)
         self.assertTrue(self.isLoggedIn())
 
     def test_login_with_email(self):
@@ -48,9 +49,10 @@ class LoginTests(APITestCase):
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["username"], self.user.username)
-        self.assertEqual(response.data["id"], self.user.id)
-        self.assertEqual(response.data["email"], self.user.email)
+        self.assertTrue("csrf" in response.data)
+        self.assertEqual(response.data["user"]["username"], self.user.username)
+        self.assertEqual(response.data["user"]["id"], self.user.id)
+        self.assertEqual(response.data["user"]["email"], self.user.email)
         self.assertTrue(self.isLoggedIn())
 
     def test_login_wrong_pw(self):
@@ -67,8 +69,15 @@ class LoginTests(APITestCase):
         self.client.login(username=self.user.username, password=PASSWORD)
         response = self.client.get(self.me_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["email"], self.user.email)
-        self.assertEqual(response.data["username"], self.user.username)
+        self.assertTrue("csrf" in response.data)
+        self.assertEqual(response.data["user"]["email"], self.user.email)
+        self.assertEqual(response.data["user"]["username"], self.user.username)
+
+    def test_access_me_not_logged_in(self):
+        response = self.client.get(self.me_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue("csrf" in response.data)
+        self.assertEqual(response.data["user"], None)
 
     def test_logout(self):
         self.client.login(username=self.user.username, password=PASSWORD)
@@ -79,7 +88,7 @@ class LoginTests(APITestCase):
 
     def test_access_protected_fail(self):
         self.assertFalse(self.isLoggedIn())
-        response = self.client.get(self.me_url)
+        response = self.client.post(self.logout_url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_validate_password(self):
