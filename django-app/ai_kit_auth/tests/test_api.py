@@ -21,6 +21,7 @@ class LoginTests(APITestCase):
         self.logout_url = reverse("auth_logout")
         self.me_url = reverse("auth_me")
         self.validate_password_url = reverse("auth_validate_password")
+        self.init_pw_reset_url = reverse("auth_init_pw_reset")
         self.client.logout()
 
     def isLoggedIn(self) -> bool:
@@ -105,3 +106,13 @@ class LoginTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # we have to get the user object again to see the updates
         self.assertTrue(UserModel.objects.get(pk=user.id).is_active)
+
+    def test_init_password_reset(self):
+        response = self.client.post(self.init_pw_reset_url, {"email": self.user.email})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_init_password_reset_fail(self):
+        response = self.client.post(
+            self.init_pw_reset_url, {"email": "invalid_email@example.com"}
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

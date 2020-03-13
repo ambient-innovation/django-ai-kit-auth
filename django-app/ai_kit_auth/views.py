@@ -36,6 +36,19 @@ class LoginView(generics.GenericAPIView):
         return response
 
 
+class InitiatePasswordResetView(views.APIView):
+    permission_classes = (AllowAny,)
+
+    def post(self, request, *args, **kwargs):
+        try:
+            user = UserModel.objects.get(email__exact=request.data["email"])
+
+            # TODO: send mail
+            return Response(status=status.HTTP_200_OK)
+        except UserModel.DoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
 class LogoutView(views.APIView):
     permission_classes = (IsAuthenticated,)
 

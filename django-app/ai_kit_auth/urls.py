@@ -15,4 +15,9 @@ urlpatterns = [
         views.ValidatePassword.as_view(),
         name="auth_validate_password",
     ),
+    re_path(
+        r"init_pw_reset/$",
+        views.InitiatePasswordResetView.as_view(),
+        name="auth_init_pw_reset",
+    ),
 ]
