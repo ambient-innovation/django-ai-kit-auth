@@ -7,6 +7,7 @@ import {
 import { Location } from 'history';
 
 import { AuthFunctionContext } from '../store/UserStore';
+import { FullConfig } from '../Configuration';
 
 export interface LocationState {
   from: {
@@ -17,21 +18,17 @@ export interface LoginRouteProps extends RouteProps {
   location?: Location<LocationState>;
 }
 
-export interface LoginRouteOptions {
-  pathToMainPage?: string;
-}
-
 export const makeLoginRoute: (
-  options: LoginRouteOptions,
+  config: FullConfig,
 ) => FC<LoginRouteProps> = ({
-  pathToMainPage = '/',
+  paths: { mainPage },
 }) => ({
   children,
   ...routeProps
 }) => {
   const { loggedIn } = useContext(AuthFunctionContext);
   const { from } = routeProps.location?.state
-    || { from: { pathname: pathToMainPage } };
+    || { from: { pathname: mainPage } };
 
   if (loggedIn) return <Redirect to={from} />;
 
@@ -41,5 +38,3 @@ export const makeLoginRoute: (
     </Route>
   );
 };
-
-export const LoginRoute = makeLoginRoute({});

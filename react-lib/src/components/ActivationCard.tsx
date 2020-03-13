@@ -7,6 +7,8 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import CheckIcon from '@material-ui/icons/Check';
 import { strings } from '../internationalization';
+import { FullConfig } from '../Configuration';
+import { AuthView } from './AuthView';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   PaperCard: {
@@ -38,35 +40,52 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   },
 }));
 
-export const ActivationCard: FC = () => {
-  const classes = useStyles();
-  const history = useHistory();
+export const makeActivationCard: (config: FullConfig) => {
+  ActivationCard: FC; ActivationView: FC;
+} = ({
+  paths: {
+    login,
+    mainPage,
+  },
+}) => {
+  const ActivationCard = () => {
+    const classes = useStyles();
+    const history = useHistory();
 
-  const handleRedirect = () => {
-    history.replace(
-      '/auth/login',
-      { from: '/' },
+    const handleRedirect = () => {
+      history.replace(
+        login,
+        { from: mainPage },
+      );
+    };
+
+    return (
+      <Paper className={classes.PaperCard}>
+        <Typography variant="h4" className={classes.SuccessTitle}>
+          <span>{strings.EmailActivation.SuccessTitle}</span>
+          <CheckIcon color="primary" fontSize="inherit" className={classes.CheckIcon} />
+        </Typography>
+        <Typography variant="body1" className={classes.SuccessText}>
+          {strings.EmailActivation.SuccessText}
+        </Typography>
+        <Grid item container justify="center">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => handleRedirect()}
+          >
+            {strings.EmailActivation.ButtonText}
+          </Button>
+        </Grid>
+      </Paper>
     );
   };
 
-  return (
-    <Paper className={classes.PaperCard}>
-      <Typography variant="h4" className={classes.SuccessTitle}>
-        <span>{strings.EmailActivation.SuccessTitle}</span>
-        <CheckIcon color="primary" fontSize="inherit" className={classes.CheckIcon} />
-      </Typography>
-      <Typography variant="body1" className={classes.SuccessText}>
-        {strings.EmailActivation.SuccessText}
-      </Typography>
-      <Grid item container justify="center">
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => handleRedirect()}
-        >
-          {strings.EmailActivation.ButtonText}
-        </Button>
-      </Grid>
-    </Paper>
+  const ActivationView = () => (
+    <AuthView>
+      <ActivationCard />
+    </AuthView>
   );
+
+  return { ActivationCard, ActivationView };
 };

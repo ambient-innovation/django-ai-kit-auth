@@ -3,7 +3,9 @@ import * as React from 'react';
 import { fireEvent } from '@testing-library/react';
 import { strings } from '../../internationalization';
 import { renderWithRouterAndUser } from './Util';
-import { ForgotPasswordForm, makeForgotPasswordForm } from '../ForgotPasswordForm';
+import { defaultConfig, ForgotPasswordForm } from '../..';
+import { makeForgotPasswordForm } from '../ForgotPasswordForm';
+import { mergeConfig } from '../../Configuration';
 
 const mockEmail = 'mock@example.com';
 
@@ -30,7 +32,9 @@ test('submit calls login', () => {
 
 test('login link leads to correct url', () => {
   const pathToLogin = '/path/to/login';
-  const LoginForgotForm = makeForgotPasswordForm({ pathToLogin });
+  const LoginForgotForm = makeForgotPasswordForm(mergeConfig(defaultConfig, {
+    paths: { login: pathToLogin },
+  })).ForgotPasswordForm;
   const renderObject = renderWithRouterAndUser(<LoginForgotForm />);
   fireEvent.click(renderObject.getByText(strings.ForgotPassword.BackToLogin));
   const { entries } = renderObject.history;

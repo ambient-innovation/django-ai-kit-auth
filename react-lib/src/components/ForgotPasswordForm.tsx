@@ -9,6 +9,8 @@ import React, { FC, useContext, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { strings } from '../internationalization';
 import { AuthFunctionContext } from '../store/UserStore';
+import { FullConfig } from '../Configuration';
+import { AuthView } from './AuthView';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   form: {
@@ -44,80 +46,86 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   },
 }));
 
-export interface LoginFormOptions {
-  pathToLogin?: string;
-}
+export const makeForgotPasswordForm: (config: FullConfig) => {
+  ForgotPasswordForm: FC; ForgotPasswordView: FC;
+} = ({
+  paths: { login },
+}) => {
+  const ForgotPasswordForm = () => {
+    const classes = useStyles();
+    const [email, setEmail] = useState('');
+    const { requestPasswordReset } = useContext(AuthFunctionContext);
 
-export const makeForgotPasswordForm: (options: LoginFormOptions) => FC = ({
-  pathToLogin = '/auth/login',
-}) => () => {
-  const classes = useStyles();
-  const [email, setEmail] = useState('');
-  const { requestPasswordReset } = useContext(AuthFunctionContext);
-
-  return (
-    <Paper
-      className={classes.form}
-    >
-      <Typography
-        className={classes.title}
-        variant="h3"
+    return (
+      <Paper
+        className={classes.form}
       >
-        {strings.ForgotPassword.ForgotPassword}
-      </Typography>
+        <Typography
+          className={classes.title}
+          variant="h3"
+        >
+          {strings.ForgotPassword.ForgotPassword}
+        </Typography>
 
-      <Typography
-        variant="body2"
-      >
-        {strings.ForgotPassword.Description}
-      </Typography>
+        <Typography
+          variant="body2"
+        >
+          {strings.ForgotPassword.Description}
+        </Typography>
 
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          requestPasswordReset(email);
-        }}
-      >
-        <TextField
-          className={classes.inputField}
-          autoFocus
-          fullWidth
-          id="forgot_email"
-          label={strings.ForgotPassword.InputLabel}
-          variant="outlined"
-          type="email"
-          value={email}
-          onChange={(event) => {
-            setEmail(event.target.value);
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            requestPasswordReset(email);
           }}
-        />
+        >
+          <TextField
+            className={classes.inputField}
+            autoFocus
+            fullWidth
+            id="forgot_email"
+            label={strings.ForgotPassword.InputLabel}
+            variant="outlined"
+            type="email"
+            value={email}
+            onChange={(event) => {
+              setEmail(event.target.value);
+            }}
+          />
 
-        <Grid container item xs={12} justify="center">
-          <Button
-            id="forgot_submit"
-            type="submit"
-            title={strings.LoginForm.Login}
-            variant="contained"
-            color="primary"
-          >
-            {strings.LoginForm.Login}
-          </Button>
-        </Grid>
+          <Grid container item xs={12} justify="center">
+            <Button
+              id="forgot_submit"
+              type="submit"
+              title={strings.LoginForm.Login}
+              variant="contained"
+              color="primary"
+            >
+              {strings.LoginForm.Login}
+            </Button>
+          </Grid>
 
-        <Grid style={{ marginTop: 24 }} container item xs={12} justify="center">
-          <Link
-            id="reset_to_login"
-            variant="body1"
-            color="textPrimary"
-            component={RouterLink}
-            to={pathToLogin}
-          >
-            {strings.ForgotPassword.BackToLogin}
-          </Link>
-        </Grid>
-      </form>
-    </Paper>
+          <Grid style={{ marginTop: 24 }} container item xs={12} justify="center">
+            <Link
+              id="reset_to_login"
+              variant="body1"
+              color="textPrimary"
+              component={RouterLink}
+              to={login}
+            >
+              {strings.ForgotPassword.BackToLogin}
+            </Link>
+          </Grid>
+        </form>
+      </Paper>
+    );
+  };
+
+  const ForgotPasswordView = () => (
+    <AuthView>
+      <ForgotPasswordForm />
+    </AuthView>
   );
-};
 
-export const ForgotPasswordForm = makeForgotPasswordForm({});
+  return { ForgotPasswordForm, ForgotPasswordView };
+};
