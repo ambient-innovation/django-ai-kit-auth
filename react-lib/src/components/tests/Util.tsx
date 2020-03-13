@@ -3,7 +3,8 @@ import { createMemoryHistory } from 'history';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { render } from '@testing-library/react';
 import { Router } from 'react-router-dom';
-import { AuthFunctionContext, UserContext } from '../../store/UserStore';
+import { AuthFunctionContext } from '../../store/UserStore';
+import { UserContext } from '../..';
 import { User } from '../../api/types';
 import { AuthFunctionContextValue, UserStoreValue } from '../../store/types';
 

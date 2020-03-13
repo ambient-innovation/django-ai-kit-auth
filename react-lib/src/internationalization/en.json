@@ -10,7 +10,7 @@
     "Password": "Password",
     "Login": "Login",
     "LogoutSuccess": "You have been logged out successfully.",
-    "ResetPassword": "Forgot your password?",
+    "ForgotPassword": "Forgot your password?",
     "FieldErrors": {
       "blank": "This field may not be blank."
     },
@@ -28,6 +28,12 @@
     "InputLabel": "Email",
     "ButtonText": "Send Email",
     "BackToLogin": "Back to Login"
+  },
+  "EmailSent": {
+    "EmailSent": "Email sent",
+    "Description": "Check your inbox. If the email address you provided matches one in our database, you will get an email in a few minutes containing a link to recover your password.",
+    "ContinueToLogin": "Continue to Login",
+    "RequestAgain": "Resend email"
   },
   "EmailActivation": {
     "SuccessTitle": "Your email address has been activated successfully",

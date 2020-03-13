@@ -1,10 +1,12 @@
 import * as React from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fireEvent, waitForElement } from '@testing-library/react';
-import { Identifier, LoginForm, makeLoginForm } from '../LoginForm';
+import { defaultConfig, Identifier, LoginForm } from '../..';
+import { makeLoginForm } from '../LoginForm';
 import { strings } from '../../internationalization';
 import { User } from '../../api/types';
 import { renderWithRouterAndUser } from './Util';
+import { mergeConfig } from '../../Configuration';
 
 const mockUser: User = ({
   id: 42, username: 'Donald', email: 'donald@example.com',
@@ -119,19 +121,21 @@ test('password visibility', () => {
 });
 
 test('Email type in ident input field', () => {
-  const EmailLoginForm = makeLoginForm({
-    identifier: Identifier.Email,
-  });
+  const EmailLoginForm = makeLoginForm(mergeConfig(defaultConfig, {
+    userIdentifier: Identifier.Email,
+  })).LoginForm;
   const renderOptions = renderFunction(<EmailLoginForm />);
   expect(renderOptions.getByLabelText(strings.LoginForm.Email))
     .toHaveProperty('type', 'email');
 });
 
 test('reset link leads to correct url', () => {
-  const pathToReset = '/path/to/reset';
-  const ResetLoginForm = makeLoginForm({ pathToForgotPassword: pathToReset });
-  const renderObject = renderFunction(<ResetLoginForm />);
-  fireEvent.click(renderObject.getByText(strings.LoginForm.ResetPassword));
+  const pathToForgotPassword = '/path/to/forgot-password';
+  const ForgotLoginForm = makeLoginForm(mergeConfig(defaultConfig, {
+    paths: { forgotPassword: pathToForgotPassword },
+  })).LoginForm;
+  const renderObject = renderFunction(<ForgotLoginForm />);
+  fireEvent.click(renderObject.getByText(strings.LoginForm.ForgotPassword));
   const { entries } = renderObject.history;
-  expect(entries[entries.length - 1].pathname).toEqual(pathToReset);
+  expect(entries[entries.length - 1].pathname).toEqual(pathToForgotPassword);
 });

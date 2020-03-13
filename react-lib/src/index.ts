@@ -1,54 +1,29 @@
+import {
+  Configuration as ConfigType, configureAuth, defaultConfig,
+} from './Configuration';
+import { User } from './api/types';
 
-export {
+export const {
+  ActivateEmailAddress,
+  ActivationCard,
+  ActivationView,
   AuthFunctionContext,
+  AuthView,
+  EmailSentCard,
+  ErrorCard,
+  ErrorView,
+  ForgotPasswordForm,
+  ForgotPasswordView,
+  listAuthRoutes,
+  LoginForm,
+  LoginView,
+  LoginRoute,
+  ProtectedRoute,
+  UserContext,
   UserStore,
   useUserStore,
-  UserContext,
-  makeGenericUserStore,
-} from './store/UserStore';
+} = configureAuth<User>(defaultConfig);
 
-export {
-  makeAuthRoutes,
-} from './components/MakeAuthRoutes';
+export { configureAuth, defaultConfig, Identifier } from './Configuration';
 
-export {
-  ProtectedRoute,
-  makeProtectedRoute,
-} from './components/ProtectedRoute';
-
-export {
-  LoginRoute,
-  makeLoginRoute,
-} from './components/LoginRoute';
-
-export {
-  LoginForm,
-  makeLoginForm,
-  Identifier,
-} from './components/LoginForm';
-
-export {
-  ForgotPasswordForm,
-  makeForgotPasswordForm,
-} from './components/ForgotPasswordForm';
-
-export {
-  ActivationView,
-  AuthView,
-  LoginView,
-  ForgotPasswordView,
-  ErrorView,
-} from './components/AuthView';
-
-export {
-  ActivationCard,
-} from './components/ActivationCard';
-
-export {
-  ErrorCard,
-} from './components/ErrorCard';
-
-export {
-  ActivateEmailAddress,
-  makeActivateEmailAddress,
-} from './components/ActivateEmailAddress';
+export type Configuration = ConfigType;

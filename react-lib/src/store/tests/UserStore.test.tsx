@@ -8,7 +8,7 @@ import {
   render, waitForElement, fireEvent, act,
 } from '@testing-library/react';
 
-import { UserStore, useUserStore } from '../UserStore';
+import { UserStore, useUserStore } from '../..';
 import { User } from '../../api/types';
 
 const maxios = new MockAdapter(axios);

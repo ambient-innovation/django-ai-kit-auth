@@ -4,8 +4,10 @@ import { Route } from 'react-router-dom';
 import { waitForElement } from '@testing-library/react';
 
 import { renderWithRouterAndUser } from './Util';
-import { ActivateEmailAddress, makeActivateEmailAddress } from '../ActivateEmailAddress';
+import { ActivateEmailAddress, defaultConfig } from '../..';
+import { makeActivateEmailAddress } from '../ActivateEmailAddress';
 import { strings } from '../../internationalization';
+import { mergeConfig } from '../../Configuration';
 
 // eslint-disable-next-line jest/expect-expect
 test('shows success message', async () => {
@@ -47,9 +49,9 @@ const sleep = () => new Promise<void>((resolve, reject) => { setTimeout(reject, 
 
 // eslint-disable-next-line jest/expect-expect
 test('shows loading indicator', async () => {
-  const CustomActivate = makeActivateEmailAddress({
-    loadingIndicator: () => <div>loading</div>,
-  });
+  const CustomActivate = makeActivateEmailAddress(mergeConfig(defaultConfig, {
+    components: { loadingIndicator: () => <div>loading</div> },
+  })).ActivateEmailAddress;
   const renderObject = renderWithRouterAndUser(
     <Route path="/activate/:ident/:token">
       <CustomActivate />

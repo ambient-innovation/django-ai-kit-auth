@@ -12,7 +12,7 @@ import { defaultTheme } from '../styles/styles';
 
 const errorPromise = () => new Promise<void>(() => { throw new Error('No User Store provided!'); });
 
-interface UserStoreProps {
+export interface UserStoreProps {
   apiUrl: string;
   customTheme?: Theme;
 }
@@ -139,5 +139,3 @@ export function makeGenericUserStore<U extends unknown = User>() {
     UserContext: GenericUserContext,
   };
 }
-
-export const { UserStore, useUserStore, UserContext } = makeGenericUserStore();

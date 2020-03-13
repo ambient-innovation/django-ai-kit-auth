@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { FC } from 'react';
 import { User } from '../../api/types';
-import { LoginRoute } from '../LoginRoute';
+import { LoginRoute } from '../..';
 import { renderWithRouterAndUser } from './Util';
 
 const mockUser: User = ({
