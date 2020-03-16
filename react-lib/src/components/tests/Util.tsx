@@ -17,21 +17,26 @@ export const renderWithRouterAndUser = (
 ) => {
   const history = createMemoryHistory({ initialEntries });
 
+  const { user, ...context } = testContext || { user: null };
+
   return ({
     history,
     ...render(
-      <UserContext.Provider value={{ user: testContext?.user || null }}>
+      <UserContext.Provider value={{ user: user || null }}>
         <AuthFunctionContext.Provider
           value={{
-            csrf: testContext?.csrf || '',
-            loading: !!testContext?.loading,
-            login: testContext?.login || successPromise,
-            loggedIn: !!testContext?.user,
-            logout: testContext?.logout || successPromise,
-            justLoggedOut: !!testContext?.justLoggedOut,
-            activateEmailAddress: testContext?.activateEmailAddress || successPromise,
-            requestPasswordReset: testContext?.requestPasswordReset || successPromise,
-            apiUrl: testContext?.apiUrl || 'https://example.com/api/v1',
+            apiUrl: 'https://example.com/api/v1',
+            csrf: '',
+            loading: false,
+            login: successPromise,
+            loggedIn: !!user,
+            logout: successPromise,
+            justLoggedOut: false,
+            activateEmailAddress: successPromise,
+            validatePassword: successPromise,
+            requestPasswordReset: successPromise,
+            resetPassword: successPromise,
+            ...context,
           }}
         >
           <Router history={history}>

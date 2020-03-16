@@ -27,34 +27,36 @@ const StoreDisplay: FC = () => {
   } = useUserStore();
 
   if (loading) return <div>loading</div>;
-  if (!user) {
-    return (
-      <div>
-        no user
-        <button
-          type="button"
-          onClick={() => login(mockUser.username, 'pass')
-            .catch(() => null)}
-        >
-          Login
-        </button>
-      </div>
-    );
-  }
 
   return (
     <div>
-      <div>{user.username}</div>
-      <div>{user.email}</div>
-      <div>{user.id}</div>
+      {user ? (
+        <div>
+          <div>{user.username}</div>
+          <div>{user.email}</div>
+          <div>{user.id}</div>
+          <button
+            type="button"
+            onClick={() => logout()
+              .catch(() => null)}
+          >
+            Logout
+          </button>
+        </div>
+      ) : (
+        <div>
+          no user
+          <button
+            type="button"
+            onClick={() => login(mockUser.username, 'pass')
+              .catch(() => null)}
+          >
+            Login
+          </button>
+        </div>
+      )}
       <div>{csrf}</div>
-      <button
-        type="button"
-        onClick={() => logout()
-          .catch(() => null)}
-      >
-        Logout
-      </button>
+      { loading && <div>loading</div> }
     </div>
   );
 };

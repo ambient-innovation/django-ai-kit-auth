@@ -5,17 +5,27 @@ import { AxiosError } from 'axios';
 import { CssBaseline, Theme, ThemeProvider } from '@material-ui/core';
 import { User } from '../api/types';
 import {
-  activateEmailAddressAPI, loginAPI, logoutAPI, meAPI,
+  activateEmailAddressAPI,
+  loginAPI,
+  logoutAPI,
+  meAPI,
+  resetPasswordAPI,
+  sendPWResetEmail,
+  validatePasswordAPI,
 } from '../api/api';
 import { AuthFunctionContextValue, UserStoreValue } from './types';
 import { defaultTheme } from '../styles/styles';
-
-const errorPromise = () => new Promise<void>(() => { throw new Error('No User Store provided!'); });
 
 export interface UserStoreProps {
   apiUrl: string;
   customTheme?: Theme;
 }
+
+const noop: () => void = () => null;
+
+const errorPromise = () => new Promise<void>(() => {
+  throw new Error('No User Store provided!');
+});
 
 export const AuthFunctionContext = createContext<AuthFunctionContextValue>({
   loading: false,
@@ -26,7 +36,9 @@ export const AuthFunctionContext = createContext<AuthFunctionContextValue>({
   logout: errorPromise,
   justLoggedOut: false,
   activateEmailAddress: errorPromise,
+  validatePassword: errorPromise,
   requestPasswordReset: errorPromise,
+  resetPassword: errorPromise,
 });
 
 export function makeGenericUserStore<U extends unknown = User>() {
@@ -74,17 +86,23 @@ export function makeGenericUserStore<U extends unknown = User>() {
     ) => Promise<void> = (
       userIdentifier, token,
     ) => activateEmailAddressAPI(apiUrl, userIdentifier, token)
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      .then(() => {});
+      .then(noop);
 
-    // TODO: replace this with an actual API call
-    // eslint-disable-next-line unicorn/consistent-function-scoping
-    const requestPasswordReset = (email: string) => new Promise<void>(
-      (resolve) => {
-        console.log('requestPasswordReset for', email);
-        resolve();
-      },
-    );
+    const validatePassword: (
+      ident: string, password: string,
+    ) => Promise<void> = (
+      ident, password,
+    ) => validatePasswordAPI(apiUrl, ident, password).then(noop);
+
+    const requestPasswordReset: (email: string) => Promise<void> = (
+      email: string,
+    ) => sendPWResetEmail(apiUrl, email).then(noop);
+
+    const resetPassword: (
+      ident: string, token: string, password: string,
+    ) => Promise<void> = (
+      ident, token, password,
+    ) => resetPasswordAPI(apiUrl, ident, token, password).then(noop);
 
     useEffect(() => {
       // If we don't have a user, we need to obtain it via  the me endpoint
@@ -120,7 +138,9 @@ export function makeGenericUserStore<U extends unknown = User>() {
             logout,
             justLoggedOut: loggedOut,
             activateEmailAddress,
+            validatePassword,
             requestPasswordReset,
+            resetPassword,
           }}
         >
           <CssBaseline />
