@@ -5,7 +5,7 @@ import { render } from '@testing-library/react';
 import { Router } from 'react-router-dom';
 import { AuthFunctionContext, UserContext } from '../../store/UserStore';
 import { User } from '../../api/types';
-import { AuthFunctionContextValue, UserStoreValue } from '../../store/types';
+import { AuthFunctionContextValue, LogoutReason, UserStoreValue } from '../../store/types';
 
 export const renderWithRouterAndUser = (
   element: JSX.Element,
@@ -25,7 +25,7 @@ export const renderWithRouterAndUser = (
             login: testContext?.login || jest.fn(),
             loggedIn: !!testContext?.user,
             logout: testContext?.logout || jest.fn(),
-            justLoggedOut: !!testContext?.justLoggedOut,
+            justLoggedOut: testContext?.justLoggedOut || LogoutReason.NONE,
             activateEmailAddress: testContext?.activateEmailAddress || jest.fn(),
             apiUrl: testContext?.apiUrl || 'https://example.com/api/v1',
           }}
