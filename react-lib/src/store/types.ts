@@ -1,11 +1,12 @@
 import { User } from '../api/types';
 
 export interface UserStoreValue<U = User> {
-  user?: U;
+  user: U|null;
 }
 
 export interface AuthFunctionContextValue {
   apiUrl: string;
+  csrf: string;
   loading: boolean;
   login: (userIdentifier: string, password: string) => Promise<void>;
   loggedIn: boolean;

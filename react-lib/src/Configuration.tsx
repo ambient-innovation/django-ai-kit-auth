@@ -6,8 +6,8 @@ import { makeActivateEmailAddress } from './components/ActivateEmailAddress';
 import { makeProtectedRoute } from './components/ProtectedRoute';
 import { makeLoginForm } from './components/LoginForm';
 import { makeLoginRoute } from './components/LoginRoute';
-import { makeForgotPasswordForm } from './components/ForgotPasswordForm';
-import { makeEmailSentCard } from './components/EmailSentCard';
+import { makeForgotPasswordForm } from './components/ForgotPassword';
+import { makeEmailSentCard } from './components/EmailSent';
 import { AuthView, ErrorView } from './components/AuthView';
 import { ErrorCard } from './components/ErrorCard';
 import { User } from './api/types';
@@ -92,9 +92,9 @@ export const configureAuth = <UserType extends unknown = User>(config: Configura
   const activate = makeActivateEmailAddress(fullConfig);
   const ProtectedRoute = makeProtectedRoute(fullConfig);
   const LoginRoute = makeLoginRoute(fullConfig);
-  const EmailSentCard = makeEmailSentCard(fullConfig);
+  const emailSent = makeEmailSentCard(fullConfig);
 
-  const listAuthRoutes: () => JSX.Element[] = () => [
+  const makeAuthRoutes: () => JSX.Element[] = () => [
     <Route
       exact
       path={fullConfig.paths.activation}
@@ -113,6 +113,12 @@ export const configureAuth = <UserType extends unknown = User>(config: Configura
       component={forgot.ForgotPasswordView}
       key="forgot-password"
     />,
+    <Route
+      exact
+      path={fullConfig.paths.emailSent}
+      component={emailSent.EmailSentView}
+      key="email-sent"
+    />,
   ];
 
   return ({
@@ -120,13 +126,13 @@ export const configureAuth = <UserType extends unknown = User>(config: Configura
     ...login,
     ...forgot,
     ...activate,
+    ...emailSent,
     ProtectedRoute,
     LoginRoute,
-    EmailSentCard,
     AuthFunctionContext,
     AuthView,
     ErrorCard,
     ErrorView,
-    listAuthRoutes,
+    makeAuthRoutes,
   });
 };

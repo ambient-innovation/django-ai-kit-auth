@@ -4,7 +4,7 @@ import { fireEvent } from '@testing-library/react';
 import { strings } from '../../internationalization';
 import { renderWithRouterAndUser } from './Util';
 import { defaultConfig, ForgotPasswordForm } from '../..';
-import { makeForgotPasswordForm } from '../ForgotPasswordForm';
+import { makeForgotPasswordForm } from '../ForgotPassword';
 import { mergeConfig } from '../../Configuration';
 
 const mockEmail = 'mock@example.com';
@@ -17,7 +17,7 @@ test('submit calls login', () => {
     { requestPasswordReset },
   );
   fireEvent.change(
-    renderObject.getByLabelText(strings.ForgotPassword.InputLabel),
+    renderObject.getByLabelText(strings.ForgotPassword.InputLabel, { exact: false }),
     {
       target: {
         value: mockEmail,

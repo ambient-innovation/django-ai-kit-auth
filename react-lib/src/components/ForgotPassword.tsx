@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { FC, useContext, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { useHistory, Link as RouterLink } from 'react-router-dom';
 import { strings } from '../internationalization';
 import { AuthFunctionContext } from '../store/UserStore';
 import { FullConfig } from '../Configuration';
@@ -49,12 +49,13 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 export const makeForgotPasswordForm: (config: FullConfig) => {
   ForgotPasswordForm: FC; ForgotPasswordView: FC;
 } = ({
-  paths: { login },
+  paths: { login, emailSent },
 }) => {
   const ForgotPasswordForm = () => {
     const classes = useStyles();
     const [email, setEmail] = useState('');
     const { requestPasswordReset } = useContext(AuthFunctionContext);
+    const history = useHistory();
 
     return (
       <Paper
@@ -77,12 +78,14 @@ export const makeForgotPasswordForm: (config: FullConfig) => {
           onSubmit={(e) => {
             e.preventDefault();
             requestPasswordReset(email);
+            history.push(emailSent);
           }}
         >
           <TextField
             className={classes.inputField}
             autoFocus
             fullWidth
+            required
             id="forgot_email"
             label={strings.ForgotPassword.InputLabel}
             variant="outlined"
@@ -97,11 +100,11 @@ export const makeForgotPasswordForm: (config: FullConfig) => {
             <Button
               id="forgot_submit"
               type="submit"
-              title={strings.LoginForm.Login}
+              title={strings.ForgotPassword.ButtonText}
               variant="contained"
               color="primary"
             >
-              {strings.LoginForm.Login}
+              {strings.ForgotPassword.ButtonText}
             </Button>
           </Grid>
 
