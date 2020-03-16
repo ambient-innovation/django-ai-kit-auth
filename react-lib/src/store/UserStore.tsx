@@ -20,6 +20,7 @@ export interface UserStoreProps {
 export const AuthFunctionContext = createContext<AuthFunctionContextValue>({
   loading: false,
   apiUrl: '',
+  csrf: '',
   login: errorPromise,
   loggedIn: false,
   logout: errorPromise,
@@ -29,14 +30,15 @@ export const AuthFunctionContext = createContext<AuthFunctionContextValue>({
 });
 
 export function makeGenericUserStore<U extends unknown = User>() {
-  const GenericUserContext = createContext<UserStoreValue<U>>({});
+  const GenericUserContext = createContext<UserStoreValue<U>>({ user: null });
 
   const GenericUserStore: FC<UserStoreProps> = ({
     children, apiUrl, customTheme,
   }) => {
     const [loggedOut, setLoggedOut] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [user, setUser] = useState<U|undefined>(undefined);
+    const [user, setUser] = useState<U|null>(null);
+    const [csrf, setCsrf] = useState('');
 
     const login: (userIdentifier: string, password: string) => Promise<void> = (
       userIdentifier, password,
@@ -44,9 +46,9 @@ export function makeGenericUserStore<U extends unknown = User>() {
       setLoading(true);
 
       return loginAPI<U>(apiUrl, userIdentifier, password)
-        .then((loginUser) => {
-          setUser(loginUser);
-          setLoading(false);
+        .then((loginData) => {
+          setUser(loginData.user);
+          setCsrf(loginData.csrf);
         })
         .finally(() => setLoading(false));
     };
@@ -56,7 +58,7 @@ export function makeGenericUserStore<U extends unknown = User>() {
 
       return logoutAPI(apiUrl)
         .then(() => {
-          setUser(undefined);
+          setUser(null);
           setLoggedOut(true);
         })
         .catch(() => {
@@ -88,8 +90,9 @@ export function makeGenericUserStore<U extends unknown = User>() {
       // If we don't have a user, we need to obtain it via  the me endpoint
       if (!user) {
         meAPI<U>(apiUrl)
-          .then((loggedInUser) => {
-            setUser(loggedInUser);
+          .then((data) => {
+            setUser(data.user);
+            setCsrf(data.csrf);
           })
           .catch((error: AxiosError) => {
             if (!error.response) {
@@ -110,6 +113,7 @@ export function makeGenericUserStore<U extends unknown = User>() {
         <AuthFunctionContext.Provider
           value={{
             apiUrl,
+            csrf,
             loading,
             login,
             loggedIn: !!user,

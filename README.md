@@ -55,22 +55,11 @@ of what is changing. `body` and `footer` are not required if the type is not
 
 ## Local Development
 
-Start the demo project with docker-compose
-
-    cd demo
-    docker-compose up --build -d
-
-Start the npm watch script in the react-lib folder
-
-    npm run watch
-
-Changes to the library will automatically be shown and updated in the demo project
+See [demo README](demo/README.md)
 
 ## E2E-Testing
 
-In order to perform end-to-end tests, both libraries are use in the demo project.
-However, the current versions are necessary for the tests, which is why the
-libraries need to be packed and copied into the demo folder.
+See [demo README](demo/README.md)
 
 ### Linting
 
