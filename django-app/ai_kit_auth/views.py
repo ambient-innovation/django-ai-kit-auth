@@ -33,6 +33,8 @@ class LoginView(generics.GenericAPIView):
             instance=user, context={"request": request}
         )
 
+        # the position of this statement is important since the csrf token
+        # is rotated on login
         csrf_token = csrf.get_token(request)
 
         return Response(

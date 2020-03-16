@@ -114,3 +114,11 @@ class LoginTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # we have to get the user object again to see the updates
         self.assertTrue(UserModel.objects.get(pk=user.id).is_active)
+
+    def test_csrf_token_after_login(self):
+        response = self.client.post(
+            self.login_url,
+            {"ident": self.user.username, "password": PASSWORD},
+            format="json",
+        )
+        self.assertEqual(response.cookies["csrftoken"].value, response.data["csrf"])
