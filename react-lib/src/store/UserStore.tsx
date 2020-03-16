@@ -30,9 +30,9 @@ export const AuthFunctionContext = createContext<AuthFunctionContextValue>({
 });
 
 export function makeGenericUserStore<U extends unknown = User>() {
-  const GenericUserContext = createContext<UserStoreValue<U>>({ user: null });
+  const UserContext = createContext<UserStoreValue<U>>({ user: null });
 
-  const GenericUserStore: FC<UserStoreProps> = ({
+  const UserStore: FC<UserStoreProps> = ({
     children, apiUrl, customTheme,
   }) => {
     const [loggedOut, setLoggedOut] = useState(false);
@@ -105,7 +105,7 @@ export function makeGenericUserStore<U extends unknown = User>() {
     }, []);
 
     return (
-      <GenericUserContext.Provider
+      <UserContext.Provider
         value={{
           user,
         }}
@@ -128,18 +128,14 @@ export function makeGenericUserStore<U extends unknown = User>() {
             {children}
           </ThemeProvider>
         </AuthFunctionContext.Provider>
-      </GenericUserContext.Provider>
+      </UserContext.Provider>
     );
   };
 
-  const useGenericUserStore: () => UserStoreValue<U>&AuthFunctionContextValue = () => ({
-    ...useContext(GenericUserContext),
+  const useUserStore: () => UserStoreValue<U>&AuthFunctionContextValue = () => ({
+    ...useContext(UserContext),
     ...useContext(AuthFunctionContext),
   });
 
-  return {
-    UserStore: GenericUserStore,
-    useUserStore: useGenericUserStore,
-    UserContext: GenericUserContext,
-  };
+  return { UserStore, useUserStore, UserContext };
 }
