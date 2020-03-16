@@ -88,3 +88,35 @@ def send_user_activation_mail(user):
         getattr(user, User.EMAIL_FIELD),
     )
     return ident, token
+
+
+def send_reset_pw_mail(user):
+    """
+    send mail for the password reset
+    """
+    template_plain = get_template(
+        api_settings.EMAIL_TEMPLATES.RESET_PASSWORD.BODY_PLAINTEXT
+    )
+    template_html = get_template(api_settings.EMAIL_TEMPLATES.RESET_PASSWORD.BODY_HTML)
+    subject = get_template(api_settings.EMAIL_TEMPLATES.RESET_PASSWORD.TITLE).render()
+
+    ident = str(scramble_id(user.pk))
+    token_gen = PasswordResetTokenGenerator()
+    token = token_gen.make_token(user)
+
+    url = make_url(
+        api_settings.FRONTEND.URL, api_settings.FRONTEND.RESET_PW_ROUTE, ident, token
+    )
+
+    context = {
+        "user": user,
+        "url": url,
+    }
+
+    send_email(
+        subject.replace("\n", " "),
+        template_plain.render(context),
+        template_html.render(context),
+        getattr(user, User.EMAIL_FIELD),
+    )
+    return ident, token

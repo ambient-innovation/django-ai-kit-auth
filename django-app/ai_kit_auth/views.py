@@ -1,11 +1,8 @@
 from django.contrib.auth import login, logout, get_user_model, tokens
-from django.core.exceptions import ValidationError as DjangoValidationError
 from rest_framework import status, generics, views
 from rest_framework.response import Response
-from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from . import serializers, services
-from django.conf import settings
 
 UserModel = get_user_model()
 
@@ -22,6 +19,7 @@ class LoginView(generics.GenericAPIView):
         )
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data["user"]
+
         login(request, user)
 
         user_serializer = self.user_serializer(
@@ -30,19 +28,6 @@ class LoginView(generics.GenericAPIView):
         response = Response(user_serializer.data, status=status.HTTP_200_OK)
 
         return response
-
-
-class InitiatePasswordResetView(views.APIView):
-    permission_classes = (AllowAny,)
-
-    def post(self, request, *args, **kwargs):
-        try:
-            user = UserModel.objects.get(email__exact=request.data["email"])
-
-            # TODO: send mail
-            return Response(status=status.HTTP_200_OK)
-        except UserModel.DoesNotExist:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class LogoutView(views.APIView):
@@ -109,6 +94,18 @@ class ActivateUser(views.APIView):
         user.save()
         login(request, user)
         return Response(status=status.HTTP_200_OK)
+
+
+class InitiatePasswordResetView(views.APIView):
+    permission_classes = (AllowAny,)
+
+    def post(self, request, *args, **kwargs):
+        try:
+            user = UserModel.objects.get(email__exact=request.data["email"])
+            services.send_reset_pw_mail(user)
+            return Response(status=status.HTTP_200_OK)
+        except UserModel.DoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class ResetPassword(views.APIView):
