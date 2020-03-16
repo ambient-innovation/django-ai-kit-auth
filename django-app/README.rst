@@ -47,13 +47,25 @@ default. Default configurations are:
 
 ::
 
-    AI_KIT_AUTH = {
-        "ACTIVATION_ROUTE": "activation",
-        "EMAIL_TEMPLATE_USER_CREATED_TITLE": "user_created_title.txt",
-        "EMAIL_TEMPLATE_USER_CREATED_BODY_PLAINTEXT": "user_created_body.txt",
-        "EMAIL_TEMPLATE_USER_CREATED_BODY_HTML": "user_created_body.html",
+    DEFAULTS = {
+        "EMAIL_TEMPLATES": {
+            "USER_CREATED": {
+                "TITLE": "ai_kit_auth/user_created_title.txt",
+                "BODY_PLAINTEXT": "ai_kit_auth/user_created_body.txt",
+                "BODY_HTML": "ai_kit_auth/user_created_body.html",
+            },
+            "RESET_PASSWORD": {
+                "TITLE": "ai_kit_auth/reset_password_title.txt",
+                "BODY_PLAINTEXT": "ai_kit_auth/reset_password_body.txt",
+                "BODY_HTML": "ai_kit_auth/reset_password_body.html",
+            },
+        },
         "USERNAME_REQUIRED": False,
-        "FRONTEND_URL": None,
+        "FRONTEND": {
+            "URL": "",
+            "ACTIVATION_ROUTE": "/auth/activation/",
+            "RESET_PW_ROUTE": "/auth/reset_password/",
+        },
     }
 
 In addition to that some general configuration is required:

@@ -1,11 +1,9 @@
 from django.contrib.auth import login, logout, get_user_model, tokens
-from django.core.exceptions import ValidationError as DjangoValidationError
 from rest_framework import status, generics, views
 from rest_framework.response import Response
-from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from . import serializers, services
-from django.conf import settings
+from django.middleware import csrf
 
 UserModel = get_user_model()
 
@@ -22,27 +20,21 @@ class LoginView(generics.GenericAPIView):
         )
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data["user"]
+
         login(request, user)
 
         user_serializer = self.user_serializer(
             instance=user, context={"request": request}
         )
-        response = Response(user_serializer.data, status=status.HTTP_200_OK)
 
-        return response
+        # the position of this statement is important since the csrf token
+        # is rotated on login
+        csrf_token = csrf.get_token(request)
 
-
-class InitiatePasswordResetView(views.APIView):
-    permission_classes = (AllowAny,)
-
-    def post(self, request, *args, **kwargs):
-        try:
-            user = UserModel.objects.get(email__exact=request.data["email"])
-
-            # TODO: send mail
-            return Response(status=status.HTTP_200_OK)
-        except UserModel.DoesNotExist:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {"user": user_serializer.data, "csrf": csrf_token,},
+            status=status.HTTP_200_OK,
+        )
 
 
 class LogoutView(views.APIView):
@@ -58,14 +50,22 @@ class Me(generics.GenericAPIView):
     Barebones user model detail view
     """
 
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
     user_serializer = serializers.UserSerializer
 
     def get(self, request, *args, **kwargs):
-        user_serializer = self.user_serializer(
-            instance=request.user, context={"request": request}
+        csrf_token = csrf.get_token(request)
+
+        if request.user.is_anonymous:
+            user_data = None
+        else:
+            user_serializer = self.user_serializer(
+                instance=request.user, context={"request": request}
+            )
+            user_data = user_serializer.data
+        return Response(
+            {"user": user_data, "csrf": csrf_token,}, status=status.HTTP_200_OK
         )
-        return Response(user_serializer.data, status=status.HTTP_200_OK)
 
 
 class ValidatePassword(views.APIView):
@@ -109,6 +109,18 @@ class ActivateUser(views.APIView):
         user.save()
         login(request, user)
         return Response(status=status.HTTP_200_OK)
+
+
+class InitiatePasswordResetView(views.APIView):
+    permission_classes = (AllowAny,)
+
+    def post(self, request, *args, **kwargs):
+        try:
+            user = UserModel.objects.get(email__exact=request.data["email"])
+            services.send_reset_pw_mail(user)
+            return Response(status=status.HTTP_200_OK)
+        except UserModel.DoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class ResetPassword(views.APIView):

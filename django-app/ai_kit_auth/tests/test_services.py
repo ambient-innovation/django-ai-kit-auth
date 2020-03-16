@@ -7,6 +7,7 @@ from model_bakery import baker
 from ai_kit_auth.services import (
     scramble_id,
     send_user_activation_mail,
+    send_reset_pw_mail,
     send_email,
     make_url,
 )
@@ -79,5 +80,24 @@ class ActivationTest(TestCase):
         user = baker.make(UserModel, is_active=False, email="to@example.com")
         mock_make_url.return_value = "url to the frontend activation link thingy"
         send_user_activation_mail(user)
+        self.assertTrue(mock_make_url.return_value in mail.outbox[0].body)
 
+
+class InitResetPasswordTest(TestCase):
+    @patch("ai_kit_auth.services.send_email")
+    def test_send_activation_mail(self, mock_send_mail):
+        user = baker.make(UserModel, is_active=False, email="to@example.com")
+        send_reset_pw_mail(user)
+        mock_send_mail.assert_called()
+
+    def test_user_id_is_scrambled(self):
+        user = baker.make(UserModel, is_active=False, email="to@example.com")
+        ident, token = send_reset_pw_mail(user)
+        self.assertEqual(ident, str(scramble_id(user.pk)))
+
+    @patch("ai_kit_auth.services.make_url")
+    def test_reset_link_is_in_email(self, mock_make_url):
+        user = baker.make(UserModel, is_active=False, email="to@example.com")
+        mock_make_url.return_value = "url to the frontend reset link thingy"
+        send_reset_pw_mail(user)
         self.assertTrue(mock_make_url.return_value in mail.outbox[0].body)
