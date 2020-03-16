@@ -22,7 +22,7 @@ class LoginTests(APITestCase):
         self.logout_url = reverse("auth_logout")
         self.me_url = reverse("auth_me")
         self.validate_password_url = reverse("auth_validate_password")
-        self.init_pw_reset_url = reverse("auth_init_pw_reset")
+        self.send_pw_reset_email_url = reverse("auth_send_pw_reset_email")
         self.pw_reset_url = reverse("auth_pw_reset")
         self.client.logout()
 
@@ -131,12 +131,14 @@ class LoginTests(APITestCase):
         )
 
     def test_init_password_reset(self):
-        response = self.client.post(self.init_pw_reset_url, {"email": self.user.email})
+        response = self.client.post(
+            self.send_pw_reset_email_url, {"email": self.user.email}
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_init_password_reset_fail(self):
         response = self.client.post(
-            self.init_pw_reset_url, {"email": "invalid_email@example.com"}
+            self.send_pw_reset_email_url, {"email": "invalid_email@example.com"}
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
