@@ -15,10 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, re_path, include
-from .views import unauthorized
+from .views import unauthorized, PostTest
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path(r"api/v1/unauthorized/", unauthorized),
+    path(r"api/v1/test/", PostTest.as_view()),
     re_path("^api/v1/", include("ai_kit_auth.urls")),
 ]

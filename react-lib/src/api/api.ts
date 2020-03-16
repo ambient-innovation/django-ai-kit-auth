@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { User } from './types';
+import { MeResponse, User } from './types';
 
 axios.defaults.withCredentials = true;
 
@@ -9,6 +9,12 @@ export const makeUrl = (apiUrl: string, suffix: string) => {
   return `${apiUrl}${separator}${suffix}`;
 };
 
+function setCsrfHeader<U>(data: MeResponse<U>) {
+  axios.defaults.headers.common['X-CSRFToken'] = data.csrf;
+
+  return data;
+}
+
 /**
  * @description Send a login request to the backend .
  * @param apiUrl - URL to the backend api -- including `/api/v?/`.
@@ -17,9 +23,14 @@ export const makeUrl = (apiUrl: string, suffix: string) => {
  */
 export const loginAPI = <U = User>(
   apiUrl: string, ident: string, password: string,
-) => axios.post<U>(makeUrl(apiUrl, 'login/'), {
-  ident, password,
-}).then((response) => response.data);
+) => axios.post<MeResponse<U>>(
+  makeUrl(apiUrl, 'login/'), { ident, password },
+).then(({ data }) => setCsrfHeader(data));
+
+export const meAPI = <U = User>(apiUrl: string) => (
+  axios.get<MeResponse<U>>(makeUrl(apiUrl, 'me/'))
+    .then(({ data }) => setCsrfHeader(data))
+);
 
 
 /**
@@ -28,12 +39,7 @@ export const loginAPI = <U = User>(
  */
 export const logoutAPI = (
   apiUrl: string,
-) => axios.post(makeUrl(apiUrl, 'logout/')).then((response) => response.data);
-
-export const meAPI = <U = User>(apiUrl: string) => (
-  axios.get<U>(makeUrl(apiUrl, 'me/'))
-    .then(({ data }) => data)
-);
+) => axios.post(makeUrl(apiUrl, 'logout/')).then(({ data }) => data);
 
 export const activateEmailAddressAPI = (apiUrl: string, ident: string, token: string) => (
   axios.post(makeUrl(apiUrl, `activate_email/${ident}/${token}/`))
