@@ -23,10 +23,19 @@ DEFAULTS = {
             "TITLE": "ai_kit_auth/user_created_title.txt",
             "BODY_PLAINTEXT": "ai_kit_auth/user_created_body.txt",
             "BODY_HTML": "ai_kit_auth/user_created_body.html",
-        }
+        },
+        "RESET_PASSWORD": {
+            "TITLE": "ai_kit_auth/reset_password_title.txt",
+            "BODY_PLAINTEXT": "ai_kit_auth/reset_password_body.txt",
+            "BODY_HTML": "ai_kit_auth/reset_password_body.html",
+        },
     },
     "USERNAME_REQUIRED": False,
-    "FRONTEND": {"URL": "", "ACTIVATION_ROUTE": "/auth/activation/",},
+    "FRONTEND": {
+        "URL": "",
+        "ACTIVATION_ROUTE": "/auth/activation/",
+        "RESET_PW_ROUTE": "/auth/reset_password/",
+    },
 }
 
 
