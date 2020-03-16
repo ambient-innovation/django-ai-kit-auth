@@ -17,6 +17,7 @@ import { strings } from '../internationalization';
 import { ErrorMessage, MetaDict, ObjectOfStrings } from '../api/types';
 import { FullConfig, Identifier } from '../Configuration';
 import { AuthView } from './AuthView';
+import { PasswordField } from './common/PasswordField';
 
 const fieldErrors: ObjectOfStrings = strings.LoginForm.FieldErrors;
 const nonFieldErrors: MetaDict = strings.LoginForm.NonFieldErrors;
@@ -70,7 +71,6 @@ export const makeLoginForm: (config: FullConfig) => { LoginForm: FC; LoginView: 
     const { login, justLoggedOut } = useContext(AuthFunctionContext);
     const [ident, setIdent] = useState('');
     const [password, setPassword] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
     const [errorMessage, setErrorMessage] = useState<ErrorMessage>({});
 
     return (
@@ -123,33 +123,11 @@ export const makeLoginForm: (config: FullConfig) => { LoginForm: FC; LoginView: 
             }}
           />
 
-          <TextField
+          <PasswordField
             className={classes.inputField}
-            fullWidth
-            id="login_password"
-            label={strings.LoginForm.Password}
-            variant="outlined"
-            value={password}
-            type={showPassword ? 'text' : 'password'}
-            helperText={errorMessage.password ? errorMessage.password.map((message: string) => (
-              fieldErrors[message])) : ''}
-            error={!!errorMessage.password}
-            onChange={(event) => {
-              setPassword(event.target.value);
-            }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={() => setShowPassword(!showPassword)}
-                    onMouseDown={(e) => e.preventDefault()}
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
+            password={password}
+            setPassword={setPassword}
+            errorMessage={errorMessage}
           />
 
           {
