@@ -5,6 +5,11 @@ export interface User {
   email: string;
 }
 
+export interface MeResponse<U> {
+  user: U|null;
+  csrf: string;
+}
+
 export interface ObjectOfStrings {
   [key: string]: string;
 }

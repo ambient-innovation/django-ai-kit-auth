@@ -1,17 +1,26 @@
 import React, { FC } from 'react';
+import axios from 'axios';
 import {
   Button, Grid, Typography,
 } from '@material-ui/core';
 import { useUserStore } from 'ai-kit-auth';
 
+axios.defaults.withCredentials = true;
+
 export const Dashboard: FC = () => {
-  const { apiUrl, logout, user } = useUserStore();
+  const {
+    apiUrl, csrf, logout, user,
+  } = useUserStore();
 
   const unAuthorizedFetch = () => {
     fetch(`${apiUrl}unauthorized`)
       .then((response) => (response.json()))
       .catch(logout);
   };
+
+  const postTest = () => axios.post(`${apiUrl}test/`, {}, {
+    headers: { 'X-CSRFToken': csrf },
+  });
 
   return (
     <Grid container alignItems="center" justify="center" spacing={2}>
@@ -49,6 +58,15 @@ export const Dashboard: FC = () => {
             onClick={() => logout()}
           >
             Logout
+          </Button>
+        </Grid>
+
+        <Grid item>
+          <Button
+            variant="contained"
+            onClick={() => postTest().then(({ data }) => console.log(data))}
+          >
+            POST TEST
           </Button>
         </Grid>
 
