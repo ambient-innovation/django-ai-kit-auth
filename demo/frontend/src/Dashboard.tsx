@@ -5,8 +5,12 @@ import {
 } from '@material-ui/core';
 import { useUserStore } from 'ai-kit-auth';
 
+axios.defaults.withCredentials = true;
+
 export const Dashboard: FC = () => {
-  const { apiUrl, logout, user } = useUserStore();
+  const {
+    apiUrl, csrf, logout, user,
+  } = useUserStore();
 
   const unAuthorizedFetch = () => {
     fetch(`${apiUrl}unauthorized`)
@@ -14,7 +18,9 @@ export const Dashboard: FC = () => {
       .catch(logout);
   };
 
-  const manualLogout = () => axios.post(`${apiUrl}logout/`);
+  const postTest = () => axios.post(`${apiUrl}test/`, {}, {
+    headers: { 'X-CSRFToken': csrf },
+  });
 
   return (
     <Grid container alignItems="center" justify="center" spacing={2}>
@@ -58,9 +64,9 @@ export const Dashboard: FC = () => {
         <Grid item>
           <Button
             variant="contained"
-            onClick={() => manualLogout()}
+            onClick={() => postTest().then(({ data }) => console.log(data))}
           >
-            Manual Logout
+            POST TEST
           </Button>
         </Grid>
 
