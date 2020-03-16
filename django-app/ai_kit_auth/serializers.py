@@ -42,3 +42,9 @@ class UserSerializer(serializers.ModelSerializer):
 class ValidatePasswordSerializer(serializers.Serializer):
     ident = serializers.CharField(required=True)
     password = serializers.CharField(required=True)
+
+
+class RegistrationSerializer(serializers.Serializer):
+    username = serializers.CharField(required=False)
+    password = serializers.CharField(required=True)
+    email = serializers.EmailField(required=True)

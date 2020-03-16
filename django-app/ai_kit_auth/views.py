@@ -59,6 +59,35 @@ class Me(generics.GenericAPIView):
         return Response(user_serializer.data, status=status.HTTP_200_OK)
 
 
+class RegistrationView(views.APIView):
+
+    permission_classes = (AllowAny,)
+
+    serializer_class = serializers.RegistrationSerializer
+
+    def post(self, request, *args, **kwargs):
+        # TODO case not username required configured
+        username = request.data["username"]
+        email = request.data["email"]
+        password = request.data["password"]
+
+        # password validation
+        # TODO after merge of #3
+
+        # make sure email is unique
+        if UserModel.objects.filter(email=email).exists():
+            raise ValidationError(code="unique_email")
+
+        user = UserModel(
+            username=username, email=email, password=password, is_active=False
+        )
+        user.save()
+
+        services.send_user_activation_mail(user)
+
+        return Response({}, status=status.HTTP_201_CREATED)
+
+
 class ValidatePassword(generics.GenericAPIView):
     """
     Endpoint to validate the password without trying to register an account.
@@ -101,8 +130,10 @@ class ActivateUser(views.APIView):
 
     permission_classes = (AllowAny,)
 
-    def post(self, request, ident, token, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         try:
+            ident = request.data["ident"]
+            token = request.data["token"]
             pk = services.scramble_id(ident)
             user = UserModel.objects.get(pk=pk)
             assert tokens.PasswordResetTokenGenerator().check_token(user, token)

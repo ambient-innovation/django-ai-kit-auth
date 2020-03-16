@@ -21,6 +21,8 @@ class LoginTests(APITestCase):
         self.logout_url = reverse("auth_logout")
         self.me_url = reverse("auth_me")
         self.validate_password_url = reverse("auth_validate_password")
+        self.activate_url = reverse("auth_activate")
+        self.registration_url = reverse("auth_registration")
         self.client.logout()
 
     def isLoggedIn(self) -> bool:
@@ -101,7 +103,24 @@ class LoginTests(APITestCase):
     def test_activate_user(self):
         user = baker.make(UserModel, is_active=False, email="to@example.com")
         ident, token = services.send_user_activation_mail(user)
-        response = self.client.post(reverse("auth_activate", args=[ident, token]))
+        response = self.client.post(
+            self.activate_url, {"ident": ident, "token": token}, format="json"
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # we have to get the user object again to see the updates
         self.assertTrue(UserModel.objects.get(pk=user.id).is_active)
+
+    def test_register_user(self):
+        response = self.client.post(
+            self.registration_url,
+            {
+                "username": "testuser",
+                "email": "testuser@example.com",
+                "password": PASSWORD,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(
+            UserModel.objects.get(email="testuser@example.com").username, "testuser"
+        )
