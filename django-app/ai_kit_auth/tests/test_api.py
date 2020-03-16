@@ -1,5 +1,5 @@
 from django.urls import reverse
-
+from django.middleware.csrf import _compare_salted_tokens
 from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -121,4 +121,8 @@ class LoginTests(APITestCase):
             {"ident": self.user.username, "password": PASSWORD},
             format="json",
         )
-        self.assertEqual(response.cookies["csrftoken"].value, response.data["csrf"])
+        self.assertTrue(
+            _compare_salted_tokens(
+                response.cookies["csrftoken"].value, response.data["csrf"]
+            )
+        )
