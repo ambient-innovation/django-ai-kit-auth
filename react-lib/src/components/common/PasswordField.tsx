@@ -16,11 +16,13 @@ export interface PasswordFieldProps {
   password: string;
   setPassword: Dispatch<SetStateAction<string>>;
   errorMessage: ErrorMessage;
+  label?: string;
+  id?: string;
 }
 
 export const PasswordField: FC<PasswordFieldProps> = (
   {
-    className, errorMessage, password, setPassword,
+    className, errorMessage, password, setPassword, label, id,
   },
 ) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -29,8 +31,8 @@ export const PasswordField: FC<PasswordFieldProps> = (
     <TextField
       className={className}
       fullWidth
-      id="login_password"
-      label={strings.LoginForm.Password}
+      id={id || 'login_password'}
+      label={label || strings.LoginForm.Password}
       variant="outlined"
       value={password}
       type={showPassword ? 'text' : 'password'}

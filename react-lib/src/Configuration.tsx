@@ -11,6 +11,7 @@ import { makeEmailSentCard } from './components/EmailSent';
 import { AuthView, ErrorView } from './components/AuthView';
 import { ErrorCard } from './components/ErrorCard';
 import { User } from './api/types';
+import { makeResetPasswordForm } from './components/ResetPassword';
 
 export enum Identifier {
   Username = 1,
@@ -89,6 +90,7 @@ export const configureAuth = <UserType extends unknown = User>(config: Configura
   const store = makeGenericUserStore<UserType>();
   const login = makeLoginForm(fullConfig);
   const forgot = makeForgotPasswordForm(fullConfig);
+  const reset = makeResetPasswordForm(fullConfig);
   const activate = makeActivateEmailAddress(fullConfig);
   const ProtectedRoute = makeProtectedRoute(fullConfig);
   const LoginRoute = makeLoginRoute(fullConfig);
@@ -118,6 +120,12 @@ export const configureAuth = <UserType extends unknown = User>(config: Configura
       path={fullConfig.paths.emailSent}
       component={emailSent.EmailSentView}
       key="email-sent"
+    />,
+    <LoginRoute
+      exact
+      path={fullConfig.paths.resetPassword}
+      component={reset.ResetPasswordView}
+      key="reset-password"
     />,
   ];
 
