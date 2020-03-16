@@ -7,7 +7,7 @@ import { AuthFunctionContext } from '../store/UserStore';
 import { ErrorView } from './AuthView';
 import { strings } from '../internationalization';
 import { FullConfig } from '../Configuration';
-import { makeActivationCard } from './ActivationCard';
+import { makeActivationCard } from './Activation';
 
 const Errors = strings.EmailActivation.Errors as { [key: string]: string };
 
