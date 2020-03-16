@@ -17,7 +17,7 @@ test('submit calls login', () => {
     { requestPasswordReset },
   );
   fireEvent.change(
-    renderObject.getByLabelText(strings.ForgotPassword.InputLabel),
+    renderObject.getByLabelText(strings.ForgotPassword.InputLabel, { exact: false }),
     {
       target: {
         value: mockEmail,
