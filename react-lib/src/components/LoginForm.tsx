@@ -9,6 +9,7 @@ import React, { FC, useState } from 'react';
 import { Grid, Paper, Typography } from '@material-ui/core';
 import { AxiosError } from 'axios';
 import { useUserStore } from '../store/UserStore';
+import { LogoutReason } from '../store/types';
 import { strings } from '../internationalization';
 import { ErrorMessage, MetaDict, ObjectOfStrings } from '../api/types';
 
@@ -87,12 +88,14 @@ export const makeLoginForm: (options: LoginFormOptions) => FC = ({
       </Typography>
 
       {
-        justLoggedOut && (
+        justLoggedOut !== LogoutReason.NONE && (
           <Typography
             variant="body2"
             className={classes.loggedOutText}
           >
-            {strings.LoginForm.LogoutSuccess}
+            {justLoggedOut === LogoutReason.USER
+              ? strings.LoginForm.LogoutSuccess
+              : strings.LoginForm.AuthLogoutNotification}
           </Typography>
         )
       }

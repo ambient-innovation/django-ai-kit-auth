@@ -1,14 +1,32 @@
+import unicodedata
+import uuid
+
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
-from django.forms import EmailField
+from django.forms import EmailField, CharField
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
 
 from .services import send_user_activation_mail
+from .settings import api_settings
 
 User = get_user_model()
+
+
+class UsernameField(CharField):
+    def to_python(self, value):
+        if not value:
+            value = str(uuid.uuid4())
+        return unicodedata.normalize("NFKC", super().to_python(value))
+
+    def widget_attrs(self, widget):
+        return {
+            **super().widget_attrs(widget),
+            "autocapitalize": "none",
+            "autocomplete": "username",
+        }
 
 
 class AIUserCreationForm(UserCreationForm):
@@ -16,6 +34,9 @@ class AIUserCreationForm(UserCreationForm):
         model = User
         fields = ("email",)
 
+    username = UsernameField(
+        label=_("Username"), required=api_settings.USERNAME_REQUIRED
+    )
     email = EmailField(label=_("Email address"), required=True)
 
     def clean_email(self):

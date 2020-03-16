@@ -10,6 +10,7 @@
     "Password": "Password",
     "Login": "Login",
     "LogoutSuccess": "You have been logged out successfully.",
+    "AuthLogoutNotification": "Please login before you continue.",
     "FieldErrors": {
       "blank": "This field may not be blank."
     },
