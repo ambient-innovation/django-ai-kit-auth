@@ -1,5 +1,4 @@
 import React, { FC } from 'react';
-import { StandardProps } from '@material-ui/core';
 
 interface MailSvgProps {
   className?: string;
