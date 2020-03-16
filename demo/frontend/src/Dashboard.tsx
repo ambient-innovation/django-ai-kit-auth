@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import axios from 'axios';
 import {
   Button, Grid, Typography,
 } from '@material-ui/core';
@@ -12,6 +13,8 @@ export const Dashboard: FC = () => {
       .then((response) => (response.json()))
       .catch(logout);
   };
+
+  const manualLogout = () => axios.post(`${apiUrl}logout/`);
 
   return (
     <Grid container alignItems="center" justify="center" spacing={2}>
@@ -49,6 +52,15 @@ export const Dashboard: FC = () => {
             onClick={() => logout()}
           >
             Logout
+          </Button>
+        </Grid>
+
+        <Grid item>
+          <Button
+            variant="contained"
+            onClick={() => manualLogout()}
+          >
+            Manual Logout
           </Button>
         </Grid>
 

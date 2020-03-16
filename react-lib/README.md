@@ -54,6 +54,13 @@ basic authentication functionality.
 they want to access specific pages.
 See the [API reference](#API Reference) for more information.
 
+### CSRF Protection
+
+In order to guard against CSRF attacks, the `UserStore` obtains and provides a csrf-token for
+you to use.
+You can obtain it from the `useUserStore` hook and add it to each 'unsafe' request (anything
+that is not `OPTIONS`, `GET`, `HEAD` or `TRACE`) as `X-CSRFToken`-header.
+
 ## API Reference
 
 AI-KIT: Authentication provides the following components and functions:
@@ -130,6 +137,7 @@ If it is undefined, the login was not yet successful, or the user has been logge
 ### AuthFunctionContext
 
 * `apiUrl: string`
+* `csrf: string`
 * `loading: boolean`
 * `login: (userIdentifier: string, password: string) => Promise<void>`
 * `loggedIn: boolean`
@@ -139,6 +147,11 @@ If it is undefined, the login was not yet successful, or the user has been logge
 
 `apiUrl` contains the url of the backend. This is exactly the same as the `apiUrl` prop passed
 to `UserStore`
+
+`csrf` is a token obtained from the server, used to guard against Cross Site Request Forgeries.
+Whenever you make a `POST`, `DELETE`, `PATCH` or `PUT` request to our backend, you need to
+place this token in the `X-CSRFToken` header of the request.
+Otherwise, the request will be rejected (provided that CSRF is enabled on the backend).
 
 `loading` is true if a login request has been sent, but the reply has not yet arrived.
 
