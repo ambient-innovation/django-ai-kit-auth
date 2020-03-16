@@ -17,9 +17,10 @@ export const renderWithRouterAndUser = (
   return ({
     history,
     ...render(
-      <UserContext.Provider value={{ user: testContext?.user }}>
+      <UserContext.Provider value={{ user: testContext?.user || null }}>
         <AuthFunctionContext.Provider
           value={{
+            csrf: testContext?.csrf || '',
             loading: !!testContext?.loading,
             login: testContext?.login || jest.fn(),
             loggedIn: !!testContext?.user,

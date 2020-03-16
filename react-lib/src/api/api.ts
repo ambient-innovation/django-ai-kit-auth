@@ -10,9 +10,7 @@ export const makeUrl = (apiUrl: string, suffix: string) => {
 };
 
 function setCsrfHeader<U>(data: MeResponse<U>) {
-  axios.defaults.headers = {
-    'X-CSRFToken': data.csrf,
-  };
+  axios.defaults.headers.common['X-CSRFToken'] = data.csrf;
 
   return data;
 }
