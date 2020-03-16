@@ -9,6 +9,7 @@ import Link from '@material-ui/core/Link';
 import { FullConfig } from '../Configuration';
 import { strings } from '../internationalization';
 import { AuthView } from './AuthView';
+import { MailSvg } from '../assets/MailSvg';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   PaperCard: {
@@ -18,6 +19,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     paddingBottom: 36,
     boxShadow: '0 1px 36px 0 rgba(211, 211, 211, 0.5)',
     width: '100%',
+    position: 'relative',
     [theme.breakpoints.down('md')]: {
       paddingLeft: 30,
     },
@@ -37,6 +39,14 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   },
   SuccessText: {
     marginBottom: 30,
+  },
+  MailSvg: {
+    position: 'absolute',
+    top: 30,
+    right: 40,
+    '& .custom-fill': {
+      fill: theme.palette.primary.main,
+    },
   },
 }));
 
@@ -91,6 +101,7 @@ export const makeEmailSentCard: (config: FullConfig) => {
             {strings.EmailSent.RequestAgain}
           </Link>
         </Grid>
+        <MailSvg className={classes.MailSvg} />
       </Paper>
     );
   };
