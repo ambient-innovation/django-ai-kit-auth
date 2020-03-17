@@ -106,6 +106,15 @@ class LoginTests(APITestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    def test_validate_password_with_ident(self):
+        ident = str(services.scramble_id(self.user.pk))
+        response = self.client.post(
+            self.validate_password_url,
+            {"password": PASSWORD, "ident": ident,},
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
     def test_validate_password_fail(self):
         response = self.client.post(
             self.validate_password_url,
