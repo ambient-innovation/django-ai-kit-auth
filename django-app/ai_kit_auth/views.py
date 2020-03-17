@@ -53,7 +53,7 @@ class LogoutView(views.APIView):
         return Response(status=status.HTTP_200_OK)
 
 
-class Me(generics.GenericAPIView):
+class MeView(generics.GenericAPIView):
     """
     Barebones user model detail view
     """
@@ -109,7 +109,7 @@ class RegistrationView(views.APIView):
         return Response({}, status=status.HTTP_201_CREATED)
 
 
-class ValidatePassword(generics.GenericAPIView):
+class ValidatePassword(views.APIView):
     """
     Endpoint to validate the password without trying to register an account.
     Can be used to show the user error messages on the fly
@@ -118,12 +118,6 @@ class ValidatePassword(generics.GenericAPIView):
     serializer_class = serializers.ValidatePasswordSerializer
 
     permission_classes = (AllowAny,)
-
-    def get_queryset(self):
-        """
-        nessessary to shut drf up...
-        """
-        return None
 
     def post(self, request, *args, **kwargs):
         try:
