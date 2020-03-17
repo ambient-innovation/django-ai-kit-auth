@@ -36,6 +36,7 @@ export const renderWithRouterAndUser = (
             validatePassword: successPromise,
             requestPasswordReset: successPromise,
             resetPassword: successPromise,
+            register: successPromise,
             ...context,
           }}
         >

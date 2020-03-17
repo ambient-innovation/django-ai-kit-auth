@@ -12,6 +12,7 @@ import { AuthView, ErrorView } from './components/AuthView';
 import { ErrorCard } from './components/ErrorCard';
 import { User } from './api/types';
 import { makeResetPasswordForm } from './components/ResetPassword';
+import {makeRegisterForm} from "./components/Register";
 
 export enum Identifier {
   Username = 1,
@@ -24,6 +25,7 @@ export const defaultConfig = {
     mainPage: '/',
     base: '/auth',
     login: '/login',
+    register: '/register',
     activation: '/activation',
     forgotPassword: '/forgot-password',
     resetPassword: '/reset-password',
@@ -75,6 +77,7 @@ export const configureAuth = <UserType extends unknown = User>(config: Configura
         fullConfig.paths[key] = `${base}${fullConfig.paths[key]}/:ident/:token([0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})`;
         break;
       case 'login':
+      case 'register':
       case 'forgotPassword':
       case 'emailSent':
         fullConfig.paths[key] = `${base}${fullConfig.paths[key]}`;
@@ -89,6 +92,7 @@ export const configureAuth = <UserType extends unknown = User>(config: Configura
 
   const store = makeGenericUserStore<UserType>();
   const login = makeLoginForm(fullConfig);
+  const register = makeRegisterForm(fullConfig);
   const forgot = makeForgotPasswordForm(fullConfig);
   const reset = makeResetPasswordForm(fullConfig);
   const activate = makeActivateEmailAddress(fullConfig);
@@ -108,6 +112,12 @@ export const configureAuth = <UserType extends unknown = User>(config: Configura
       path={fullConfig.paths.login}
       component={login.LoginView}
       key="login"
+    />,
+    <Route
+      exact
+      path={fullConfig.paths.register}
+      component={register.RegisterView}
+      key="regiser"
     />,
     <LoginRoute
       exact
@@ -132,6 +142,7 @@ export const configureAuth = <UserType extends unknown = User>(config: Configura
   return ({
     ...store,
     ...login,
+    ...register,
     ...forgot,
     ...activate,
     ...emailSent,
