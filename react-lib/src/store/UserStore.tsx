@@ -5,7 +5,7 @@ import { AxiosError } from 'axios';
 import { CssBaseline, Theme, ThemeProvider } from '@material-ui/core';
 import { User } from '../api/types';
 import {
-  activateEmailAddressAPI, loginAPI, logoutAPI, meAPI,
+  activateEmailAddressAPI, loginAPI, logoutAPI, meAPI, registerAPI,
 } from '../api/api';
 import { AuthFunctionContextValue, LogoutReason, UserStoreValue } from './types';
 import { defaultTheme } from '../styles/styles';
@@ -17,6 +17,8 @@ interface UserStoreProps {
   customTheme?: Theme;
 }
 
+const noop: () => void = () => null;
+
 export const AuthFunctionContext = createContext<AuthFunctionContextValue>({
   loading: false,
   apiUrl: '',
@@ -26,6 +28,7 @@ export const AuthFunctionContext = createContext<AuthFunctionContextValue>({
   logout: errorPromise,
   justLoggedOut: LogoutReason.NONE,
   activateEmailAddress: errorPromise,
+  register: errorPromise,
 });
 
 export function makeGenericUserStore<U extends unknown = User>() {
@@ -75,8 +78,13 @@ export function makeGenericUserStore<U extends unknown = User>() {
     ) => Promise<void> = (
       userIdentifier, token,
     ) => activateEmailAddressAPI(apiUrl, userIdentifier, token)
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      .then(() => {});
+      .then(noop);
+
+    const register: (
+      username: string, email: string, password: string,
+    ) => Promise<void> = (
+      username, email, password,
+    ) => registerAPI(apiUrl, username, email, password).then(noop);
 
     useEffect(() => {
       // If we don't have a user, we need to obtain it via  the me endpoint
@@ -112,6 +120,7 @@ export function makeGenericUserStore<U extends unknown = User>() {
             logout,
             justLoggedOut: loggedOut,
             activateEmailAddress,
+            register,
           }}
         >
           <CssBaseline />

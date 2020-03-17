@@ -44,3 +44,7 @@ export const logoutAPI = (
 export const activateEmailAddressAPI = (apiUrl: string, ident: string, token: string) => (
   axios.post(makeUrl(apiUrl, 'activate_email/'), { ident, token })
 );
+
+export const registerAPI = (
+  apiUrl: string, username: string, email: string, password: string,
+) => axios.post(makeUrl(apiUrl, 'register/'), { username, email, password });

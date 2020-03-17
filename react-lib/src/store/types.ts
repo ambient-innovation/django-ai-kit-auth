@@ -19,4 +19,5 @@ export interface AuthFunctionContextValue {
   logout: (reason?: LogoutReason) => Promise<void>;
   justLoggedOut: LogoutReason;
   activateEmailAddress: (userIdentifier: string, token: string) => Promise<void>;
+  register: (username: string, email: string, password: string) => Promise<void>;
 }
