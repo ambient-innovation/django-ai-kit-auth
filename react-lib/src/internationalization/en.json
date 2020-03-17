@@ -24,10 +24,11 @@
   },
   "ResetPassword": {
     "ResetPassword": "Reset Password",
-    "ForgotPassword": "Forgot Password",
     "NewPassword": "New password",
     "RepeatNewPassword": "Repeat new password",
-    "ButtonText": "Save password"
+    "ButtonText": "Save password",
+    "SuccessText": "Your password has been changed successfully. Please continue to login.",
+    "SuccessButtonText": "Continue to Login"
   },
   "ForgotPassword": {
     "ForgotPassword": "Forgot Password",

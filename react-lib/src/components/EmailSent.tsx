@@ -44,9 +44,6 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     position: 'absolute',
     top: 30,
     right: 40,
-    '& .custom-fill': {
-      fill: theme.palette.primary.main,
-    },
   },
 }));
 

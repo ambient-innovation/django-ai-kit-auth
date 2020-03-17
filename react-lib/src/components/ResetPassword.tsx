@@ -1,12 +1,9 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { FC, useContext, useState } from 'react';
-import { useHistory, Link as RouterLink } from 'react-router-dom';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
-import Link from '@material-ui/core/Link';
 import { AuthFunctionContext } from '../store/UserStore';
 import { FullConfig } from '../Configuration';
 import { AuthView } from './AuthView';
@@ -44,6 +41,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     fontSize: '1rem',
     color: theme.palette.primary.main,
   },
+  successText: {
+    marginBottom: 30,
+  },
 }));
 
 export const makeResetPasswordForm: (config: FullConfig) => {
@@ -57,8 +57,8 @@ export const makeResetPasswordForm: (config: FullConfig) => {
     const [password, setPassword] = useState('');
     const [password2, setPassword2] = useState('');
     const [loading, setLoading] = useState(false);
+    const [success, setSuccess] = useState(true);
     const { resetPassword } = useContext(AuthFunctionContext);
-    const history = useHistory();
 
     return (
       <Paper
@@ -81,47 +81,73 @@ export const makeResetPasswordForm: (config: FullConfig) => {
               onSubmit={(e) => {
                 e.preventDefault();
                 setLoading(true);
-
+                // TODO: Get ident and token from URL
                 resetPassword('', '', password).then(() => {
-                  history.push(login);
+                  setSuccess(true);
                 }).catch(() => {
-
+                  // TODO: Error handling
                 }).finally(() => {
                   setLoading(false);
                 });
-              // history.push(emailSent);
               }}
             >
-              <PasswordField
-                className={classes.inputField}
-                password={password}
-                setPassword={setPassword}
-                errorMessage={{}}
-                label={strings.ResetPassword.NewPassword}
-                id="reset_password"
-              />
+              {
+                success ? (
+                  <>
+                    <Typography
+                      className={classes.successText}
+                      variant="body1"
+                    >
+                      {strings.ResetPassword.SuccessText}
+                    </Typography>
 
-              <PasswordField
-                className={classes.inputField}
-                password={password2}
-                setPassword={setPassword2}
-                errorMessage={{}}
-                label={strings.ResetPassword.RepeatNewPassword}
-                id="reset_password2"
-              />
+                    <Grid container item xs={12} justify="center">
+                      <Button
+                        type="button"
+                        title={strings.ResetPassword.SuccessButtonText}
+                        variant="contained"
+                        color="primary"
+                        href={login}
+                      >
+                        {strings.ResetPassword.SuccessButtonText}
+                      </Button>
+                    </Grid>
+                  </>
+                ) : (
+                  <>
+                    <PasswordField
+                      className={classes.inputField}
+                      password={password}
+                      setPassword={setPassword}
+                      errorMessage={{}}
+                      label={strings.ResetPassword.NewPassword}
+                      id="reset_password"
+                    />
 
-              <Grid container item xs={12} justify="center">
-                <Button
-                  id="reset_submit"
-                  type="submit"
-                  title={strings.ResetPassword.ButtonText}
-                  variant="contained"
-                  color="primary"
-                  disabled={password !== password2 || password.length < 8}
-                >
-                  {strings.ResetPassword.ButtonText}
-                </Button>
-              </Grid>
+                    <PasswordField
+                      className={classes.inputField}
+                      password={password2}
+                      setPassword={setPassword2}
+                      errorMessage={{}}
+                      label={strings.ResetPassword.RepeatNewPassword}
+                      id="reset_password2"
+                    />
+
+                    <Grid container item xs={12} justify="center">
+                      <Button
+                        id="reset_submit"
+                        type="submit"
+                        title={strings.ResetPassword.ButtonText}
+                        variant="contained"
+                        color="primary"
+                        disabled={password !== password2 || password.length < 8}
+                      >
+                        {strings.ResetPassword.ButtonText}
+                      </Button>
+                    </Grid>
+                  </>
+                )
+              }
             </form>
           )
         }
