@@ -154,7 +154,7 @@ export const makeResetPasswordForm: (config: FullConfig) => {
                     <PasswordField
                       className={classes.inputField}
                       password={password2}
-                      onChange={(value) => setPassword2(value)}
+                      onChange={setPassword2}
                       errorMessage={password !== password2 && password2.length > 0 ? {
                         password: ['passwords_not_identical'],
                       } : {}}
