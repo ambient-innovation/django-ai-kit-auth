@@ -42,5 +42,5 @@ export const logoutAPI = (
 ) => axios.post(makeUrl(apiUrl, 'logout/')).then(({ data }) => data);
 
 export const activateEmailAddressAPI = (apiUrl: string, ident: string, token: string) => (
-  axios.post(makeUrl(apiUrl, `activate_email/${ident}/${token}/`))
+  axios.post(makeUrl(apiUrl, 'activate_email/'), { ident, token })
 );

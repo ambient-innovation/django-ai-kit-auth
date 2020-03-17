@@ -139,4 +139,5 @@ AI_KIT_AUTH = {
     "FRONTEND": {
         "URL": "http://localhost:3000",
     },
+    "USERNAME_REQUIRED": False
 }
