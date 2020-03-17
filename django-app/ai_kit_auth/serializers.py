@@ -48,8 +48,8 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class ValidatePasswordSerializer(serializers.Serializer):
-    # the required logic for the fields is to complicated required= arguments,
-    # we do it ourself in validate
+    # either ident or email and username (only if configured) is required,
+    # but we test that manually
     ident = serializers.CharField(required=False)
     username = serializers.CharField(required=False)
     email = serializers.EmailField(required=False)
