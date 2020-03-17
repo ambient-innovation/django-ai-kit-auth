@@ -64,7 +64,7 @@ test('error in identifier field', async () => {
   const renderObject = renderFunction();
   fireEvent.submit(renderObject.getByRole('form'));
   await waitForElement(
-    () => renderObject.getByText(strings.LoginForm.FieldErrors.blank),
+    () => renderObject.getByText(strings.Common.FieldErrors.blank),
   );
 });
 
@@ -83,7 +83,7 @@ test('error in password field', async () => {
   const renderObject = renderFunction();
   fireEvent.submit(renderObject.getByRole('form'));
   await waitForElement(
-    () => renderObject.getByText(strings.LoginForm.FieldErrors.blank),
+    () => renderObject.getByText(strings.Common.FieldErrors.blank),
   );
 });
 
@@ -104,7 +104,7 @@ test('show general error', async () => {
   fireEvent.submit(renderObject.getByRole('form'));
   await waitForElement(
     () => renderObject.getByText(
-      strings.LoginForm.NonFieldErrors.invalid_credentials.UsernameOrEmail,
+      strings.Common.NonFieldErrors.invalid_credentials.UsernameOrEmail,
     ),
   );
 });

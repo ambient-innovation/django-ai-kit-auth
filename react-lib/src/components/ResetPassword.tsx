@@ -68,18 +68,17 @@ export const makeResetPasswordForm: (config: FullConfig) => {
 
     const validatePassword = (pw: string) => {
       if (ident) {
-        process.nextTick(() => {
-          validatePasswordAPI(apiUrl, ident, pw)
-            .then(() => {
-              setPasswordErrorMessages(undefined);
-            }).catch((error: AxiosError) => {
-              if (error.response) {
-                setPasswordErrorMessages({
-                  password: error.response.data.non_field_errors,
-                });
-              }
-            });
-        });
+        // TODO: add debounce to prevent race conditions
+        validatePasswordAPI(apiUrl, ident, pw)
+          .then(() => {
+            setPasswordErrorMessages(undefined);
+          }).catch((error: AxiosError) => {
+            if (error.response) {
+              setPasswordErrorMessages({
+                password: error.response.data.non_field_errors,
+              });
+            }
+          });
       }
     };
 
@@ -143,17 +142,19 @@ export const makeResetPasswordForm: (config: FullConfig) => {
                     <PasswordField
                       className={classes.inputField}
                       password={password}
-                      setPassword={setPassword}
                       errorMessage={passwordErrorMessages || {}}
                       label={strings.ResetPassword.NewPassword}
                       id="reset_password"
-                      onChange={(value) => validatePassword(value)}
+                      onChange={(value) => {
+                        setPassword(value);
+                        validatePassword(value);
+                      }}
                     />
 
                     <PasswordField
                       className={classes.inputField}
                       password={password2}
-                      setPassword={setPassword2}
+                      onChange={(value) => setPassword2(value)}
                       errorMessage={password !== password2 && password2.length > 0 ? {
                         password: ['passwords_not_identical'],
                       } : {}}

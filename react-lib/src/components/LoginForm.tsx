@@ -16,8 +16,8 @@ import { FullConfig, Identifier } from '../Configuration';
 import { AuthView } from './AuthView';
 import { PasswordField } from './common/PasswordField';
 
-const fieldErrors: ObjectOfStrings = strings.LoginForm.FieldErrors;
-const nonFieldErrors: MetaDict = strings.LoginForm.NonFieldErrors;
+const fieldErrors: ObjectOfStrings = strings.Common.FieldErrors;
+const nonFieldErrors: MetaDict = strings.Common.NonFieldErrors;
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   loginForm: {
@@ -125,7 +125,7 @@ export const makeLoginForm: (config: FullConfig) => { LoginForm: FC; LoginView: 
           <PasswordField
             className={classes.inputField}
             password={password}
-            setPassword={setPassword}
+            onChange={(value) => setPassword(value)}
             errorMessage={errorMessage}
           />
 

@@ -1,6 +1,4 @@
-import React, {
-  Dispatch, FC, SetStateAction, useState,
-} from 'react';
+import React, { FC, useState } from 'react';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import Visibility from '@material-ui/icons/Visibility';
@@ -9,12 +7,11 @@ import TextField from '@material-ui/core/TextField';
 import { strings } from '../../internationalization';
 import { ErrorMessage, ObjectOfStrings } from '../../api/types';
 
-const fieldErrors: ObjectOfStrings = strings.LoginForm.FieldErrors;
+const fieldErrors: ObjectOfStrings = strings.Common.FieldErrors;
 
 export interface PasswordFieldProps {
   className?: string;
   password: string;
-  setPassword: Dispatch<SetStateAction<string>>;
   errorMessage: ErrorMessage;
   label?: string;
   id?: string;
@@ -23,7 +20,7 @@ export interface PasswordFieldProps {
 
 export const PasswordField: FC<PasswordFieldProps> = (
   {
-    className, errorMessage, password, setPassword, label, id, onChange,
+    className, errorMessage, password, label, id, onChange,
   },
 ) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -41,9 +38,7 @@ export const PasswordField: FC<PasswordFieldProps> = (
         `${fieldErrors[message]} `)) : ''}
       error={!!errorMessage.password}
       onChange={(event) => {
-        setPassword(event.target.value);
         if (onChange) {
-          // TODO: add debounce
           onChange(event.target.value);
         }
       }}
