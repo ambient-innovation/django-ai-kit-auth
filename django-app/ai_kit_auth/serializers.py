@@ -7,7 +7,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError as DjangoValidationError
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-
+from .settings import api_settings
 
 UserModel = get_user_model()
 
@@ -47,17 +47,23 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class ValidatePasswordSerializer(serializers.Serializer):
-    ident = serializers.CharField(required=True)
+    username = serializers.CharField(required=api_settings.USERNAME_REQUIRED)
+    email = serializers.EmailField(required=True)
     password = serializers.CharField(required=True)
 
     def validate(self, attrs):
+        username = attrs["username"] or "na"
+        email = ["email"]
+        password = attrs["password"]
         try:
             validators = get_password_validators(settings.AUTH_PASSWORD_VALIDATORS)
         except:
             validators = None
         try:
+            user = UserModel(username=username, email=email,)
+
             validate_password(
-                attrs["password"], user=attrs["ident"], password_validators=validators,
+                password=password, user=user, password_validators=validators,
             )
         except DjangoValidationError as e:
             # convert to error codes since translations are implemented in the

@@ -157,7 +157,7 @@ class ResetPassword(views.APIView):
 
         # reuse the password validation
         serializer = serializers.ValidatePasswordSerializer(
-            data={"ident": user.username, "password": password}
+            data={"username": user.username, "email": user.email, "password": password}
         )
         serializer.is_valid(raise_exception=True)
 

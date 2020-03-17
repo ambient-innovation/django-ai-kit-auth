@@ -97,15 +97,19 @@ class LoginTests(APITestCase):
     def test_validate_password(self):
         response = self.client.post(
             self.validate_password_url,
-            {"password": "longandvalidpassword", "ident": "username"},
+            {
+                "password": "longandvalidpassword",
+                "username": "username",
+                "email": EMAIL,
+            },
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_invalidate_password(self):
+    def test_validate_password_fail(self):
         response = self.client.post(
             self.validate_password_url,
-            {"password": "username", "ident": "username"},
+            {"password": "username", "username": "username", "email": EMAIL},
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
