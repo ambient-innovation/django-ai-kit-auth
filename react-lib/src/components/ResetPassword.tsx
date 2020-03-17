@@ -4,11 +4,15 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
+import { useParams } from 'react-router-dom';
 import { AuthFunctionContext } from '../store/UserStore';
 import { FullConfig } from '../Configuration';
 import { AuthView } from './AuthView';
 import { strings } from '../internationalization';
 import { PasswordField } from './common/PasswordField';
+import { validatePasswordAPI } from '../api/api';
+import { ErrorMessage } from '../api/types';
+import { AxiosError } from 'axios';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   form: {
@@ -56,9 +60,28 @@ export const makeResetPasswordForm: (config: FullConfig) => {
     const classes = useStyles();
     const [password, setPassword] = useState('');
     const [password2, setPassword2] = useState('');
+    const [passwordErrorMessages, setPasswordErrorMessages] = useState<ErrorMessage>({});
     const [loading, setLoading] = useState(false);
-    const [success, setSuccess] = useState(true);
-    const { resetPassword } = useContext(AuthFunctionContext);
+    const [success, setSuccess] = useState(false);
+    const { apiUrl, resetPassword } = useContext(AuthFunctionContext);
+    const { ident, token } = useParams();
+
+    const validatePassword = (pw: string) => {
+      if (ident) {
+        process.nextTick(() => {
+          validatePasswordAPI(apiUrl, ident, pw)
+            .then(() => {
+              setPasswordErrorMessages({});
+            }).catch((error: AxiosError) => {
+              if (error.response) {
+                setPasswordErrorMessages({
+                  password: error.response.data.non_field_errors,
+                });
+              }
+            });
+        });
+      }
+    };
 
     return (
       <Paper
@@ -80,15 +103,17 @@ export const makeResetPasswordForm: (config: FullConfig) => {
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                setLoading(true);
-                // TODO: Get ident and token from URL
-                resetPassword('', '', password).then(() => {
-                  setSuccess(true);
-                }).catch(() => {
-                  // TODO: Error handling
-                }).finally(() => {
-                  setLoading(false);
-                });
+
+                if (ident && token) {
+                  setLoading(true);
+                  resetPassword(ident, token, password).then(() => {
+                    setSuccess(true);
+                  }).catch(() => {
+                    // TODO: Error handling
+                  }).finally(() => {
+                    setLoading(false);
+                  });
+                }
               }}
             >
               {
@@ -119,9 +144,10 @@ export const makeResetPasswordForm: (config: FullConfig) => {
                       className={classes.inputField}
                       password={password}
                       setPassword={setPassword}
-                      errorMessage={{}}
+                      errorMessage={passwordErrorMessages}
                       label={strings.ResetPassword.NewPassword}
                       id="reset_password"
+                      onChange={(value) => validatePassword(value)}
                     />
 
                     <PasswordField
@@ -140,7 +166,7 @@ export const makeResetPasswordForm: (config: FullConfig) => {
                         title={strings.ResetPassword.ButtonText}
                         variant="contained"
                         color="primary"
-                        disabled={password !== password2 || password.length < 8}
+                        disabled={password !== password2 || password.length < 7}
                       >
                         {strings.ResetPassword.ButtonText}
                       </Button>

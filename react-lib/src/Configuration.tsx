@@ -24,7 +24,7 @@ export const defaultConfig = {
     mainPage: '/',
     base: '/auth',
     login: '/login',
-    activation: '/activation/:ident/:token([0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})',
+    activation: '/activation',
     forgotPassword: '/forgot-password',
     resetPassword: '/reset-password',
     emailSent: '/email-sent',
@@ -71,11 +71,11 @@ export const configureAuth = <UserType extends unknown = User>(config: Configura
   Object.keys(fullConfig.paths).forEach((key) => {
     switch (key) {
       case 'activation':
+      case 'resetPassword':
         fullConfig.paths[key] = `${base}${fullConfig.paths[key]}/:ident/:token([0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})`;
         break;
       case 'login':
       case 'forgotPassword':
-      case 'resetPassword':
       case 'emailSent':
         fullConfig.paths[key] = `${base}${fullConfig.paths[key]}`;
         break;
@@ -121,7 +121,7 @@ export const configureAuth = <UserType extends unknown = User>(config: Configura
       component={emailSent.EmailSentView}
       key="email-sent"
     />,
-    <LoginRoute
+    <Route
       exact
       path={fullConfig.paths.resetPassword}
       component={reset.ResetPasswordView}

@@ -48,7 +48,7 @@ export const activateEmailAddressAPI = (apiUrl: string, ident: string, token: st
 export const validatePasswordAPI = (
   apiUrl: string, ident: string, password: string,
 ) => axios.post<{}>(
-  makeUrl(apiUrl, 'validate_password'), { ident, password },
+  makeUrl(apiUrl, 'validate_password/'), { ident, password },
 );
 
 export const sendPWResetEmail = (

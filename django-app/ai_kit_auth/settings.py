@@ -34,7 +34,7 @@ DEFAULTS = {
     "FRONTEND": {
         "URL": "",
         "ACTIVATION_ROUTE": "/auth/activation/",
-        "RESET_PW_ROUTE": "/auth/reset_password/",
+        "RESET_PW_ROUTE": "/auth/reset-password/",
     },
 }
 

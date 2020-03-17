@@ -1,4 +1,5 @@
 import React, {
+  ChangeEvent,
   Dispatch, FC, SetStateAction, useState,
 } from 'react';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -18,11 +19,12 @@ export interface PasswordFieldProps {
   errorMessage: ErrorMessage;
   label?: string;
   id?: string;
+  onChange?: (value: string) => void;
 }
 
 export const PasswordField: FC<PasswordFieldProps> = (
   {
-    className, errorMessage, password, setPassword, label, id,
+    className, errorMessage, password, setPassword, label, id, onChange,
   },
 ) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -37,10 +39,14 @@ export const PasswordField: FC<PasswordFieldProps> = (
       value={password}
       type={showPassword ? 'text' : 'password'}
       helperText={errorMessage.password ? errorMessage.password.map((message: string) => (
-        fieldErrors[message])) : ''}
+        `${fieldErrors[message]} `)) : ''}
       error={!!errorMessage.password}
       onChange={(event) => {
         setPassword(event.target.value);
+        if (onChange) {
+          // TODO: add debounce
+          onChange(event.target.value);
+        }
       }}
       InputProps={{
         endAdornment: (
