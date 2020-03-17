@@ -8,6 +8,7 @@ from django.core.exceptions import ValidationError as DjangoValidationError
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from .settings import api_settings
+from . import services
 
 UserModel = get_user_model()
 
@@ -47,21 +48,43 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class ValidatePasswordSerializer(serializers.Serializer):
-    username = serializers.CharField(required=api_settings.USERNAME_REQUIRED)
-    email = serializers.EmailField(required=True)
+    # the required logic for the fields is to complicated required= arguments,
+    # we do it ourself in validate
+    ident = serializers.CharField(required=False)
+    username = serializers.CharField(required=False)
+    email = serializers.EmailField(required=False)
     password = serializers.CharField(required=True)
 
     def validate(self, attrs):
-        username = attrs["username"] or "na"
-        email = ["email"]
+        ident = attrs.get("ident")
+        username = attrs.get("username")
+        email = attrs.get("email")
         password = attrs["password"]
+
+        if ident:
+            # we dont need username and/or email, the usermodel should already
+            # exist
+            try:
+                pk = services.scramble_id(ident)
+                user = UserModel.objects.get(pk=pk)
+            except UserModel.DoesNotExist:
+                # if anything goes wrong, we error out
+                raise ValidationError("unkown_user")
+        else:
+            # usermodel does not already exist, we create a one off only for the
+            # validation
+            if not email:
+                raise ValidationError("email_required")
+            if api_settings.USERNAME_REQUIRED and not username:
+                raise ValidationError("username_required")
+
+            user = UserModel(username=username, email=email,)
+
         try:
             validators = get_password_validators(settings.AUTH_PASSWORD_VALIDATORS)
         except:
             validators = None
         try:
-            user = UserModel(username=username, email=email,)
-
             validate_password(
                 password=password, user=user, password_validators=validators,
             )
