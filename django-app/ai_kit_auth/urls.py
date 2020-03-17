@@ -16,6 +16,12 @@ auth_patterns = (
             views.ValidatePassword.as_view(),
             name="validate_password",
         ),
+        re_path(
+            r"send_pw_reset_email/$",
+            views.InitiatePasswordResetView.as_view(),
+            name="send_pw_reset_email",
+        ),
+        re_path(r"reset_password/$", views.ResetPassword.as_view(), name="pw_reset",),
     ],
     "ai_kit_auth",
 )

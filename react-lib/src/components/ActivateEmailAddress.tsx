@@ -1,55 +1,54 @@
-import CircularProgress from '@material-ui/core/CircularProgress';
 import React, {
   FC, useContext, useEffect, useState,
 } from 'react';
 import { AxiosError } from 'axios';
 import { useParams } from 'react-router-dom';
 import { AuthFunctionContext } from '../store/UserStore';
-import { ActivationView, ErrorView } from './AuthView';
+import { ErrorView } from './AuthView';
 import { strings } from '../internationalization';
+import { FullConfig } from '../Configuration';
+import { makeActivationCard } from './Activation';
 
 const Errors = strings.EmailActivation.Errors as { [key: string]: string };
 
-interface ActivateEmailAddressOptions {
-  loadingIndicator?: () => JSX.Element;
-  errorView?: (title: string, message: string) => JSX.Element;
-  successView?: () => JSX.Element;
-}
-
 export const makeActivateEmailAddress: (
-  options: ActivateEmailAddressOptions,
-) => FC = ({
-  loadingIndicator = () => <CircularProgress />,
-  errorView = ((title, message) => <ErrorView title={title} message={message} />),
-  successView = () => <ActivationView />,
-}) => () => {
-  const { ident, token } = useParams();
-  const { activateEmailAddress } = useContext(AuthFunctionContext);
-  const [error, setError] = useState<string|undefined>(undefined);
-  const [loading, setLoading] = useState(true);
+  config: FullConfig,
+) => {
+  ActivateEmailAddress: FC; ActivationView: FC; ActivationCard: FC;
+} = (config) => {
+  const { ActivationView, ActivationCard } = makeActivationCard(config);
 
-  useEffect(() => {
-    if (ident && token) {
-      activateEmailAddress(ident, token)
-        .catch((error_: AxiosError) => {
-          if (error_.response?.status === 400) {
-            setError(error_.response.data.error);
-          }
-        })
-        .finally(() => setLoading(false));
+  const ActivateEmailAddress = () => {
+    const { ident, token } = useParams();
+    const { activateEmailAddress } = useContext(AuthFunctionContext);
+    const [error, setError] = useState<string|undefined>(undefined);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+      if (ident && token) {
+        activateEmailAddress(ident, token)
+          .catch((error_: AxiosError) => {
+            if (error_.response?.status === 400) {
+              setError(error_.response.data.error);
+            }
+          })
+          .finally(() => setLoading(false));
+      }
+    });
+
+    if (loading) return config.components.loadingIndicator();
+
+    if (error) {
+      return (
+        <ErrorView
+          title={strings.EmailActivation.ErrorTitle}
+          message={Errors[error] || Errors.general}
+        />
+      );
     }
-  });
 
-  if (loading) return loadingIndicator();
+    return <ActivationView />;
+  };
 
-  if (error) {
-    return errorView(
-      strings.EmailActivation.ErrorTitle,
-      Errors[error] || Errors.general,
-    );
-  }
-
-  return successView();
+  return { ActivateEmailAddress, ActivationCard, ActivationView };
 };
-
-export const ActivateEmailAddress = makeActivateEmailAddress({});

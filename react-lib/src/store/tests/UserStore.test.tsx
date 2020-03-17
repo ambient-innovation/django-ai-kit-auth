@@ -8,7 +8,7 @@ import {
   render, waitForElement, fireEvent, act,
 } from '@testing-library/react';
 
-import { UserStore, useUserStore } from '../UserStore';
+import { UserStore, useUserStore } from '../..';
 import { User } from '../../api/types';
 
 const maxios = new MockAdapter(axios);
@@ -27,34 +27,36 @@ const StoreDisplay: FC = () => {
   } = useUserStore();
 
   if (loading) return <div>loading</div>;
-  if (!user) {
-    return (
-      <div>
-        no user
-        <button
-          type="button"
-          onClick={() => login(mockUser.username, 'pass')
-            .catch(() => null)}
-        >
-          Login
-        </button>
-      </div>
-    );
-  }
 
   return (
     <div>
-      <div>{user.username}</div>
-      <div>{user.email}</div>
-      <div>{user.id}</div>
+      {user ? (
+        <div>
+          <div>{user.username}</div>
+          <div>{user.email}</div>
+          <div>{user.id}</div>
+          <button
+            type="button"
+            onClick={() => logout()
+              .catch(() => null)}
+          >
+            Logout
+          </button>
+        </div>
+      ) : (
+        <div>
+          no user
+          <button
+            type="button"
+            onClick={() => login(mockUser.username, 'pass')
+              .catch(() => null)}
+          >
+            Login
+          </button>
+        </div>
+      )}
       <div>{csrf}</div>
-      <button
-        type="button"
-        onClick={() => logout()
-          .catch(() => null)}
-      >
-        Logout
-      </button>
+      { loading && <div>loading</div> }
     </div>
   );
 };
@@ -81,7 +83,7 @@ test('UserStore is loading initially', () => {
     // wait for some time, so that the loading can actually be shown
     await sleep();
 
-    return [200, mockUser];
+    return [400];
   });
   const renderObject = renderStoreValue();
   expect(renderObject.getByText('loading')).toBeInTheDocument();
@@ -113,7 +115,7 @@ test('UserStore shows loading while logging in', async () => {
   maxios.onPost('/login/').reply(async () => {
     await sleep();
 
-    return [200, { user: mockUser, csrf: '' }];
+    return [400];
   });
   const renderObject = renderStoreValue();
   await waitForElement(() => renderObject.getByText('Login'));
@@ -146,7 +148,7 @@ test('UserStore shows loading while logging out', async () => {
   maxios.onPost('/logout/').reply(async () => {
     await sleep();
 
-    return [200];
+    return [400];
   });
   const renderObject = renderStoreValue();
   await waitForElement(() => renderObject.getByText('Logout'));

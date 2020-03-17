@@ -19,4 +19,7 @@ export interface AuthFunctionContextValue {
   logout: (reason?: LogoutReason) => Promise<void>;
   justLoggedOut: LogoutReason;
   activateEmailAddress: (userIdentifier: string, token: string) => Promise<void>;
+  validatePassword: (ident: string, password: string) => Promise<void>;
+  requestPasswordReset: (email: string) => Promise<void>;
+  resetPassword: (ident: string, token: string, password: string) => Promise<void>;
 }

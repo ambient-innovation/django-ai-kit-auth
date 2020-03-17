@@ -1,4 +1,5 @@
 from django.urls import reverse
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.middleware.csrf import _compare_salted_tokens
 from django.contrib.auth import get_user_model
 from rest_framework import status
@@ -21,6 +22,8 @@ class LoginTests(APITestCase):
         self.logout_url = reverse("ai_kit_auth:logout")
         self.me_url = reverse("ai_kit_auth:me")
         self.validate_password_url = reverse("ai_kit_auth:validate_password")
+        self.send_pw_reset_email_url = reverse("ai_kit_auth:send_pw_reset_email")
+        self.pw_reset_url = reverse("ai_kit_auth:pw_reset")
         self.client.logout()
 
     def isLoggedIn(self) -> bool:
@@ -94,15 +97,28 @@ class LoginTests(APITestCase):
     def test_validate_password(self):
         response = self.client.post(
             self.validate_password_url,
-            {"password": "longandvalidpassword", "ident": "username"},
+            {
+                "password": "longandvalidpassword",
+                "username": "username",
+                "email": EMAIL,
+            },
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_invalidate_password(self):
+    def test_validate_password_with_ident(self):
+        ident = str(services.scramble_id(self.user.pk))
         response = self.client.post(
             self.validate_password_url,
-            {"password": "username", "ident": "username"},
+            {"password": PASSWORD, "ident": ident,},
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_validate_password_fail(self):
+        response = self.client.post(
+            self.validate_password_url,
+            {"password": "username", "username": "username", "email": EMAIL},
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -128,3 +144,46 @@ class LoginTests(APITestCase):
                 response.cookies["csrftoken"].value, response.data["csrf"]
             )
         )
+
+    def test_init_password_reset(self):
+        response = self.client.post(
+            self.send_pw_reset_email_url, {"email": self.user.email}
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_init_password_reset_fail(self):
+        response = self.client.post(
+            self.send_pw_reset_email_url, {"email": "invalid_email@example.com"}
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_reset_password(self):
+        new_password = "new_awesome_password"
+        # manually create reset session
+        ident = str(services.scramble_id(self.user.pk))
+        token_gen = PasswordResetTokenGenerator()
+        token = token_gen.make_token(self.user)
+
+        response = self.client.post(
+            self.pw_reset_url,
+            {"password": new_password, "ident": ident, "token": token},
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertFalse(self.isLoggedIn())
+        self.client.post(
+            self.login_url,
+            {"ident": self.user.username, "password": new_password},
+            format="json",
+        )
+        self.assertTrue(self.isLoggedIn())
+
+    def test_reset_password_fail(self):
+        new_password = "new_awesome_password"
+        ident = str(services.scramble_id(self.user.pk))
+        response = self.client.post(
+            self.pw_reset_url,
+            {"password": new_password, "ident": ident, "token": "notavalidtoken"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
