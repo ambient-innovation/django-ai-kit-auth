@@ -16,9 +16,7 @@ auth_patterns = (
             views.ValidatePassword.as_view(),
             name="validate_password",
         ),
-        re_path(
-            r"^registration/$", views.RegistrationView.as_view(), name="registration"
-        ),
+        re_path(r"^register/$", views.RegistrationView.as_view(), name="register"),
     ],
     "ai_kit_auth",
 )

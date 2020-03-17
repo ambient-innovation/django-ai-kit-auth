@@ -22,7 +22,7 @@ class LoginTests(APITestCase):
         self.me_url = reverse("ai_kit_auth:me")
         self.validate_password_url = reverse("ai_kit_auth:validate_password")
         self.activate_url = reverse("ai_kit_auth:activate")
-        self.registration_url = reverse("ai_kit_auth:registration")
+        self.register_url = reverse("ai_kit_auth:register")
         self.client.logout()
 
     def isLoggedIn(self) -> bool:
@@ -133,7 +133,7 @@ class LoginTests(APITestCase):
 
     def test_register_user(self):
         response = self.client.post(
-            self.registration_url,
+            self.register_url,
             {
                 "username": "testuser",
                 "email": "testuser@example.com",
