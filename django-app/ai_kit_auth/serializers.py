@@ -83,7 +83,7 @@ class ValidatePasswordSerializer(serializers.Serializer):
         try:
             validators = get_password_validators(settings.AUTH_PASSWORD_VALIDATORS)
         except:
-            validators = None
+            return attrs
         try:
             validate_password(
                 password=password, user=user, password_validators=validators,

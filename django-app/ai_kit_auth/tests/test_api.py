@@ -155,7 +155,7 @@ class LoginTests(APITestCase):
         response = self.client.post(
             self.send_pw_reset_email_url, {"email": "invalid_email@example.com"}
         )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_reset_password(self):
         new_password = "new_awesome_password"
