@@ -17,12 +17,12 @@ class LoginTests(APITestCase):
         self.user.set_password(PASSWORD)
         self.user.save()
 
-        self.login_url = reverse("auth_login")
-        self.logout_url = reverse("auth_logout")
-        self.me_url = reverse("auth_me")
-        self.validate_password_url = reverse("auth_validate_password")
-        self.activate_url = reverse("auth_activate")
-        self.registration_url = reverse("auth_registration")
+        self.login_url = reverse("ai_kit_auth:login")
+        self.logout_url = reverse("ai_kit_auth:logout")
+        self.me_url = reverse("ai_kit_auth:me")
+        self.validate_password_url = reverse("ai_kit_auth:validate_password")
+        self.activate_url = reverse("ai_kit_auth:activate")
+        self.registration_url = reverse("ai_kit_auth:registration")
         self.client.logout()
 
     def isLoggedIn(self) -> bool:
