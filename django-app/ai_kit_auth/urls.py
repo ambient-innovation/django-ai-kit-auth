@@ -11,7 +11,5 @@ urlpatterns = [
         views.ValidatePassword.as_view(),
         name="auth_validate_password",
     ),
-    re_path(
-        r"^registration/$", views.RegistrationView.as_view(), name="auth_registration"
-    ),
+    re_path(r"^register/$", views.RegistrationView.as_view(), name="auth_registration"),
 ]
