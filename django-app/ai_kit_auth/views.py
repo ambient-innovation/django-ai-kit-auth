@@ -166,7 +166,4 @@ class ResetPassword(views.APIView):
         user.is_active = True
         user.set_password(password)
         user.save()
-        # we also log out the user so they can log in again with their new
-        # credentials
-        logout(request)
         return Response({}, status=status.HTTP_200_OK)
