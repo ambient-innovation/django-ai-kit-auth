@@ -142,6 +142,6 @@ class LoginTests(APITestCase):
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(
-            UserModel.objects.get(email="testuser@example.com").username, "testuser"
-        )
+        user = UserModel.objects.get(email="testuser@example.com")
+        self.assertEqual(user.username, "testuser")
+        self.assertFalse(user.is_active)

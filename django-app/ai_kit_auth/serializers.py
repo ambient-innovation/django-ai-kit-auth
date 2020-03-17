@@ -1,6 +1,7 @@
 from django.contrib.auth import authenticate, get_user_model
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
+from .settings import api_settings
 
 UserModel = get_user_model()
 
@@ -45,6 +46,6 @@ class ValidatePasswordSerializer(serializers.Serializer):
 
 
 class RegistrationSerializer(serializers.Serializer):
-    username = serializers.CharField(required=False)
+    username = serializers.CharField(required=api_settings.USERNAME_REQUIRED)
     password = serializers.CharField(required=True)
     email = serializers.EmailField(required=True)
