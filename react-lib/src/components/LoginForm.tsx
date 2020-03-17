@@ -9,6 +9,7 @@ import React, { FC, useContext, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { AxiosError } from 'axios';
 import { AuthFunctionContext } from '../store/UserStore';
+import { LogoutReason } from '../store/types';
 import { strings } from '../internationalization';
 import { ErrorMessage, MetaDict, ObjectOfStrings } from '../api/types';
 import { FullConfig, Identifier } from '../Configuration';
@@ -81,15 +82,17 @@ export const makeLoginForm: (config: FullConfig) => { LoginForm: FC; LoginView: 
         </Typography>
 
         {
-         justLoggedOut && (
-           <Typography
-             variant="body2"
-             className={classes.loggedOutText}
-           >
-             {strings.LoginForm.LogoutSuccess}
-           </Typography>
-         )
-       }
+          justLoggedOut !== LogoutReason.NONE && (
+            <Typography
+              variant="body2"
+              className={classes.loggedOutText}
+            >
+              {justLoggedOut === LogoutReason.USER
+                ? strings.LoginForm.LogoutSuccess
+                : strings.LoginForm.AuthLogoutNotification}
+            </Typography>
+          )
+        }
 
         <form
           onSubmit={(e) => {

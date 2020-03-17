@@ -13,7 +13,7 @@ import {
   sendPWResetEmail,
   validatePasswordAPI,
 } from '../api/api';
-import { AuthFunctionContextValue, UserStoreValue } from './types';
+import { AuthFunctionContextValue, LogoutReason, UserStoreValue } from './types';
 import { defaultTheme } from '../styles/styles';
 
 export interface UserStoreProps {
@@ -34,7 +34,7 @@ export const AuthFunctionContext = createContext<AuthFunctionContextValue>({
   login: errorPromise,
   loggedIn: false,
   logout: errorPromise,
-  justLoggedOut: false,
+  justLoggedOut: LogoutReason.NONE,
   activateEmailAddress: errorPromise,
   validatePassword: errorPromise,
   requestPasswordReset: errorPromise,
@@ -47,7 +47,7 @@ export function makeGenericUserStore<U extends unknown = User>() {
   const UserStore: FC<UserStoreProps> = ({
     children, apiUrl, customTheme,
   }) => {
-    const [loggedOut, setLoggedOut] = useState(false);
+    const [loggedOut, setLoggedOut] = useState<LogoutReason>(LogoutReason.NONE);
     const [loading, setLoading] = useState(true);
     const [user, setUser] = useState<U|null>(null);
     const [csrf, setCsrf] = useState('');
@@ -65,13 +65,15 @@ export function makeGenericUserStore<U extends unknown = User>() {
         .finally(() => setLoading(false));
     };
 
-    const logout: () => Promise<void> = () => {
+    const logout: (reason?: LogoutReason) => Promise<void> = (
+      reason = LogoutReason.USER,
+    ) => {
       setLoading(true);
 
       return logoutAPI(apiUrl)
         .then(() => {
           setUser(null);
-          setLoggedOut(true);
+          setLoggedOut(reason);
         })
         .catch(() => {
           // TODO

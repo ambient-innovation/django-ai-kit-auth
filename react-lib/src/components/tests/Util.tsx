@@ -6,7 +6,7 @@ import { Router } from 'react-router-dom';
 import { AuthFunctionContext } from '../../store/UserStore';
 import { UserContext } from '../..';
 import { User } from '../../api/types';
-import { AuthFunctionContextValue, UserStoreValue } from '../../store/types';
+import { AuthFunctionContextValue, LogoutReason, UserStoreValue } from '../../store/types';
 
 const successPromise = () => new Promise<void>((r) => r());
 

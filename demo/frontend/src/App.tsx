@@ -13,6 +13,9 @@ const App: React.FC = () => (
       <Switch>
         {makeAuthRoutes()}
         <ProtectedRoute exact path="/" component={Dashboard} />
+        <ProtectedRoute path="/">
+          <Dashboard title="Fallback Dashboard" />
+        </ProtectedRoute>
       </Switch>
     </BrowserRouter>
   </UserStore>

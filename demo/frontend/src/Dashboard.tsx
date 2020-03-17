@@ -7,7 +7,11 @@ import { useUserStore } from 'ai-kit-auth';
 
 axios.defaults.withCredentials = true;
 
-export const Dashboard: FC = () => {
+interface DashboardProps {
+  title?: string;
+}
+
+export const Dashboard: FC<DashboardProps> = ({ title }) => {
   const {
     apiUrl, csrf, logout, user,
   } = useUserStore();
@@ -29,7 +33,7 @@ export const Dashboard: FC = () => {
           align="center"
           variant="h1"
         >
-          Django Test App
+          {title || 'Dashboard AI-KIT: Auth Demo'}
         </Typography>
 
         <Typography

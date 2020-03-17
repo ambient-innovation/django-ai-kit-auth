@@ -6,6 +6,7 @@ import { makeLoginForm } from '../LoginForm';
 import { strings } from '../../internationalization';
 import { User } from '../../api/types';
 import { renderWithRouterAndUser } from './Util';
+import { LogoutReason } from '../../store/types';
 import { mergeConfig } from '../../Configuration';
 
 const mockUser: User = ({
@@ -127,6 +128,22 @@ test('Email type in ident input field', () => {
   const renderOptions = renderFunction(<EmailLoginForm />);
   expect(renderOptions.getByLabelText(strings.LoginForm.Email))
     .toHaveProperty('type', 'email');
+});
+
+test('user logout success text', () => {
+  const renderObject = renderWithRouterAndUser(
+    <LoginForm />,
+    { justLoggedOut: LogoutReason.USER },
+  );
+  expect(renderObject.getByText(strings.LoginForm.LogoutSuccess)).toBeInTheDocument();
+});
+
+test('auth logout notification', () => {
+  const renderObject = renderWithRouterAndUser(
+    <LoginForm />,
+    { justLoggedOut: LogoutReason.AUTH },
+  );
+  expect(renderObject.getByText(strings.LoginForm.AuthLogoutNotification)).toBeInTheDocument();
 });
 
 test('reset link leads to correct url', () => {
