@@ -90,19 +90,33 @@ def send_user_activation_mail(user):
     return ident, token
 
 
-def send_user_password_reset_mail(sender, instance, created, **kwargs):
+def send_reset_pw_mail(user):
     """
-    Sends the initial mail for an deactivated user.
+    send mail for the password reset
     """
-    from django.contrib.auth.forms import PasswordResetForm
-
-    form = PasswordResetForm({"email": instance.email})
-    form.is_valid()
-    form.save(
-        domain_override=api_settings.FRONTEND.URL
-        + api_settings.FRONTEND.PASSWORD_RESET_ROUTE,
-        subject_template_name="new_user_mail/title.txt",
-        email_template_name="new_user_mail/body.txt",
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        extra_email_context={"name": instance.display_name},
+    template_plain = get_template(
+        api_settings.EMAIL_TEMPLATES.RESET_PASSWORD.BODY_PLAINTEXT
     )
+    template_html = get_template(api_settings.EMAIL_TEMPLATES.RESET_PASSWORD.BODY_HTML)
+    subject = get_template(api_settings.EMAIL_TEMPLATES.RESET_PASSWORD.TITLE).render()
+
+    ident = str(scramble_id(user.pk))
+    token_gen = PasswordResetTokenGenerator()
+    token = token_gen.make_token(user)
+
+    url = make_url(
+        api_settings.FRONTEND.URL, api_settings.FRONTEND.RESET_PW_ROUTE, ident, token
+    )
+
+    context = {
+        "user": user,
+        "url": url,
+    }
+
+    send_email(
+        subject.replace("\n", " "),
+        template_plain.render(context),
+        template_html.render(context),
+        getattr(user, User.EMAIL_FIELD),
+    )
+    return ident, token

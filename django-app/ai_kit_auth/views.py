@@ -1,17 +1,10 @@
 import unicodedata
 import uuid
 from django.contrib.auth import login, logout, get_user_model, tokens
-from django.contrib.auth.password_validation import (
-    get_password_validators,
-    validate_password,
-)
-from django.core.exceptions import ValidationError as DjangoValidationError
 from rest_framework import status, generics, views
 from rest_framework.response import Response
-from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from . import serializers, services
-from django.conf import settings
 from django.middleware import csrf
 
 UserModel = get_user_model()
@@ -29,6 +22,7 @@ class LoginView(generics.GenericAPIView):
         )
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data["user"]
+
         login(request, user)
 
         user_serializer = self.user_serializer(
@@ -116,31 +110,17 @@ class ValidatePassword(views.APIView):
     """
 
     serializer_class = serializers.ValidatePasswordSerializer
-
     permission_classes = (AllowAny,)
 
     def post(self, request, *args, **kwargs):
-        try:
-            validators = get_password_validators(settings.AUTH_PASSWORD_VALIDATORS)
-        except:
-            validators = None
-        try:
-            validate_password(
-                request.data["password"],
-                user=request.data["ident"],
-                password_validators=validators,
-            )
-        except DjangoValidationError as e:
-            # convert to error codes since translations are implemented in the
-            # frontend
-            raise ValidationError([error.code for error in e.error_list])
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
         return Response({}, status=status.HTTP_200_OK)
 
 
 class ActivateUser(views.APIView):
     """
-    Endpoint to validate the password without trying to register an account.
-    Can be used to show the user error messages on the fly
+    Endpoint for double opt in user activation
     """
 
     permission_classes = (AllowAny,)
@@ -166,3 +146,61 @@ class ActivateUser(views.APIView):
         user.save()
         login(request, user)
         return Response(status=status.HTTP_200_OK)
+
+
+class InitiatePasswordResetView(views.APIView):
+    permission_classes = (AllowAny,)
+
+    def post(self, request, *args, **kwargs):
+        try:
+            user = UserModel.objects.get(email__iexact=request.data["email"])
+            services.send_reset_pw_mail(user)
+        except UserModel.DoesNotExist:
+            pass
+        # always return OK
+        return Response(status=status.HTTP_200_OK)
+
+
+class ResetPassword(views.APIView):
+    """
+    Endpoint to reset the password for a user. It also activates the user if
+    the active flag is not already set
+    """
+
+    serializer_class = serializers.PasswordResetSerializer
+    permission_classes = (AllowAny,)
+
+    def post(self, request, *args, **kwargs):
+        ident = request.data["ident"]
+        token = request.data["token"]
+        password = request.data["password"]
+
+        try:
+            # we need a valid session to reset the password
+            pk = services.scramble_id(ident)
+            user = UserModel.objects.get(pk=pk)
+            assert tokens.PasswordResetTokenGenerator().check_token(user, token)
+        except (
+            TypeError,
+            ValueError,
+            OverflowError,
+            AssertionError,
+            UserModel.DoesNotExist,
+        ):
+            # if anything goes wrong, we error out
+            return Response(
+                {"error": "reset_password_link_invalid"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # reuse the password validation
+        serializer = serializers.ValidatePasswordSerializer(
+            data={"ident": ident, "password": password,}
+        )
+        serializer.is_valid(raise_exception=True)
+
+        # ok, everything is fine, we do the actual password reset
+        user.is_active = True
+        user.set_password(password)
+        user.save()
+        return Response({}, status=status.HTTP_200_OK)

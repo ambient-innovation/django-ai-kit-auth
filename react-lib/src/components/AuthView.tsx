@@ -2,8 +2,6 @@ import Grid from '@material-ui/core/Grid';
 import React, { FC } from 'react';
 import { createStyles, Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { LoginForm } from './LoginForm';
-import { ActivationCard } from './ActivationCard';
 import { ErrorCard, ErrorCardProps } from './ErrorCard';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
@@ -57,18 +55,6 @@ export const AuthView: FC = ({ children }) => {
     </Grid>
   );
 };
-
-export const LoginView: FC = () => (
-  <AuthView>
-    <LoginForm />
-  </AuthView>
-);
-
-export const ActivationView: FC = () => (
-  <AuthView>
-    <ActivationCard />
-  </AuthView>
-);
 
 export const ErrorView: FC<ErrorCardProps> = (
   errorCardProps,

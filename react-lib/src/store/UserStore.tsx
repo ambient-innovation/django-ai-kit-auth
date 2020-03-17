@@ -5,19 +5,28 @@ import { AxiosError } from 'axios';
 import { CssBaseline, Theme, ThemeProvider } from '@material-ui/core';
 import { User } from '../api/types';
 import {
-  activateEmailAddressAPI, loginAPI, logoutAPI, meAPI, registerAPI,
+  activateEmailAddressAPI,
+  loginAPI,
+  logoutAPI,
+  meAPI,
+  resetPasswordAPI,
+  sendPWResetEmail,
+  validatePasswordAPI,
+  registerAPI,
 } from '../api/api';
 import { AuthFunctionContextValue, LogoutReason, UserStoreValue } from './types';
 import { defaultTheme } from '../styles/styles';
 
-const errorPromise = () => new Promise<void>(() => { throw new Error('No User Store provided!'); });
-
-interface UserStoreProps {
+export interface UserStoreProps {
   apiUrl: string;
   customTheme?: Theme;
 }
 
 const noop: () => void = () => null;
+
+const errorPromise = () => new Promise<void>(() => {
+  throw new Error('No User Store provided!');
+});
 
 export const AuthFunctionContext = createContext<AuthFunctionContextValue>({
   loading: false,
@@ -28,13 +37,16 @@ export const AuthFunctionContext = createContext<AuthFunctionContextValue>({
   logout: errorPromise,
   justLoggedOut: LogoutReason.NONE,
   activateEmailAddress: errorPromise,
+  validatePassword: errorPromise,
+  requestPasswordReset: errorPromise,
+  resetPassword: errorPromise,
   register: errorPromise,
 });
 
 export function makeGenericUserStore<U extends unknown = User>() {
-  const GenericUserContext = createContext<UserStoreValue<U>>({ user: null });
+  const UserContext = createContext<UserStoreValue<U>>({ user: null });
 
-  const GenericUserStore: FC<UserStoreProps> = ({
+  const UserStore: FC<UserStoreProps> = ({
     children, apiUrl, customTheme,
   }) => {
     const [loggedOut, setLoggedOut] = useState<LogoutReason>(LogoutReason.NONE);
@@ -80,6 +92,22 @@ export function makeGenericUserStore<U extends unknown = User>() {
     ) => activateEmailAddressAPI(apiUrl, userIdentifier, token)
       .then(noop);
 
+    const validatePassword: (
+      ident: string, password: string,
+    ) => Promise<void> = (
+      ident, password,
+    ) => validatePasswordAPI(apiUrl, ident, password).then(noop);
+
+    const requestPasswordReset: (email: string) => Promise<void> = (
+      email: string,
+    ) => sendPWResetEmail(apiUrl, email).then(noop);
+
+    const resetPassword: (
+      ident: string, token: string, password: string,
+    ) => Promise<void> = (
+      ident, token, password,
+    ) => resetPasswordAPI(apiUrl, ident, token, password).then(noop);
+
     const register: (
       username: string, email: string, password: string,
     ) => Promise<void> = (
@@ -105,7 +133,7 @@ export function makeGenericUserStore<U extends unknown = User>() {
     }, []);
 
     return (
-      <GenericUserContext.Provider
+      <UserContext.Provider
         value={{
           user,
         }}
@@ -120,6 +148,9 @@ export function makeGenericUserStore<U extends unknown = User>() {
             logout,
             justLoggedOut: loggedOut,
             activateEmailAddress,
+            validatePassword,
+            requestPasswordReset,
+            resetPassword,
             register,
           }}
         >
@@ -128,20 +159,14 @@ export function makeGenericUserStore<U extends unknown = User>() {
             {children}
           </ThemeProvider>
         </AuthFunctionContext.Provider>
-      </GenericUserContext.Provider>
+      </UserContext.Provider>
     );
   };
 
-  const useGenericUserStore: () => UserStoreValue<U>&AuthFunctionContextValue = () => ({
-    ...useContext(GenericUserContext),
+  const useUserStore: () => UserStoreValue<U>&AuthFunctionContextValue = () => ({
+    ...useContext(UserContext),
     ...useContext(AuthFunctionContext),
   });
 
-  return {
-    UserStore: GenericUserStore,
-    useUserStore: useGenericUserStore,
-    UserContext: GenericUserContext,
-  };
+  return { UserStore, useUserStore, UserContext };
 }
-
-export const { UserStore, useUserStore, UserContext } = makeGenericUserStore();

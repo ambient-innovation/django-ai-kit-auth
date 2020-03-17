@@ -1,7 +1,21 @@
 {
   "Common": {
     "ok": "OK",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "FieldErrors": {
+      "blank": "This field may not be blank.",
+      "password_too_short": "Password too short, it should contain at least 8 characters.",
+      "password_too_similar": "Password too similar to your username or email address",
+      "password_too_common": "The password you've entered is too common and thus unsafe. Please try to think of something else",
+      "passwords_not_identical": "Both passwords entered are not identical."
+    },
+    "NonFieldErrors": {
+      "invalid_credentials": {
+        "Username": "The combination of username and password is invalid. Please try again.",
+        "Email": "The combination of email and password is invalid. Please try again.",
+        "UsernameOrEmail": "The combination of username or email and password is invalid. Please try again."
+      }
+    }
   },
   "LoginForm": {
     "Username": "Username",
@@ -11,16 +25,28 @@
     "Login": "Login",
     "LogoutSuccess": "You have been logged out successfully.",
     "AuthLogoutNotification": "Please login before you continue.",
-    "FieldErrors": {
-      "blank": "This field may not be blank."
-    },
-    "NonFieldErrors": {
-      "invalid_credentials": {
-        "Username": "The combination of username and password is invalid. Please try again.",
-        "Email": "The combination of email and password is invalid. Please try again.",
-        "UsernameOrEmail": "The combination of username or email and password is invalid. Please try again."
-      }
-    }
+    "ForgotPassword": "Forgot your password?"
+  },
+  "ResetPassword": {
+    "ResetPassword": "Reset Password",
+    "NewPassword": "New password",
+    "RepeatNewPassword": "Repeat new password",
+    "ButtonText": "Save password",
+    "SuccessText": "Your password has been changed successfully. Please continue to login.",
+    "SuccessButtonText": "Continue to Login"
+  },
+  "ForgotPassword": {
+    "ForgotPassword": "Forgot Password",
+    "Description": "Please enter the email address you registered with. We will send you an email with a link to a page, where you can reset your password.",
+    "InputLabel": "Email",
+    "ButtonText": "Send Email",
+    "BackToLogin": "Back to Login"
+  },
+  "EmailSent": {
+    "EmailSent": "Email sent",
+    "Description": "Check your inbox. If the email address you provided matches one in our database, you will get an email in a few minutes containing a link to recover your password.",
+    "ContinueToLogin": "Continue to Login",
+    "RequestAgain": "Resend email"
   },
   "EmailActivation": {
     "SuccessTitle": "Your email address has been activated successfully",

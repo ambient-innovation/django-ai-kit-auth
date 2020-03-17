@@ -45,6 +45,24 @@ export const activateEmailAddressAPI = (apiUrl: string, ident: string, token: st
   axios.post(makeUrl(apiUrl, 'activate_email/'), { ident, token })
 );
 
+export const validatePasswordAPI = (
+  apiUrl: string, ident: string, password: string,
+) => axios.post<{}>(
+  makeUrl(apiUrl, 'validate_password/'), { ident, password },
+);
+
+export const sendPWResetEmail = (
+  apiUrl: string, email: string,
+) => axios.post(
+  makeUrl(apiUrl, 'send_pw_reset_email/'), { email },
+);
+
+export const resetPasswordAPI = (
+  apiUrl: string, ident: string, token: string, password: string,
+) => axios.post(
+  makeUrl(apiUrl, 'reset_password/'), { ident, token, password },
+);
+
 export const registerAPI = (
   apiUrl: string, username: string, email: string, password: string,
 ) => axios.post(makeUrl(apiUrl, 'register/'), { username, email, password });
