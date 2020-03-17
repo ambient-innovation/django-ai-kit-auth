@@ -60,7 +60,7 @@ export const makeResetPasswordForm: (config: FullConfig) => {
     const classes = useStyles();
     const [password, setPassword] = useState('');
     const [password2, setPassword2] = useState('');
-    const [passwordErrorMessages, setPasswordErrorMessages] = useState<ErrorMessage>({});
+    const [passwordErrorMessages, setPasswordErrorMessages] = useState<ErrorMessage|undefined>();
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
     const { apiUrl, resetPassword } = useContext(AuthFunctionContext);
@@ -71,7 +71,7 @@ export const makeResetPasswordForm: (config: FullConfig) => {
         process.nextTick(() => {
           validatePasswordAPI(apiUrl, ident, pw)
             .then(() => {
-              setPasswordErrorMessages({});
+              setPasswordErrorMessages(undefined);
             }).catch((error: AxiosError) => {
               if (error.response) {
                 setPasswordErrorMessages({
@@ -144,7 +144,7 @@ export const makeResetPasswordForm: (config: FullConfig) => {
                       className={classes.inputField}
                       password={password}
                       setPassword={setPassword}
-                      errorMessage={passwordErrorMessages}
+                      errorMessage={passwordErrorMessages || {}}
                       label={strings.ResetPassword.NewPassword}
                       id="reset_password"
                       onChange={(value) => validatePassword(value)}
@@ -154,7 +154,9 @@ export const makeResetPasswordForm: (config: FullConfig) => {
                       className={classes.inputField}
                       password={password2}
                       setPassword={setPassword2}
-                      errorMessage={{}}
+                      errorMessage={password !== password2 && password2.length > 0 ? {
+                        password: ['passwords_not_identical'],
+                      } : {}}
                       label={strings.ResetPassword.RepeatNewPassword}
                       id="reset_password2"
                     />
@@ -166,7 +168,7 @@ export const makeResetPasswordForm: (config: FullConfig) => {
                         title={strings.ResetPassword.ButtonText}
                         variant="contained"
                         color="primary"
-                        disabled={password !== password2 || password.length < 7}
+                        disabled={password !== password2 || passwordErrorMessages !== undefined}
                       >
                         {strings.ResetPassword.ButtonText}
                       </Button>
