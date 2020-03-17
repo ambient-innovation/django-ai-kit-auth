@@ -125,7 +125,7 @@ export const makeLoginForm: (config: FullConfig) => { LoginForm: FC; LoginView: 
           <PasswordField
             className={classes.inputField}
             password={password}
-            onChange={(value) => setPassword(value)}
+            onChange={setPassword}
             errorMessage={errorMessage}
           />
 
