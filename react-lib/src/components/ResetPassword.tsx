@@ -1,5 +1,6 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { FC, useContext, useState } from 'react';
+import { AxiosError } from 'axios';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
@@ -12,7 +13,6 @@ import { strings } from '../internationalization';
 import { PasswordField } from './common/PasswordField';
 import { validatePasswordAPI } from '../api/api';
 import { ErrorMessage } from '../api/types';
-import { AxiosError } from 'axios';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   form: {

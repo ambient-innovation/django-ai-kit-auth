@@ -1,5 +1,4 @@
 import React, {
-  ChangeEvent,
   Dispatch, FC, SetStateAction, useState,
 } from 'react';
 import InputAdornment from '@material-ui/core/InputAdornment';
