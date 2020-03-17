@@ -11,7 +11,7 @@ import { AuthFunctionContext } from '../store/UserStore';
 import { AuthView } from './AuthView';
 import { strings } from '../internationalization';
 import { ErrorMessage, ObjectOfStrings } from '../api/types';
-import {FullConfig} from "../Configuration";
+import { FullConfig } from '../Configuration';
 
 const fieldErrors: ObjectOfStrings = strings.RegisterForm.FieldErrors;
 const nonFieldErrors: ObjectOfStrings = strings.RegisterForm.NonFieldErrors;

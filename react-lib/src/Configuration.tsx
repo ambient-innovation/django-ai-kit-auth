@@ -12,7 +12,7 @@ import { AuthView, ErrorView } from './components/AuthView';
 import { ErrorCard } from './components/ErrorCard';
 import { User } from './api/types';
 import { makeResetPasswordForm } from './components/ResetPassword';
-import {makeRegisterForm} from "./components/Register";
+import { makeRegisterForm } from './components/Register';
 
 export enum Identifier {
   Username = 1,
