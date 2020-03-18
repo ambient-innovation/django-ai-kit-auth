@@ -51,7 +51,7 @@
   },
   "RegisterForm": {
     "Title": "Registration",
-    "Description": "Please choose a username and password and enter it alongside your email address below.",
+    "Description": "Please choose a username and password and enter them alongside your email address below.",
     "Username": "Username",
     "Email": "Email",
     "Password": "Password",
@@ -59,7 +59,9 @@
     "BackToLogin": "Already have an account? Back to login",
     "NonFieldErrors": {
       "general": "An error has occurred during the registration process."
-    }
+    },
+    "SuccessTitle": "Email Sent",
+    "SuccessText": "Check you inbox. An email containing an activation link was sent. After activating your account you will be able to login."
   },
   "EmailActivation": {
     "SuccessTitle": "Your email address has been activated successfully",

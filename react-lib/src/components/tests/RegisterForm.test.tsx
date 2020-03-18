@@ -55,6 +55,22 @@ test('submit calls register', () => {
   );
 });
 
+test('loading indicator is shown', () => {
+  register.mockReturnValue(new Promise(() => null));
+  const renderObject = renderFunction();
+  fireEvent.submit(renderObject.getByRole('form'));
+  expect(renderObject.getByTitle(strings.RegisterForm.Register)).toBeDisabled();
+});
+
+test('on success, text is shown and form vanishes', async () => {
+  register.mockReturnValue(new Promise((resolve) => resolve()));
+  const renderObject = renderFunction();
+  fireEvent.submit(renderObject.getByRole('form'));
+  await waitForElement(() => renderObject.getByText(strings.RegisterForm.SuccessText));
+  expect(renderObject.getByText(strings.RegisterForm.SuccessTitle)).toBeInTheDocument();
+  expect(() => renderObject.getByRole('form')).toThrowError();
+});
+
 // eslint-disable-next-line jest/expect-expect
 test('error in username field', async () => {
   register.mockReturnValue(new Promise(() => {

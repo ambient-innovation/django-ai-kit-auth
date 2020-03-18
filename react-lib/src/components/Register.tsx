@@ -15,6 +15,7 @@ import { strings } from '../internationalization';
 import { ErrorMessage, ObjectOfStrings } from '../api/types';
 import { FullConfig } from '../Configuration';
 import { PasswordField } from './common/PasswordField';
+import {CircularProgress} from "@material-ui/core";
 
 const fieldErrors: ObjectOfStrings = strings.Common.FieldErrors;
 const nonFieldErrors: ObjectOfStrings = strings.RegisterForm.NonFieldErrors;
@@ -69,6 +70,8 @@ export const makeRegisterForm: (config: FullConfig) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errors, setErrors] = useState<ErrorMessage>({});
+    const [loading, setLoading] = useState(false);
+    const [success, setSuccess] = useState(false);
 
     const { register } = useContext(AuthFunctionContext);
 
@@ -81,19 +84,22 @@ export const makeRegisterForm: (config: FullConfig) => {
             className={classes.title}
             variant="h3"
           >
-            {strings.RegisterForm.Title}
+            {success ? strings.RegisterForm.SuccessTitle : strings.RegisterForm.Title}
           </Typography>
 
           <Typography
             className={classes.inputField}
           >
-            {strings.RegisterForm.Description}
+            {success ? strings.RegisterForm.SuccessText : strings.RegisterForm.Description}
           </Typography>
 
+          { !success && (
           <form
             onSubmit={(e) => {
               e.preventDefault();
+              setLoading(true);
               register(username, email, password)
+                .then(() => setSuccess(true))
                 .catch((error: AxiosError) => {
                   if (error.response) {
                     setErrors(error.response.data);
@@ -101,7 +107,8 @@ export const makeRegisterForm: (config: FullConfig) => {
                     // eslint-disable-next-line @typescript-eslint/camelcase
                     setErrors({ non_field_errors: ['general'] });
                   }
-                });
+                })
+                .finally(() => setLoading(false));
             }}
           >
             <TextField
@@ -162,11 +169,14 @@ export const makeRegisterForm: (config: FullConfig) => {
                 title={strings.RegisterForm.Register}
                 variant="contained"
                 color="primary"
+                disabled={loading}
               >
                 {strings.RegisterForm.Register}
+                {loading && <CircularProgress size={15} />}
               </Button>
             </Grid>
           </form>
+          )}
         </Paper>
         <Link
           classes={{
