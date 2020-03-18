@@ -66,24 +66,6 @@
       "general": "An error has occurred during the registration process."
     }
   },
-  "RegisterForm": {
-    "Title": "Registration",
-    "Description": "Please choose a username and password and enter it alongside your email address below.",
-    "Username": "Username",
-    "Email": "Email",
-    "Password": "Password",
-    "Register": "Register",
-    "BackToLogin": "Already have an account? Back to login",
-    "FieldErrors": {
-      "password_too_short": "This password is too short.",
-      "password_too_similar": "The password is too similar to the username or email.",
-      "password_too_common": "This password is too common.",
-      "password_entirely_numeric": "You cannot use only numbers in your password."
-    },
-    "NonFieldErrors": {
-      "general": "An error has occurred during the registration process."
-    }
-  },
   "EmailActivation": {
     "SuccessTitle": "Your email address has been activated successfully",
     "SuccessText": "Your account was successfully activated. Please continue to login to start using our service!",
