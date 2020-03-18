@@ -156,3 +156,22 @@ test('reset link leads to correct url', () => {
   const { entries } = renderObject.history;
   expect(entries[entries.length - 1].pathname).toEqual(pathToForgotPassword);
 });
+
+test('register link leads to correct url', () => {
+  const pathToRegister = '/path/to/register';
+  const RegisterLoginForm = makeLoginForm(mergeConfig(defaultConfig, {
+    paths: { register: pathToRegister },
+  })).LoginForm;
+  const renderObject = renderFunction(<RegisterLoginForm />);
+  fireEvent.click(renderObject.getByText(strings.LoginForm.SignUp));
+  const { entries } = renderObject.history;
+  expect(entries[entries.length - 1].pathname).toEqual(pathToRegister);
+});
+
+test('register link is not shown if disabledUserRegistration', () => {
+  const PureLoginForm = makeLoginForm(mergeConfig(defaultConfig, {
+    disableUserRegistration: true,
+  })).LoginForm;
+  const renderObject = renderFunction(<PureLoginForm/>);
+  expect(() => renderObject.getByText(strings.LoginForm.SignUp)).toThrowError();
+});
