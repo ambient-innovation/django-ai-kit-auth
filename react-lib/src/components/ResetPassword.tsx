@@ -14,6 +14,13 @@ import { PasswordField } from './common/PasswordField';
 import { validatePasswordAPI } from '../api/api';
 import { ErrorMessage } from '../api/types';
 
+enum SuccessState {
+  INITIAL,
+  LOADING,
+  SUCCESS,
+  INVALID_LINK,
+}
+
 const useStyles = makeStyles((theme: Theme) => createStyles({
   form: {
     paddingTop: 35,
@@ -54,15 +61,14 @@ export const makeResetPasswordForm: (config: FullConfig) => {
   ResetPasswordForm: FC; ResetPasswordView: FC;
 } = ({
   components: { loadingIndicator },
-  paths: { login },
+  paths: { login, forgotPassword },
 }) => {
   const ResetPasswordForm = () => {
     const classes = useStyles();
     const [password, setPassword] = useState('');
     const [password2, setPassword2] = useState('');
-    const [passwordErrorMessages, setPasswordErrorMessages] = useState<ErrorMessage|undefined>();
-    const [loading, setLoading] = useState(false);
-    const [success, setSuccess] = useState(false);
+    const [passwordErrors, setPasswordErrors] = useState<ErrorMessage|undefined>();
+    const [successState, setSuccessState] = useState<SuccessState>(SuccessState.INITIAL);
     const { apiUrl, resetPassword } = useContext(AuthFunctionContext);
     const { ident, token } = useParams();
 
@@ -71,10 +77,10 @@ export const makeResetPasswordForm: (config: FullConfig) => {
         // TODO: add debounce to prevent race conditions
         validatePasswordAPI(apiUrl, ident, pw)
           .then(() => {
-            setPasswordErrorMessages(undefined);
+            setPasswordErrors(undefined);
           }).catch((error: AxiosError) => {
             if (error.response) {
-              setPasswordErrorMessages({
+              setPasswordErrors({
                 password: error.response.data.non_field_errors,
               });
             }
@@ -92,95 +98,137 @@ export const makeResetPasswordForm: (config: FullConfig) => {
         >
           {strings.ResetPassword.ResetPassword}
         </Typography>
-
         {
-          loading ? (
-            <Grid container item xs={12} justify="center">
-              {loadingIndicator()}
-            </Grid>
-          ) : (
+          successState === SuccessState.INITIAL && (
             <form
               onSubmit={(e) => {
                 e.preventDefault();
 
                 if (ident && token) {
-                  setLoading(true);
+                  setSuccessState(SuccessState.LOADING);
                   resetPassword(ident, token, password).then(() => {
-                    setSuccess(true);
-                  }).catch(() => {
-                    // TODO: Error handling
-                  }).finally(() => {
-                    setLoading(false);
+                    setSuccessState(SuccessState.SUCCESS);
+                  }).catch((error: AxiosError) => {
+                    if (error.response?.data.password) {
+                      setSuccessState(SuccessState.INITIAL);
+                      setPasswordErrors(error.response.data);
+                    } else if (error.response?.data.error) {
+                      setSuccessState(SuccessState.INVALID_LINK);
+                    }
                   });
                 }
               }}
             >
-              {
-                success ? (
-                  <>
-                    <Typography
-                      className={classes.successText}
-                      variant="body1"
-                    >
-                      {strings.ResetPassword.SuccessText}
-                    </Typography>
+              <PasswordField
+                className={classes.inputField}
+                password={password}
+                errorMessage={passwordErrors || {}}
+                label={strings.ResetPassword.NewPassword}
+                id="reset_password"
+                onChange={(value) => {
+                  setPassword(value);
+                  validatePassword(value);
+                }}
+              />
 
-                    <Grid container item xs={12} justify="center">
-                      <Button
-                        type="button"
-                        title={strings.ResetPassword.SuccessButtonText}
-                        variant="contained"
-                        color="primary"
-                        href={login}
-                      >
-                        {strings.ResetPassword.SuccessButtonText}
-                      </Button>
-                    </Grid>
-                  </>
-                ) : (
-                  <>
-                    <PasswordField
-                      className={classes.inputField}
-                      password={password}
-                      errorMessage={passwordErrorMessages || {}}
-                      label={strings.ResetPassword.NewPassword}
-                      id="reset_password"
-                      onChange={(value) => {
-                        setPassword(value);
-                        validatePassword(value);
-                      }}
-                    />
+              <PasswordField
+                className={classes.inputField}
+                password={password2}
+                onChange={setPassword2}
+                errorMessage={password !== password2 && password2.length > 0 ? {
+                  password: ['passwords_not_identical'],
+                } : {}}
+                label={strings.ResetPassword.RepeatNewPassword}
+                id="reset_password2"
+              />
 
-                    <PasswordField
-                      className={classes.inputField}
-                      password={password2}
-                      onChange={setPassword2}
-                      errorMessage={password !== password2 && password2.length > 0 ? {
-                        password: ['passwords_not_identical'],
-                      } : {}}
-                      label={strings.ResetPassword.RepeatNewPassword}
-                      id="reset_password2"
-                    />
-
-                    <Grid container item xs={12} justify="center">
-                      <Button
-                        id="reset_submit"
-                        type="submit"
-                        title={strings.ResetPassword.ButtonText}
-                        variant="contained"
-                        color="primary"
-                        disabled={password !== password2 || passwordErrorMessages !== undefined}
-                      >
-                        {strings.ResetPassword.ButtonText}
-                      </Button>
-                    </Grid>
-                  </>
-                )
-              }
+              <Grid container item xs={12} justify="center">
+                <Button
+                  id="reset_submit"
+                  type="submit"
+                  title={strings.ResetPassword.ButtonText}
+                  variant="contained"
+                  color="primary"
+                  disabled={password !== password2 || passwordErrors !== undefined}
+                >
+                  {strings.ResetPassword.ButtonText}
+                </Button>
+              </Grid>
             </form>
           )
         }
+        {
+          successState === SuccessState.SUCCESS && (
+            <SuccessView />
+          )
+        }
+        {
+          successState === SuccessState.INVALID_LINK && (
+            <InvalidLinkView />
+          )
+        }
+        {
+          successState === SuccessState.LOADING && (
+            <Grid container item xs={12} justify="center">
+              {loadingIndicator()}
+            </Grid>
+          )
+        }
       </Paper>
+    );
+  };
+
+  const SuccessView: FC = () => {
+    const classes = useStyles();
+
+    return (
+      <>
+        <Typography
+          className={classes.successText}
+          variant="body1"
+        >
+          {strings.ResetPassword.SuccessText}
+        </Typography>
+
+        <Grid container item xs={12} justify="center">
+          <Button
+            type="button"
+            title={strings.ResetPassword.SuccessButtonText}
+            variant="contained"
+            color="primary"
+            href={login}
+          >
+            {strings.ResetPassword.SuccessButtonText}
+          </Button>
+        </Grid>
+      </>
+    );
+  };
+
+  const InvalidLinkView: FC = () => {
+    const classes = useStyles();
+
+    return (
+      <>
+        <Typography
+          className={classes.successText}
+          variant="body1"
+        >
+          {strings.ResetPassword.InvalidLink}
+        </Typography>
+
+        <Grid container item xs={12} justify="center">
+          <Button
+            type="button"
+            title={strings.ResetPassword.InvalidLinkButtonText}
+            variant="contained"
+            color="primary"
+            href={forgotPassword}
+          >
+            {strings.ResetPassword.InvalidLinkButtonText}
+          </Button>
+        </Grid>
+      </>
     );
   };
 

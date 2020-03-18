@@ -33,7 +33,9 @@
     "RepeatNewPassword": "Repeat new password",
     "ButtonText": "Save password",
     "SuccessText": "Your password has been changed successfully. Please continue to login.",
-    "SuccessButtonText": "Continue to Login"
+    "SuccessButtonText": "Continue to Login",
+    "InvalidLink": "This link is no longer valid! Click on the button below to get a new link.",
+    "InvalidLinkButtonText": "Forgot Password"
   },
   "ForgotPassword": {
     "ForgotPassword": "Forgot Password",

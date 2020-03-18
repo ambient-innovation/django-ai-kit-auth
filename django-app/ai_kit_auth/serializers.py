@@ -53,7 +53,10 @@ class ValidatePasswordSerializer(serializers.Serializer):
     ident = serializers.CharField(required=False)
     username = serializers.CharField(required=False)
     email = serializers.EmailField(required=False)
-    password = serializers.CharField(required=True)
+    password = serializers.CharField(
+        required=True,
+        error_messages={"required": "required", "blank": "blank"},
+    )
 
     def validate(self, attrs):
         ident = attrs.get("ident")
@@ -102,4 +105,7 @@ class InitiatePasswordResetSerializer(serializers.Serializer):
 class PasswordResetSerializer(serializers.Serializer):
     ident = serializers.CharField(required=True)
     token = serializers.CharField(required=True)
-    password = serializers.CharField(required=True)
+    password = serializers.CharField(
+        required=True,
+        error_messages={"required": "required", "blank": "blank"},
+    )
