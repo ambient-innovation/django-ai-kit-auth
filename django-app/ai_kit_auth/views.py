@@ -45,7 +45,8 @@ class LogoutView(views.APIView):
 
     def post(self, request, *args, **kwargs):
         logout(request)
-        return Response(status=status.HTTP_200_OK)
+        csrf_token = csrf.get_token(request)
+        return Response({"csrf": csrf_token}, status=status.HTTP_200_OK)
 
 
 class Me(generics.GenericAPIView):
