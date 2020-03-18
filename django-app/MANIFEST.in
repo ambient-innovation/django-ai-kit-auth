@@ -1,4 +1,4 @@
 include LICENSE
-include README.md
-recursive-include auth/static *
+include README.rst
+recursive-include ai_kit_auth/templates *
 recursive-include docs *

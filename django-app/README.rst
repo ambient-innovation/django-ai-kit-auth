@@ -16,7 +16,7 @@ Standard Django sessions are used for authentification.
 Quick Start
 -----------
 
-1.) Add ``ai-kit-auth`` to your ``INSTALLED_APPS`` like so:
+1.) Add ``ai_kit_auth`` to your ``INSTALLED_APPS`` like so:
 
 ::
 
@@ -24,12 +24,13 @@ Quick Start
         # ...
         "rest_framework",
         # ...
-        "ai-kit-auth",
+        "ai_kit_auth",
         # ...
         "corsheaders",
     )
 
-``rest_framework`` and ``corsheaders`` are dependencies and must be
+``rest_framework`` from the pip package ``djangorestframework`` and ``corsheaders``
+from the pip package ``django-cors-headers`` are dependencies and must be
 installed.
 
 2.) Configuration is namespaced unter ``AI_KIT_AUTH`` like so:
@@ -115,7 +116,7 @@ for details.
 
     urlpatterns = [
         # ...
-        re_path("^api/v1/", include("ai_kit.urls"))
+        re_path("^api/v1/", include("ai_kit_auth.urls"))
         # ...
     ]
 
