@@ -1,5 +1,3 @@
-import unicodedata
-import uuid
 from django.contrib.auth import login, logout, get_user_model, tokens
 from rest_framework import status, generics, views
 from rest_framework.response import Response
@@ -77,32 +75,9 @@ class RegistrationView(generics.GenericAPIView):
 
     serializer_class = serializers.RegistrationSerializer
 
-    def _normalize(self, value):
-        if not value:
-            value = str(uuid.uuid4())
-        return unicodedata.normalize("NFKC", value)
-
     def post(self, request, *args, **kwargs):
-        username = self._normalize(request.data["username"])
-        email = self._normalize(request.data["email"])
-        password = self._normalize(request.data["password"])
-
-        password_serializer = serializers.ValidatePasswordSerializer(
-            data={"username": username, "email": email, "password": password}
-        )
-        password_serializer.is_valid(raise_exception=True)
-
-        # make sure email is unique
-        if UserModel.objects.filter(email=email).exists():
-            raise ValidationError(code="unique_email")
-
-        user = UserModel(
-            username=username, email=email, password=password, is_active=False
-        )
-        user.save()
-
-        services.send_user_activation_mail(user)
-
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
         return Response({}, status=status.HTTP_201_CREATED)
 
 
