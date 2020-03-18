@@ -48,19 +48,30 @@ default. Default configurations are:
 ::
 
     DEFAULTS = {
+        # Templates for all the email notifications to the user
         "EMAIL_TEMPLATES": {
+            # is send when the user is created by registration
             "USER_CREATED": {
                 "TITLE": "ai_kit_auth/user_created_title.txt",
                 "BODY_PLAINTEXT": "ai_kit_auth/user_created_body.txt",
                 "BODY_HTML": "ai_kit_auth/user_created_body.html",
             },
+            # is send to the user after they triggered the forget password
+            # feature. Contains the time limited password reset link
             "RESET_PASSWORD": {
                 "TITLE": "ai_kit_auth/reset_password_title.txt",
                 "BODY_PLAINTEXT": "ai_kit_auth/reset_password_body.txt",
                 "BODY_HTML": "ai_kit_auth/reset_password_body.html",
             },
         },
+        # If true, the user has to specify a username in addition to the
+        # mail address
         "USERNAME_REQUIRED": False,
+        # information about the frontend, mostly the used routes. In most cases
+        # the defaults are fine, but can be changed for localisation of the
+        # urls.
+        # Only the actual frontend url is unset and you will get an
+        # configuration error if you don't specify it.
         "FRONTEND": {
             "URL": "",
             "ACTIVATION_ROUTE": "/auth/activation/",
