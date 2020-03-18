@@ -64,3 +64,24 @@ See [demo README](demo/README.md)
 ### Linting
 
 Python code should be formatted by black, typescript code by eslint.
+
+### Notes on CSRF protection and authentification strategy
+
+Ai-Kit-Auth makes use of the standard django session managment and
+the build in CSRF protection measures. The frontend has to set a `X-CSRFToken`
+http header to the current CSRF token value. This token is returned by the
+`me/` and the `login` endpoints (the token is rotated by django after login, 
+so the frontend needs the new value at this point). 
+
+Django defaults to save the CSRF token in a cookie, but also gives the option
+to save it in the current session. Both schemes work with Ai-Kit-Auth, but 
+session storage can prevent problems with double logins (for example, if a 
+user is logged in the backend and the frontend).
+
+If you want to implement your own frontend, you have to set the `X-CSRFToken`
+http header to the value of the CSRF token yourself
+
+### CORS protection
+
+If your application runs front- and backend from the same domain, you don't need
+the cors header library and configuration shown in the django-app documentation.
