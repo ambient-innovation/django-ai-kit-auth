@@ -4,6 +4,7 @@ from django.contrib.auth import login, logout, get_user_model, tokens
 from rest_framework import status, generics, views
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.exceptions import ValidationError
 from . import serializers, services
 from django.middleware import csrf
 
@@ -70,7 +71,7 @@ class MeView(generics.GenericAPIView):
         )
 
 
-class RegistrationView(views.APIView):
+class RegistrationView(generics.GenericAPIView):
 
     permission_classes = (AllowAny,)
 
