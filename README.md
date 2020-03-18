@@ -17,6 +17,12 @@ time.
 This project includes a django library that provides routes and other
 functionality on the backend side and React Components for the frontend.
 
+This project also includes a [demo](demo/README.md) SPA that uses both the django and react libraries.
+
+Links to the hosted packages:
+* React: https://www.npmjs.com/package/ai-kit-auth
+* Django: https://pypi.org/project/django-ai-kit-auth/
+
 ## Integration into your project
 
 See the READMEs in [django-app](django-app/README.rst) and [react-lib](react-lib/README.md) for detailed instructions.
@@ -53,9 +59,13 @@ the either one must contain `BREAKING CHANGE:` with a following description
 of what is changing. `body` and `footer` are not required if the type is not
 `fix` or `feat`.
 
-## Local Development
+## Local Development & Demo
 
-See [demo README](demo/README.md)
+Use the included demo project to test and add new features to the library.
+
+See [demo README](demo/README.md) on how to set it up.
+
+Changes pushed or merged into the master branch will automatically be released on npm or pypi.
 
 ## E2E-Testing
 
