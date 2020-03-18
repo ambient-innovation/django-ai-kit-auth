@@ -54,8 +54,7 @@ class ValidatePasswordSerializer(serializers.Serializer):
     username = serializers.CharField(required=False)
     email = serializers.EmailField(required=False)
     password = serializers.CharField(
-        required=True,
-        error_messages={"required": "required", "blank": "blank"},
+        required=True, error_messages={"required": "required", "blank": "blank"},
     )
 
     def validate(self, attrs):
@@ -106,6 +105,5 @@ class PasswordResetSerializer(serializers.Serializer):
     ident = serializers.CharField(required=True)
     token = serializers.CharField(required=True)
     password = serializers.CharField(
-        required=True,
-        error_messages={"required": "required", "blank": "blank"},
+        required=True, error_messages={"required": "required", "blank": "blank"},
     )
