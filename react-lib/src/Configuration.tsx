@@ -32,6 +32,7 @@ export const defaultConfig = {
     emailSent: '/email-sent',
   },
   userIdentifier: Identifier.UsernameOrEmail,
+  disableUserRegistration: false,
   components: {
     loadingIndicator: () => <CircularProgress />,
   },
@@ -113,12 +114,14 @@ export const configureAuth = <UserType extends unknown = User>(config: Configura
       component={login.LoginView}
       key="login"
     />,
-    <Route
-      exact
-      path={fullConfig.paths.register}
-      component={register.RegisterView}
-      key="regiser"
-    />,
+    ...fullConfig.disableUserRegistration ? [] : [
+      <Route
+        exact
+        path={fullConfig.paths.register}
+        component={register.RegisterView}
+        key="register"
+      />,
+    ],
     <LoginRoute
       exact
       path={fullConfig.paths.forgotPassword}

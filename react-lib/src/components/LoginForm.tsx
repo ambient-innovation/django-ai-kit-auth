@@ -71,6 +71,7 @@ type IdentifierType = keyof typeof Identifier;
 export const makeLoginForm: (config: FullConfig) => { LoginForm: FC; LoginView: FC } = ({
   paths: { forgotPassword, register },
   userIdentifier,
+  disableUserRegistration,
 }) => {
   const LoginForm = () => {
     const classes = useStyles();
@@ -176,18 +177,22 @@ export const makeLoginForm: (config: FullConfig) => { LoginForm: FC; LoginView: 
             </Grid>
           </form>
         </Paper>
-        <Link
-          classes={{
-            root: classes.linkUnderPaper,
-          }}
-          id="login_register"
-          variant="body1"
-          color="textPrimary"
-          component={RouterLink}
-          to={register}
-        >
-          {strings.LoginForm.SignUp}
-        </Link>
+        {
+          !disableUserRegistration && (
+          <Link
+            classes={{
+              root: classes.linkUnderPaper,
+            }}
+            id="login_register"
+            variant="body1"
+            color="textPrimary"
+            component={RouterLink}
+            to={register}
+          >
+            {strings.LoginForm.SignUp}
+          </Link>
+          )
+        }
       </div>
     );
   };
