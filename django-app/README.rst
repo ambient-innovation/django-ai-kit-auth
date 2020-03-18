@@ -37,12 +37,13 @@ installed.
 ::
 
     AI_KIT_AUTH = {
-        "ACTIVATION_ROUTE": "activation",
-        "FRONTEND_URL": "example.com",
+        "FRONTEND": {
+            "URL": "example.com",
+        },
         # ...
     }
 
-Note that ``FRONTEND_URL`` is a required configuration that does not have a
+Note that ``FRONTEND.URL`` is a required configuration that does not have a
 default. Default configurations are:
 
 ::
