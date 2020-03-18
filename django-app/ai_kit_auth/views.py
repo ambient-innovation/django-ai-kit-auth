@@ -116,11 +116,12 @@ class InitiatePasswordResetView(views.APIView):
 
     def post(self, request, *args, **kwargs):
         try:
-            user = UserModel.objects.get(email__exact=request.data["email"])
+            user = UserModel.objects.get(email__iexact=request.data["email"])
             services.send_reset_pw_mail(user)
-            return Response(status=status.HTTP_200_OK)
         except UserModel.DoesNotExist:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            pass
+        # always return OK
+        return Response(status=status.HTTP_200_OK)
 
 
 class ResetPassword(views.APIView):
@@ -165,7 +166,4 @@ class ResetPassword(views.APIView):
         user.is_active = True
         user.set_password(password)
         user.save()
-        # we also log out the user so they can log in again with their new
-        # credentials
-        logout(request)
         return Response({}, status=status.HTTP_200_OK)

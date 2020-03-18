@@ -9,7 +9,7 @@ from django.forms import EmailField, CharField
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
 
-from .services import send_user_activation_mail
+from .services import send_activation_by_admin_mail
 from .settings import api_settings
 
 User = get_user_model()
@@ -52,7 +52,7 @@ class AIUserCreationForm(UserCreationForm):
         instance.is_active = False
         if commit:
             instance.save()
-            send_user_activation_mail(instance)
+            send_activation_by_admin_mail(instance)
         else:
             # replace the save call, so that an email is send after
             # saving the instance
@@ -60,7 +60,7 @@ class AIUserCreationForm(UserCreationForm):
 
             def instance_save_hook(*args, **kwargs):
                 bound_save_method(*args, **kwargs)
-                send_user_activation_mail(instance)
+                send_activation_by_admin_mail(instance)
 
             instance.save = instance_save_hook
         return instance
