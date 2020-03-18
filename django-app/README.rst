@@ -92,8 +92,6 @@ In addition to that some general configuration is required:
 
     CORS_ALLOW_CREDENTIALS = True
 
-    # otherwise authentification to the django admin and the frontend can
-    # interfere with eath other
     CSRF_USE_SESSIONS = True
 
     CSRF_TRUSTED_ORIGINS = [
@@ -102,7 +100,12 @@ In addition to that some general configuration is required:
         # add other front-end backend urls
     ]
 
-See the
+The ``CSRF_USE_SESSIONS`` configuration doesn't need to be set to enable
+Ai-Kit-Auth, but in prevents problems with double logins, for example
+if a user is logged into the Admin interface and also logged in the
+frontend. Django saves CSRF tokens in cookies by default.
+
+Also see the
 `django-cors-headers <https://github.com/adamchainz/django-cors-headers>`__
 for details.
 
