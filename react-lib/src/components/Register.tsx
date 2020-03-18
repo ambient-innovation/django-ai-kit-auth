@@ -16,7 +16,7 @@ import { ErrorMessage, ObjectOfStrings } from '../api/types';
 import { FullConfig } from '../Configuration';
 import { PasswordField } from './common/PasswordField';
 
-const fieldErrors: ObjectOfStrings = strings.RegisterForm.FieldErrors;
+const fieldErrors: ObjectOfStrings = strings.Common.FieldErrors;
 const nonFieldErrors: ObjectOfStrings = strings.RegisterForm.NonFieldErrors;
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
@@ -97,6 +97,9 @@ export const makeRegisterForm: (config: FullConfig) => {
                 .catch((error: AxiosError) => {
                   if (error.response) {
                     setErrors(error.response.data);
+                  } else {
+                    // eslint-disable-next-line @typescript-eslint/camelcase
+                    setErrors({ non_field_errors: ['general'] });
                   }
                 });
             }}
@@ -145,7 +148,7 @@ export const makeRegisterForm: (config: FullConfig) => {
                 errors.non_field_errors.map((message) => (
                   <Typography className={classes.formHelperText} key={message}>
                     {
-                      nonFieldErrors[message]
+                      nonFieldErrors[message] || nonFieldErrors.general
                     }
                   </Typography>
                 ))
