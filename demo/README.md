@@ -61,15 +61,6 @@ Changes made in the `django-app` directory will automatically trigger a restart 
 To get the same hot reloading for the frontend package, please navigate to the `react-lib` folder and execute
 
     npm run watch build
-    
-## Included Fixtures
-The Demo includes a superuser that can login in both the front and backend: use the following credentials to log in:
-
-    username: root
-    email: root@example.com
-    pw: root
-    
-for other preloaded fixtures in the demo, please check [fixtures/users.json](backend/demo/fixtures/users.json)
 
 ## E2E-Testing
 
