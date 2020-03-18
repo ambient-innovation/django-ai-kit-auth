@@ -20,6 +20,8 @@ export const {
   LoginView,
   LoginRoute,
   ProtectedRoute,
+  ResetPasswordForm,
+  ResetPasswordView,
   UserContext,
   UserStore,
   useUserStore,

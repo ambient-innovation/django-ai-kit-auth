@@ -133,6 +133,7 @@ export const configureAuth = <UserType extends unknown = User>(config: Configura
     ...store,
     ...login,
     ...forgot,
+    ...reset,
     ...activate,
     ...emailSent,
     ProtectedRoute,
