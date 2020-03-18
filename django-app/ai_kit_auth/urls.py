@@ -18,7 +18,7 @@ auth_patterns = (
             name="send_pw_reset_email",
         ),
         re_path(r"reset_password/$", views.ResetPassword.as_view(), name="pw_reset",),
-        re_path(r"^register/$", views.RegistrationView.as_view(), name="registration"),
+        re_path(r"^register/$", views.RegistrationView.as_view(), name="register"),
     ],
     "ai_kit_auth",
 )
