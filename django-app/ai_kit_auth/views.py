@@ -87,8 +87,10 @@ class RegistrationView(generics.GenericAPIView):
         email = self._normalize(request.data["email"])
         password = self._normalize(request.data["password"])
 
-        # password validation
-        # TODO after merge of #3
+        password_serializer = serializers.ValidatePasswordSerializer(
+            data={"username": username, "email": email, "password": password}
+        )
+        password_serializer.is_valid(raise_exception=True)
 
         # make sure email is unique
         if UserModel.objects.filter(email=email).exists():
