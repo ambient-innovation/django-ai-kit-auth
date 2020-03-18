@@ -172,6 +172,6 @@ test('register link is not shown if disabledUserRegistration', () => {
   const PureLoginForm = makeLoginForm(mergeConfig(defaultConfig, {
     disableUserRegistration: true,
   })).LoginForm;
-  const renderObject = renderFunction(<PureLoginForm/>);
+  const renderObject = renderFunction(<PureLoginForm />);
   expect(() => renderObject.getByText(strings.LoginForm.SignUp)).toThrowError();
 });
