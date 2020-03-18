@@ -20,7 +20,13 @@ const fieldErrors: ObjectOfStrings = strings.Common.FieldErrors;
 const nonFieldErrors: MetaDict = strings.Common.NonFieldErrors;
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
-  loginForm: {
+  root: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+  },
+  form: {
     paddingTop: 35,
     paddingLeft: 47,
     paddingRight: 30,
@@ -35,7 +41,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
       paddingRight: 17,
     },
   },
-  loginTitle: {
+  title: {
     marginBottom: 35,
     [theme.breakpoints.down('xs')]: {
       fontSize: 30,
@@ -55,12 +61,15 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     marginBottom: 35,
     marginTop: -20,
   },
+  linkUnderPaper: {
+    marginTop: 20,
+  },
 }));
 
 type IdentifierType = keyof typeof Identifier;
 
 export const makeLoginForm: (config: FullConfig) => { LoginForm: FC; LoginView: FC } = ({
-  paths: { forgotPassword },
+  paths: { forgotPassword, register },
   userIdentifier,
 }) => {
   const LoginForm = () => {
@@ -71,17 +80,18 @@ export const makeLoginForm: (config: FullConfig) => { LoginForm: FC; LoginView: 
     const [errorMessage, setErrorMessage] = useState<ErrorMessage>({});
 
     return (
-      <Paper
-        className={classes.loginForm}
-      >
-        <Typography
-          className={classes.loginTitle}
-          variant="h3"
+      <div className={classes.root}>
+        <Paper
+          className={classes.form}
         >
-          {strings.LoginForm.Login}
-        </Typography>
+          <Typography
+            className={classes.title}
+            variant="h3"
+          >
+            {strings.LoginForm.Login}
+          </Typography>
 
-        {
+          {
           justLoggedOut !== LogoutReason.NONE && (
             <Typography
               variant="body2"
@@ -94,42 +104,42 @@ export const makeLoginForm: (config: FullConfig) => { LoginForm: FC; LoginView: 
           )
         }
 
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            login(ident, password)
-              .catch((error: AxiosError) => {
-                if (error.response) {
-                  setErrorMessage(error.response.data);
-                }
-              });
-          }}
-        >
-          <TextField
-            className={classes.inputField}
-            autoFocus
-            fullWidth
-            id="login_userIdentifier"
-            label={strings.LoginForm[Identifier[userIdentifier] as IdentifierType]}
-            variant="outlined"
-            type={userIdentifier === Identifier.Email ? 'email' : 'text'}
-            value={ident}
-            helperText={errorMessage.ident ? errorMessage.ident.map((message: string) => (
-              fieldErrors[message])) : ''}
-            error={!!errorMessage.ident}
-            onChange={(event) => {
-              setIdent(event.target.value);
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              login(ident, password)
+                .catch((error: AxiosError) => {
+                  if (error.response) {
+                    setErrorMessage(error.response.data);
+                  }
+                });
             }}
-          />
+          >
+            <TextField
+              className={classes.inputField}
+              autoFocus
+              fullWidth
+              id="login_userIdentifier"
+              label={strings.LoginForm[Identifier[userIdentifier] as IdentifierType]}
+              variant="outlined"
+              type={userIdentifier === Identifier.Email ? 'email' : 'text'}
+              value={ident}
+              helperText={errorMessage.ident ? errorMessage.ident.map((message: string) => (
+                fieldErrors[message])) : ''}
+              error={!!errorMessage.ident}
+              onChange={(event) => {
+                setIdent(event.target.value);
+              }}
+            />
 
-          <PasswordField
-            className={classes.inputField}
-            password={password}
-            onChange={setPassword}
-            errorMessage={errorMessage}
-          />
+            <PasswordField
+              className={classes.inputField}
+              password={password}
+              onChange={setPassword}
+              errorMessage={errorMessage}
+            />
 
-          {
+            {
            errorMessage.non_field_errors && (
              errorMessage.non_field_errors.map((message) => (
                <Typography className={classes.formHelperText} key={message}>
@@ -141,31 +151,44 @@ export const makeLoginForm: (config: FullConfig) => { LoginForm: FC; LoginView: 
            )
          }
 
-          <Grid container item xs={12} justify="center">
-            <Button
-              id="login_submit"
-              type="submit"
-              title={strings.LoginForm.Login}
-              variant="contained"
-              color="primary"
-            >
-              {strings.LoginForm.Login}
-            </Button>
-          </Grid>
+            <Grid container item xs={12} justify="center">
+              <Button
+                id="login_submit"
+                type="submit"
+                title={strings.LoginForm.Login}
+                variant="contained"
+                color="primary"
+              >
+                {strings.LoginForm.Login}
+              </Button>
+            </Grid>
 
-          <Grid style={{ marginTop: 24 }} container item xs={12} justify="center">
-            <Link
-              id="login_password_reset"
-              variant="body1"
-              color="textPrimary"
-              component={RouterLink}
-              to={forgotPassword}
-            >
-              {strings.LoginForm.ForgotPassword}
-            </Link>
-          </Grid>
-        </form>
-      </Paper>
+            <Grid style={{ marginTop: 24 }} container item xs={12} justify="center">
+              <Link
+                id="login_password_reset"
+                variant="body1"
+                color="textPrimary"
+                component={RouterLink}
+                to={forgotPassword}
+              >
+                {strings.LoginForm.ForgotPassword}
+              </Link>
+            </Grid>
+          </form>
+        </Paper>
+        <Link
+          classes={{
+            root: classes.linkUnderPaper,
+          }}
+          id="login_register"
+          variant="body1"
+          color="textPrimary"
+          component={RouterLink}
+          to={register}
+        >
+          {strings.LoginForm.SignUp}
+        </Link>
+      </div>
     );
   };
 

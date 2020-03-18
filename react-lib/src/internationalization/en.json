@@ -25,7 +25,8 @@
     "Login": "Login",
     "LogoutSuccess": "You have been logged out successfully.",
     "AuthLogoutNotification": "Please login before you continue.",
-    "ForgotPassword": "Forgot your password?"
+    "ForgotPassword": "Forgot your password?",
+    "SignUp": "No account yet? Sign up here!"
   },
   "ResetPassword": {
     "ResetPassword": "Reset Password",
