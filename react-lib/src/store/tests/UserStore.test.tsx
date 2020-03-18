@@ -135,12 +135,14 @@ test('UserStore behaviour when login fails', async () => {
 
 // eslint-disable-next-line jest/expect-expect
 test('UserStore sends logout', async () => {
+  const csrf = 'aslakjshsdf';
   maxios.onGet('/me/').reply(200, { user: mockUser, csrf: '' });
-  maxios.onPost('/logout/').reply(200);
+  maxios.onPost('/logout/').reply(200, { csrf });
   const renderObject = renderStoreValue();
   await waitForElement(() => renderObject.getByText('Logout'));
   fireEvent.click(renderObject.getByText('Logout'));
   await waitForElement(() => renderObject.getByText('no user'));
+  expect(renderObject.getByText(csrf)).toBeInTheDocument();
 });
 
 test('UserStore shows loading while logging out', async () => {
