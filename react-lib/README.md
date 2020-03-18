@@ -16,24 +16,147 @@ Using yarn, run
 yarn add ai-kit-auth
 ```
 
-## Usage
+## Quickstart
+
+While it is possible to customize many aspects of appearance and behaviou,
+the fastest way to get a functioning authentication module is to use the standard
+components provided by this library.
+You can set them up in your `App.tsx` (or `App.jsx`) like so:
+
+```typescript jsx
+import React from 'react';
+import { BrowserRouter, Switch } from 'react-router-dom';
+import { UserStore, makeAuthRoutes, ProtectedRoute } from 'ai-kit-auth';
+
+import MainPage from './components/MainPage';
+
+const App: React.FC = () => (
+  <UserStore
+    apiUrl="http://localhost:8000/api/v1/"
+  >
+    <BrowserRouter>
+        <Switch>
+            {makeAuthRoutes()}
+            <ProtectedRoute exact path="/" component={MainPage} />
+        </Switch>
+    </BrowserRouter>
+  </UserStore>
+);
+
+export default App;
+```
+
+Let's break this down: the most important component is [`UserStore`](#UserStore), which
+stores user data and provides login/logout etc. functions.
+[`makeAuthRoutes`](#makeauthRoutes) returns a list of important routes which enable
+basic authentication functionality.
+[`ProtectedRoute`](#ProtectedRoute) provides a quick way to force users to log in if
+they want to access specific pages.
+See the [API reference](#API Reference) for more information.
+
+### CSRF Protection
+
+In order to guard against CSRF attacks, the `UserStore` obtains and provides a csrf-token for
+you to use.
+You can obtain it from the `useUserStore` hook and add it to each 'unsafe' request (anything
+that is not `OPTIONS`, `GET`, `HEAD` or `TRACE`) as `X-CSRFToken`-header.
+
+## API Reference
 
 AI-KIT: Authentication provides the following components and functions:
+* Configuration
+    * [configureAuth](#configureAuth)
+    * [defautlConfig](#defaultConfig)
+    * [Identifier](#Identifier)
 * UserStore
     * [UserStore](#userstore)
+    * [UserContext](#Usercontext)
+    * [AuthFunctionContext](#AuthFunctionContext)
     * [useUserStore](#useuserstore)
-    * [UserContext](#usercontext)
-    * [makeGenericUserStore](#makegenericuserstore)
-* ProtectedRoute
+* Routes
+    * [makeAuthRoutes](#makeAuthRoutes)
     * [ProtectedRoute](#protectedroute)
-    * [makeProtectedRoute](#makeprotectedroute)
-* LoginRoute
     * [LoginRoute](#loginroute)
-    * [makeLoginRoute](#makeloginroute)
 * LoginView
     * [LoginView](#loginview)
     * [LoginForm](#loginform)
-    * [makeLoginForm](#makeloginform)
+* ActivationView
+    * [ActivateEmailAddress](#ActivateEmailAddress)
+    * [ActivationCard](#ActivationCard)
+    * [ActivationView](#ActivationView)
+* Errors
+    * [ErrorCard](#ErrorCard)
+    * [ErrorView](#ErrorView)
+
+### configureAuth
+
+This function creates customized components and functions for you, if the default configuration
+is not enough for you!
+
+#### Parameters
+
+* Type parameter `UserType`: tells typescript, what kind of user object you expect from the backend.
+If you want to load more data than just the username and email of a user, you need to configure
+your django backend to use a custom `UserSerializer` and a custom `User` interface, which you pass
+to this function.
+* `config: Configuration`: a configuration object with information about route paths, components etc.
+Configuration is a deep `Partial` of [`defaultConfig`](#defaultConfig)'s type.
+So you are free to provide whichever settings, and the ones you don't provide will fall back to default.
+
+#### Returns
+
+An object containing custom versions of all this modules' default exported ones.
+
+#### Example
+
+```typescript_jsx
+import React from 'react';
+import { configureAuth } from 'ai-kit-auth';
+
+export const Auth = configureAuth({
+    paths: { base: '/user' },
+    components: { loadingIndicator: () => <div>Loading</div> },
+ });
+```
+
+#### Note
+
+:warning: **Do not mix configured Components with default ones!**
+
+
+### defaultConfig
+
+This object contains default values for AI-KIT: Auth configuration.
+
+```typescript jsx
+export const defaultConfig = {
+  paths: {
+    mainPage: '/',
+    base: '/auth',
+    login: '/login',
+    activation: '/activation/:ident/:token([0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})',
+    forgotPassword: '/forgot-password',
+    resetPassword: '/reset-password',
+    emailSent: '/email-sent',
+  },
+  userIdentifier: Identifier.UsernameOrEmail,
+  components: {
+    loadingIndicator: () => <CircularProgress />,
+  },
+};
+```
+
+The `CircularProgress` component is imported from [Material-UI](https://material-ui.com/api/circular-progress/).
+
+
+### Identifier
+
+Using this enum you can control with which information the user can login.
+Its values are:
+
+* `Identifier.Username`: login only with username
+* `Identifier.Email`: login only with email address
+* `Identifier.UsernameOrEmail`: login with either username or email address (default)
 
 ### UserStore
 
@@ -42,9 +165,16 @@ react context.
 For AI-KIT: Authentication to work correctly, it is necessary to place it high in your
 component tree, so that it contains any components which might try to access user information,
 or perform user actions like login, logout etc.
-An example `App.tsx` might look like this:
+
+#### Props
+* `apiUrl`: tells the store, where to send login requests.
+  This should be the url to the django backend of your project.
+* `customTheme` a MaterialUI Theme which overrides any default themes this package provides.
+
+#### Example
 
 ```typescript jsx
+// App.tsx
 import React from 'react';
 import { UserStore } from 'ai-kit-auth';
 import ...
@@ -63,63 +193,105 @@ const App: React.FC = () => (
 export default App;
 ```
 
-The `apiUrl` prop tells the store, where to send login requests.
-This should be the url to the django backend of your project.
-You can also pass a MaterialUI Theme as a prop (customTheme), to overwrite any default themes this package provides.
+
+### AuthFunctionContext
+
+This is a react `Context` and can be used as such. Its Consumer will receive the following fields:
+
+* `apiUrl: string`: contains the url of the backend. This is exactly the same as the
+`apiUrl` prop passed to `UserStore`
+* `csrf: string`:
+a token obtained from the server, used to guard against Cross Site Request Forgeries.
+Whenever you make a `POST`, `DELETE`, `PATCH` or `PUT` request to our backend, you need to
+place this token in the `X-CSRFToken` header of the request.
+Otherwise, the request will be rejected (provided that CSRF is enabled on the backend).
+* `loading: boolean`:
+true if a login request has been sent, but the reply has not yet arrived.
+* `login: (userIdentifier: string, password: string) => Promise<void>`: triggers a login request.
+It requires an identifier string, which is either the username or email of the user.
+Depending on the configuration, the backend accepts either one or only one of them.
+* `loggedIn: boolean`: an indicator, whether the user is logged in. For this check,
+you can either use this `boolean`, or you check if `user` of [`UserContext`](#UserContext) is `null`.
+* `logout: () => Promise<void>`: triggers a logout request. If successful, it removes the cookies
+and sets the `user` in [`UserContext`](#UserContext) to `null`.
+* `justLoggedOut: boolean`: Is set to true after a successful `logout`. However, it is not
+persistent, so after the next page refresh, it will be set to `false` again. It is used to
+display a non-persistent notification that the logout was successful on the login page.
+* `activateEmailAddress: (userIdentifier: string, token: string) => Promise<void>`:
+triggers a request to validate a user's email address and activate their account. If successful,
+the user in question is able to login.
+* `requestPasswordReset: (email: string) => Promise<void>`: triggers a request to the password
+reset endpoint, which sends an email with a link to the provided email, if that email indeed
+belongs to a user in the database. However, the backend's response is positive regardless, of whether
+the email is in the database or not.
+
+
+### UserContext
+
+This is a react `Context` and can be used as such. Its Consumer will receive the following fields:
+
+* `user: { id: number; username: string; email: string }|undefined`
+
+You can configure the type of `user` with [`configAuth`](#configAuth).
+If it is undefined, the user is not logged in.
+
 
 ### useUserStore
 
 `useUserStore` is a react hook, which can be used to obtain user information and helper
-functions stored in the `UserStore`. It returns an object containing the following entries:
+functions stored in the `UserStore`.
+It returns an object containing the `user` object provided by [`UserContext`](#UserContext),
+as well as all the fields that [`AuthfunctionContext`](#AuthFunctionContext) provides.
 
-* `user: { username: string; email: string; } | undefined`
-* `loading: boolean`
-* `login: (userIdentifier: string, password: string) => Promise<{ username: string; email: string; }>`
 
-The `user` object contains basic information about the user.
-If it is undefined, the login was not yet successful, or the user has been logged out already.
+### makeAuthRoutes
 
-`loading` is true if a login request has been sent, but the reply has not yet arrived.
+This function is the fastest way to get started with AI-KIT.
+It returns an array of all the necessary frontend routes for authentication.
+Call this function in your `App` component inside a `Switch`.
 
-You can trigger a login request by calling the `login` function in your components.
-It requires an identifier string, which is either the username or email of the user.
-Depending on the configuration, the backend accepts either one or only one of them.
+#### Parameters
 
-### UserContext
+None
 
-The `UserContext` is a react context and can be used as such. `UserStore` internally creates
-a `UserContext.Provider`, and `useUserStore()` is a shorthand for `useContext(UserContext)`.
+#### Returns
 
-### makeGenericUserStore
+A list of `JSX.Element`s, which can be placed directly in a `react-router-dom` `Switch`.
 
-If you want to load more data than just the username and email of a user, you need to configure
-your django backend to use a custom `UserSerializer`.
-However, if you use typescript, you will get error messages if you try to access these
-additional fields from the standard user store.
-In order to get typescript to use the correct types, you need to define your own `User` interface
-containing all data fields, and then use `makeGenericUserStore` to create a custom set of
-`UserStore`, `useUserStore` etc.
-Example:
+#### Example
 
-```typescript
-interface MyUser {
-  username: string;
-  email: string;
-  group: string;
-}
+```typescript jsx
+import React from 'react';
+import { makeAuthRoutes } from 'ai-kit-auth';
+import ...
 
-export const { UserStore, useUserStore } = makeGenericUserStore<MyUser>();
+const App: React.FC = () => (
+  <UserStore
+    apiUrl="http://localhost:8000/api/v1/"
+  >
+    <BrowserRouter>
+        <Switch>
+            {makeAuthRoutes()}
+            <Route ... />
+            ...
+        </Switch>
+    </BrowserRouter>
+  </UserStore>
+);
+
+export default App;
 ```
 
-After this you can use the returned values just like the standard ones, except that the
-`user` object is of type `MyUser` instead of `{ username: string; email: string; }`
 
 ### ProtectedRoute
-A wrapper for [\<Route\>](https://reacttraining.com/react-router/web/api/Route) routes that should only be available to users that are logged in.
-It checks with the UserContext if the user is in fact logged in. If not, it will redirect to `/auth/login`.
-During the check a loading spinner is shown.
-To use a custom UserContext, custom paths or a custom loading indicator, please use [makeProtectedRoute](#makeprotectedroute).
-Example usage:
+
+A wrapper for [\<Route\>](https://reacttraining.com/react-router/web/api/Route) routes that
+should only be available to users that are logged in.
+It checks with the UserContext if the user is in fact logged in. If not, it will redirect to
+the login screen (default: `/auth/login`).
+During the check a loading indicator is shown.
+
+#### Example
 
 ```typescript jsx
 <UserStore
@@ -135,45 +307,19 @@ Example usage:
     </Switch>
   </BrowserRouter>
 </UserStore>
-  
-```
 
-### makeProtectedRoute()
-Returns a [ProtectedRoute](#protectedroute) Component. Requires you to pass the UserContext you are using, as well as a loading indicator
-and allows you to pass a path for the `main page` and `login page`.
-Example usage:
-
-```typescript jsx
-const CustomProtectedRoute = makeProtectedRoute({
-  userContext: StardardUserContext,
-  loadingIndicator: () => <CircularProgress />,
-  pathToLogin: '/auth/login',
-  pathToMainPage: '/dashboard'
-});
-
-<UserStore
-  apiUrl="http://localhost:8000/api/v1/"
->
-  <BrowserRouter>
-    <Switch>
-      <CustomProtectedRoute exact path="/dashboard">
-        <div>
-          Hello World
-        </div>
-      </CustomProtectedRoute>
-    </Switch>
-  </BrowserRouter>
-</UserStore>
-  
 ```
 
 
 ### LoginRoute
-A wrapper for [\<Route\>](https://reacttraining.com/react-router/web/api/Route) that uses the UserContext
-to see if the user is logged in or not. When the user is logged in it redirects to it's referrer.
-If there is no referrer, it redirects to the `main page` (default '/').
-If you want to use LoginRoute with a custom UserContext or a different `main page`, please use [makeLoginRoute](#makeloginroute)
-Example usage:
+
+Use this wrapper for [\<Route\>](https://reacttraining.com/react-router/web/api/Route)
+as Route for a login page, if you are not using [`makeAuthRoutes`](#makeAuthRoutes).
+It uses the [`AuthFunctionsContext`](#AuthFunctionsContext) to see if a user is logged in or not.
+When the user is logged in it redirects to it's referrer.
+If there is no referrer, it redirects to the `main page` (default `'/'`).
+
+#### Example
 
 ```typescript jsx
 <UserStore
@@ -185,37 +331,15 @@ Example usage:
     </Switch>
   </BrowserRouter>
 </UserStore>
-  
+
 ```
 
-### makeLoginRoute()
-Returns a [LoginRoute](#loginroute) Component. Requires you to pass the UserContext you are using and allows you to pass a path for the `main page`.
-Example usage:
-
-```typescript jsx
-const MyLoginRoute = makeLoginRoute({
-  userContext: myUserContext,
-  pathToMainPage: '/dashboard',
-});
-
-
-<UserStore
-  apiUrl="http://localhost:8000/api/v1/"
->
-  <BrowserRouter>
-    <Switch>
-      <MyLoginRoute exact path="/auth/login" component={LoginView}/>
-    </Switch>
-  </BrowserRouter>
-</UserStore>
-  
-```
 
 ### LoginView
-Styled page wrapper for a LoginForm. You can pass your own [LoginForm](#loginform) Component
-created with [makeLoginForm](#makeloginform) as a child if you do not want the default [LoginForm](#loginform) Component.
 
-Example usage with default LoginForm (Username and Email):
+Styled page wrapper for a LoginForm.
+
+#### Example
 
 ```typescript jsx
 const App: React.FC = () => (
@@ -226,52 +350,39 @@ const App: React.FC = () => (
   </UserStore>
 );
 ```
- Example usage with custom LoginForm (Email only):
 
-```typescript jsx
-const MyLogin = makeLoginForm({ identifier: Identifier.Email });
 
-const App: React.FC = () => (
-  <UserStore
-    apiUrl="http://localhost:8000/api/v1/"
-  >
-    <LoginView>
-      <MyLogin />
-    </LoginView>
-  </UserStore>
-);
-```
 ### LoginForm
 
-`LoginForm` is a react component that provides a [Material UI Paper](https://material-ui.com/components/paper/) wrapper and contains two input fields (username/email and password) and a submit button.
-If the login should only be possible using a username or email only, please use [makeLoginForm](#makeloginform).
+`LoginForm` is a react component that provides a
+[Material UI Paper](https://material-ui.com/components/paper/) wrapper and contains two
+input fields (username/email and password) and a submit button.
 
-### makeLoginForm()
-`makeLoginForm` returns a [LoginForm](#loginform) component and requires you to pass an `Identifier` (Username, Email or UsernameAndEmail).
-Example Usage:
+
+### ActivateEmailAddress
+
+This component analyses the current URL to find the user identifier and email activation
+token, which are needed to activate a user's email address.
+If found, they are sent to the `/activate_email/` endpoint of the backend and the result
+of that request is rendered as error or success view. While waiting for the request,
+a loading indicator is shown.
+This component needs to be placed within a `Route` with parameters `ident` and `token`,
+and also needs a `UserStore` as parent somewhere in the tree, so that it can find the
+`activateEmailAddress` function.
+
+#### Example
 
 ```typescript jsx
-const MyLogin = makeLoginForm({ identifier: Identifier.Email });
-
-const App: React.FC = () => (
-  <UserStore
-    apiUrl="http://localhost:8000/api/v1/"
-  >
-    <MyLogin />
-  </UserStore>
-);
+    <Route
+      exact
+      path={`${normPath}/activation/:ident/:token([0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})`}
+      component={ActivateEmailAddress}
+      key="activation"
+    />,
 
 ```
 
-## Local Development
+#### Note
 
-Start the demo project with docker-compose
-
-    cd demo
-    docker-compose up --build -d
-    
-Start the npm watch script in the react-lib folder
-
-    npm run watch
-    
-Changes to the library will automatically be shown and updated in the demo project
+Be aware that `ActivateEmailAddress` should not reside inside a `ProtectedRoute`, as it needs to be
+accessible to users who are not logged in.

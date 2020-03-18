@@ -1,8 +1,9 @@
 import React from 'react';
 import { BrowserRouter, Switch } from 'react-router-dom';
 import {
-  UserStore, LoginView, LoginRoute, ProtectedRoute,
+  UserStore, ProtectedRoute, makeAuthRoutes,
 } from 'ai-kit-auth';
+import { Dashboard } from './Dashboard';
 
 const App: React.FC = () => (
   <UserStore
@@ -10,11 +11,10 @@ const App: React.FC = () => (
   >
     <BrowserRouter>
       <Switch>
-        <LoginRoute exact path="/auth/login" component={LoginView} />
-        <ProtectedRoute exact path="/">
-          <div>
-            Django Test App
-          </div>
+        {makeAuthRoutes()}
+        <ProtectedRoute exact path="/" component={Dashboard} />
+        <ProtectedRoute path="/">
+          <Dashboard title="Fallback Dashboard" />
         </ProtectedRoute>
       </Switch>
     </BrowserRouter>

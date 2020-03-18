@@ -1,10 +1,25 @@
-import { Context } from 'react';
 import { User } from '../api/types';
 
 export interface UserStoreValue<U = User> {
-  user?: U;
-  loading: boolean;
-  login: (userIdentifier: string, password: string) => Promise<U>;
+  user: U|null;
 }
 
-export type UserContext<User> = Context<UserStoreValue<User>>;
+export enum LogoutReason {
+  NONE,
+  USER,
+  AUTH,
+}
+
+export interface AuthFunctionContextValue {
+  apiUrl: string;
+  csrf: string;
+  loading: boolean;
+  login: (userIdentifier: string, password: string) => Promise<void>;
+  loggedIn: boolean;
+  logout: (reason?: LogoutReason) => Promise<void>;
+  justLoggedOut: LogoutReason;
+  activateEmailAddress: (userIdentifier: string, token: string) => Promise<void>;
+  validatePassword: (ident: string, password: string) => Promise<void>;
+  requestPasswordReset: (email: string) => Promise<void>;
+  resetPassword: (ident: string, token: string, password: string) => Promise<void>;
+}

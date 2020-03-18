@@ -2,7 +2,7 @@ import Grid from '@material-ui/core/Grid';
 import React, { FC } from 'react';
 import { createStyles, Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { LoginForm } from './LoginForm';
+import { ErrorCard, ErrorCardProps } from './ErrorCard';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   loginView: {
@@ -38,20 +38,28 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   },
 }));
 
-export const LoginView: FC = ({ children }) => {
+export const AuthView: FC = ({ children }) => {
   const classes = useStyles();
 
   return (
     <Grid container className={classes.loginView}>
       <Grid item xs={12} lg={4} className={classes.loginSideBanner} />
 
-      <Grid item lg={1} />
+      <Grid item lg={2} />
 
-      <Grid container item xs={12} lg={6} className={classes.loginFormContainer}>
+      <Grid container item xs={12} lg={4} className={classes.loginFormContainer}>
         {
-          children || <LoginForm />
+          children
         }
       </Grid>
     </Grid>
   );
 };
+
+export const ErrorView: FC<ErrorCardProps> = (
+  errorCardProps,
+) => (
+  <AuthView>
+    <ErrorCard {...errorCardProps} />
+  </AuthView>
+);

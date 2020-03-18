@@ -1,26 +1,30 @@
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import IconButton from '@material-ui/core/IconButton';
-import Visibility from '@material-ui/icons/Visibility';
-import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import Link from '@material-ui/core/Link';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import React, { FC, useState } from 'react';
-import { Grid, Paper, Typography } from '@material-ui/core';
+import React, { FC, useContext, useState } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import { AxiosError } from 'axios';
-import { useUserStore } from '../store/UserStore';
+import { AuthFunctionContext } from '../store/UserStore';
+import { LogoutReason } from '../store/types';
 import { strings } from '../internationalization';
 import { ErrorMessage, MetaDict, ObjectOfStrings } from '../api/types';
+import { FullConfig, Identifier } from '../Configuration';
+import { AuthView } from './AuthView';
+import { PasswordField } from './common/PasswordField';
 
-const fieldErrors: ObjectOfStrings = strings.LoginForm.FieldErrors;
-const nonFieldErrors: MetaDict = strings.LoginForm.NonFieldErrors;
+const fieldErrors: ObjectOfStrings = strings.Common.FieldErrors;
+const nonFieldErrors: MetaDict = strings.Common.NonFieldErrors;
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   loginForm: {
     paddingTop: 35,
     paddingLeft: 47,
     paddingRight: 30,
-    paddingBottom: 36,
+    paddingBottom: 40,
     boxShadow: '0 1px 36px 0 rgba(211, 211, 211, 0.5)',
     width: '100%',
     [theme.breakpoints.down('md')]: {
@@ -46,126 +50,130 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     fontSize: '1rem',
     color: theme.palette.primary.main,
   },
+  loggedOutText: {
+    color: theme.palette.primary.main,
+    marginBottom: 35,
+    marginTop: -20,
+  },
 }));
-
-export enum Identifier {
-  Username = 1,
-  Email= 2,
-  UsernameOrEmail = 3,
-}
 
 type IdentifierType = keyof typeof Identifier;
 
-export interface LoginFormOptions {
-  identifier: Identifier;
-}
+export const makeLoginForm: (config: FullConfig) => { LoginForm: FC; LoginView: FC } = ({
+  paths: { forgotPassword },
+  userIdentifier,
+}) => {
+  const LoginForm = () => {
+    const classes = useStyles();
+    const { login, justLoggedOut } = useContext(AuthFunctionContext);
+    const [ident, setIdent] = useState('');
+    const [password, setPassword] = useState('');
+    const [errorMessage, setErrorMessage] = useState<ErrorMessage>({});
 
-export const makeLoginForm: (options: LoginFormOptions) => FC = ({
-  identifier,
-}) => () => {
-  const classes = useStyles();
-  const { login } = useUserStore();
-  const [userIdentifier, setUserIdentifier] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<ErrorMessage>({});
-
-  return (
-    <Paper
-      className={classes.loginForm}
-    >
-      <Typography
-        className={classes.loginTitle}
-        variant="h3"
+    return (
+      <Paper
+        className={classes.loginForm}
       >
-        {strings.LoginForm.Login}
-      </Typography>
-
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          login(userIdentifier, password)
-            .catch((error: AxiosError) => {
-              if (error.response) {
-                setErrorMessage(error.response.data);
-              }
-            });
-        }}
-      >
-        <TextField
-          className={classes.inputField}
-          autoFocus
-          fullWidth
-          id="login_userIdentifier"
-          label={strings.LoginForm[Identifier[identifier] as IdentifierType]}
-          variant="outlined"
-          type={identifier === Identifier.Email ? 'email' : 'text'}
-          value={userIdentifier}
-          helperText={errorMessage.ident ? errorMessage.ident.map((message: string) => (
-            fieldErrors[message])) : ''}
-          error={!!errorMessage.ident}
-          onChange={(event) => {
-            setUserIdentifier(event.target.value);
-          }}
-        />
-
-        <TextField
-          className={classes.inputField}
-          fullWidth
-          id="login_password"
-          label={strings.LoginForm.Password}
-          variant="outlined"
-          value={password}
-          type={showPassword ? 'text' : 'password'}
-          helperText={errorMessage.password ? errorMessage.password.map((message: string) => (
-            fieldErrors[message])) : ''}
-          error={!!errorMessage.password}
-          onChange={(event) => {
-            setPassword(event.target.value);
-          }}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={() => setShowPassword(!showPassword)}
-                  onMouseDown={(e) => e.preventDefault()}
-                >
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        />
+        <Typography
+          className={classes.loginTitle}
+          variant="h3"
+        >
+          {strings.LoginForm.Login}
+        </Typography>
 
         {
-          errorMessage.non_field_errors && (
-            errorMessage.non_field_errors.map((message) => (
-              <Typography className={classes.formHelperText} key={message}>
-                {
-                  nonFieldErrors[message][Identifier[identifier] as IdentifierType]
-                }
-              </Typography>
-            ))
+          justLoggedOut !== LogoutReason.NONE && (
+            <Typography
+              variant="body2"
+              className={classes.loggedOutText}
+            >
+              {justLoggedOut === LogoutReason.USER
+                ? strings.LoginForm.LogoutSuccess
+                : strings.LoginForm.AuthLogoutNotification}
+            </Typography>
           )
         }
 
-        <Grid container item xs={12} justify="center">
-          <Button
-            id="login_submit"
-            type="submit"
-            title={strings.LoginForm.Login}
-            variant="contained"
-            color="primary"
-          >
-            {strings.LoginForm.Login}
-          </Button>
-        </Grid>
-      </form>
-    </Paper>
-  );
-};
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            login(ident, password)
+              .catch((error: AxiosError) => {
+                if (error.response) {
+                  setErrorMessage(error.response.data);
+                }
+              });
+          }}
+        >
+          <TextField
+            className={classes.inputField}
+            autoFocus
+            fullWidth
+            id="login_userIdentifier"
+            label={strings.LoginForm[Identifier[userIdentifier] as IdentifierType]}
+            variant="outlined"
+            type={userIdentifier === Identifier.Email ? 'email' : 'text'}
+            value={ident}
+            helperText={errorMessage.ident ? errorMessage.ident.map((message: string) => (
+              fieldErrors[message])) : ''}
+            error={!!errorMessage.ident}
+            onChange={(event) => {
+              setIdent(event.target.value);
+            }}
+          />
 
-export const LoginForm = makeLoginForm({
-  identifier: Identifier.UsernameOrEmail,
-});
+          <PasswordField
+            className={classes.inputField}
+            password={password}
+            onChange={setPassword}
+            errorMessage={errorMessage}
+          />
+
+          {
+           errorMessage.non_field_errors && (
+             errorMessage.non_field_errors.map((message) => (
+               <Typography className={classes.formHelperText} key={message}>
+                 {
+                   nonFieldErrors[message][Identifier[userIdentifier] as IdentifierType]
+                 }
+               </Typography>
+             ))
+           )
+         }
+
+          <Grid container item xs={12} justify="center">
+            <Button
+              id="login_submit"
+              type="submit"
+              title={strings.LoginForm.Login}
+              variant="contained"
+              color="primary"
+            >
+              {strings.LoginForm.Login}
+            </Button>
+          </Grid>
+
+          <Grid style={{ marginTop: 24 }} container item xs={12} justify="center">
+            <Link
+              id="login_password_reset"
+              variant="body1"
+              color="textPrimary"
+              component={RouterLink}
+              to={forgotPassword}
+            >
+              {strings.LoginForm.ForgotPassword}
+            </Link>
+          </Grid>
+        </form>
+      </Paper>
+    );
+  };
+
+  const LoginView = () => (
+    <AuthView>
+      <LoginForm />
+    </AuthView>
+  );
+
+  return { LoginForm, LoginView };
+};
