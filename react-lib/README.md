@@ -220,6 +220,11 @@ and sets the `user` in [`UserContext`](#UserContext) to `null`.
 * `justLoggedOut: boolean`: Is set to true after a successful `logout`. However, it is not
 persistent, so after the next page refresh, it will be set to `false` again. It is used to
 display a non-persistent notification that the logout was successful on the login page.
+* `register: (username: string, email: string, password: string) => Promise<void>`:
+triggers a request to register a new user. If successful, the server will have sent an email
+to the email provided as parameter. If unsuccessful, it will raise an exception containing
+information about which fields need to be corrected. If there are errors not pertaining to a
+single field, they will be placed in `non_field_errors`.
 * `activateEmailAddress: (userIdentifier: string, token: string) => Promise<void>`:
 triggers a request to validate a user's email address and activate their account. If successful,
 the user in question is able to login.
