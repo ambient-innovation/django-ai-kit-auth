@@ -77,10 +77,13 @@ AI-KIT: Authentication provides the following components and functions:
     * [makeAuthRoutes](#makeAuthRoutes)
     * [ProtectedRoute](#protectedroute)
     * [LoginRoute](#loginroute)
-* LoginView
-    * [LoginView](#loginview)
-    * [LoginForm](#loginform)
-* ActivationView
+* Login
+    * [LoginView](#LoginView)
+    * [LoginForm](#LoginForm)
+* Registration
+    * [RegisterView](#RegisterView)
+    * [RegisterForm](#RegisterForm)
+* Email-Activation
     * [ActivateEmailAddress](#ActivateEmailAddress)
     * [ActivationCard](#ActivationCard)
     * [ActivationView](#ActivationView)
@@ -337,7 +340,7 @@ If there is no referrer, it redirects to the `main page` (default `'/'`).
 
 ### LoginView
 
-Styled page wrapper for a LoginForm.
+Styled page wrapper for a [LoginForm](#LoginForm).
 
 #### Example
 
@@ -357,6 +360,32 @@ const App: React.FC = () => (
 `LoginForm` is a react component that provides a
 [Material UI Paper](https://material-ui.com/components/paper/) wrapper and contains two
 input fields (username/email and password) and a submit button.
+There are also links to registration and password recovery.
+
+
+### RegisterView
+
+Styled page wrapper for a [RegisterForm](#RegisterForm).
+
+#### Example
+
+```typescript jsx
+const App: React.FC = () => (
+  <UserStore
+    apiUrl="http://localhost:8000/api/v1/"
+  >
+    <RegisterView />
+  </UserStore>
+);
+```
+
+
+### RegisterForm
+
+`RegisterForm` is a react component that provides a
+[Material UI Paper](https://material-ui.com/components/paper/) wrapper and contains three
+input fields (username, email and password) and a submit button.
+There is also a link to the login page.
 
 
 ### ActivateEmailAddress
