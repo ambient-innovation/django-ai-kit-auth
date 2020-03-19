@@ -75,7 +75,7 @@ export const makeLoginForm: (config: FullConfig) => { LoginForm: FC; LoginView: 
 }) => {
   const LoginForm = () => {
     const classes = useStyles();
-    const { login, justLoggedOut } = useContext(AuthFunctionContext);
+    const { loading, login, justLoggedOut } = useContext(AuthFunctionContext);
     const [ident, setIdent] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState<ErrorMessage>({});
@@ -110,6 +110,7 @@ export const makeLoginForm: (config: FullConfig) => { LoginForm: FC; LoginView: 
               e.preventDefault();
               login(ident, password)
                 .catch((error: AxiosError) => {
+                  console.log(error.response);
                   if (error.response) {
                     setErrorMessage(error.response.data);
                   }
@@ -159,6 +160,7 @@ export const makeLoginForm: (config: FullConfig) => { LoginForm: FC; LoginView: 
                 title={strings.LoginForm.Login}
                 variant="contained"
                 color="primary"
+                disabled={loading}
               >
                 {strings.LoginForm.Login}
               </Button>
