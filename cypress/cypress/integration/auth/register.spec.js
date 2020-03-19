@@ -3,6 +3,8 @@
  */
 describe('Register new user', function () {
   const registerPage = '/auth/register';
+  const username = `user${Date.now() % 65536}`;
+  const email = `${username}@example.com`;
 
   const register = (username, email, password) => {
     cy.get('input[id="register_username"]')
@@ -28,7 +30,7 @@ describe('Register new user', function () {
 
   it('shows success message after registration', () => {
     cy.visit(registerPage);
-    register('testuser', 'test@example.com', 'longpass');
-    cy.contains('Email Sent').should('beInTheDocument');
+    register(username, email, 'longpass');
+    cy.contains('Email Sent').should('not.be.empty');
   });
 });
