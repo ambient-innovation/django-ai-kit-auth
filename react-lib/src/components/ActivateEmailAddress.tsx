@@ -34,7 +34,8 @@ export const makeActivateEmailAddress: (
           })
           .finally(() => setLoading(false));
       }
-    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [ident, token]);
 
     if (loading) return config.components.loadingIndicator();
 
