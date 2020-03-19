@@ -151,7 +151,6 @@ class ActivateUser(views.APIView):
             )
         user.is_active = True
         user.save()
-        login(request, user)
         return Response(status=status.HTTP_200_OK)
 
 
