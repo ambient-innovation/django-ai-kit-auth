@@ -53,8 +53,8 @@ class ValidatePasswordSerializer(serializers.Serializer):
     # either ident or email and username (only if configured) is required,
     # but we test that manually
     ident = serializers.CharField(required=False)
-    username = serializers.CharField(required=False)
-    email = serializers.EmailField(required=False)
+    username = serializers.CharField(required=False, allow_blank=True)
+    email = serializers.EmailField(required=False, allow_blank=True)
     password = serializers.CharField(required=True)
 
     def validate(self, attrs):
@@ -71,15 +71,10 @@ class ValidatePasswordSerializer(serializers.Serializer):
                 user = UserModel.objects.get(pk=pk)
             except UserModel.DoesNotExist:
                 # if anything goes wrong, we error out
-                raise ValidationError("unkown_user")
+                raise ValidationError("unknown_user")
         else:
             # usermodel does not already exist, we create a one off only for the
             # validation
-            if not email:
-                raise ValidationError("email_required")
-            if api_settings.USERNAME_REQUIRED and not username:
-                raise ValidationError("username_required")
-
             user = UserModel(username=username, email=email,)
 
         try:
@@ -93,6 +88,7 @@ class ValidatePasswordSerializer(serializers.Serializer):
         except DjangoValidationError as e:
             # convert to error codes since translations are implemented in the
             # frontend
+            print("raising", e)
             raise ValidationError([error.code for error in e.error_list])
         return attrs
 
