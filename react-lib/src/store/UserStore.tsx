@@ -73,8 +73,9 @@ export function makeGenericUserStore<U extends unknown = User>() {
       setLoading(true);
 
       return logoutAPI(apiUrl)
-        .then(() => {
+        .then((logoutData) => {
           setUser(null);
+          setCsrf(logoutData.csrf);
           setLoggedOut(reason);
         })
         .catch(() => {

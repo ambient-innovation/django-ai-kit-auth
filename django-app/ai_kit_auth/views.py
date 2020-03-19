@@ -6,6 +6,8 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.exceptions import ValidationError
 from . import serializers, services
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_protect
 from django.middleware import csrf
 
 UserModel = get_user_model()
@@ -17,6 +19,7 @@ class LoginView(generics.GenericAPIView):
     permission_classes = (AllowAny,)
     user_serializer = serializers.UserSerializer
 
+    @method_decorator(csrf_protect)
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(
             data=self.request.data, context={"request": request}
@@ -45,7 +48,8 @@ class LogoutView(views.APIView):
 
     def post(self, request, *args, **kwargs):
         logout(request)
-        return Response(status=status.HTTP_200_OK)
+        csrf_token = csrf.get_token(request)
+        return Response({"csrf": csrf_token}, status=status.HTTP_200_OK)
 
 
 class MeView(generics.GenericAPIView):
