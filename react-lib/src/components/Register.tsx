@@ -16,6 +16,7 @@ import { strings } from '../internationalization';
 import { ErrorMessage, ObjectOfStrings } from '../api/types';
 import { FullConfig } from '../Configuration';
 import { PasswordField } from './common/PasswordField';
+import { validatePasswordAPI } from '../api/api';
 
 const fieldErrors: ObjectOfStrings = strings.Common.FieldErrors;
 const nonFieldErrors: ObjectOfStrings = strings.RegisterForm.NonFieldErrors;
@@ -73,9 +74,30 @@ export const makeRegisterForm: (config: FullConfig) => {
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
 
-    const { register } = useContext(AuthFunctionContext);
+    const { apiUrl, register } = useContext(AuthFunctionContext);
 
     const classes = useStyles();
+
+    const setAndValidatePassword = (pw: string) => {
+      setPassword(pw);
+      if (pw) {
+        // TODO: add debounce to prevent race conditions
+        validatePasswordAPI(apiUrl, { username, email, password: pw })
+          .then(() => {
+            setErrors((current: ErrorMessage) => ({
+              ...current,
+              password: [],
+            }));
+          }).catch((error: AxiosError) => {
+            if (error.response) {
+              setErrors((current: ErrorMessage) => ({
+                ...current,
+                password: error.response?.data.non_field_errors || [],
+              }));
+            }
+          });
+      }
+    };
 
     return (
       <div className={classes.root}>
@@ -148,7 +170,7 @@ export const makeRegisterForm: (config: FullConfig) => {
               password={password}
               label={strings.RegisterForm.Password}
               errorMessage={errors}
-              onChange={setPassword}
+              onChange={setAndValidatePassword}
             />
             {
               errors.non_field_errors && (

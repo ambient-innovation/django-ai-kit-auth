@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 import { AxiosError } from 'axios';
 import { CssBaseline, Theme, ThemeProvider } from '@material-ui/core';
-import { User } from '../api/types';
+import { PasswordValidationInput, User } from '../api/types';
 import {
   activateEmailAddressAPI,
   loginAPI,
@@ -94,10 +94,10 @@ export function makeGenericUserStore<U extends unknown = User>() {
       .then(noop);
 
     const validatePassword: (
-      ident: string, password: string,
+      input: PasswordValidationInput,
     ) => Promise<void> = (
-      ident, password,
-    ) => validatePasswordAPI(apiUrl, ident, password).then(noop);
+      input,
+    ) => validatePasswordAPI(apiUrl, input).then(noop);
 
     const requestPasswordReset: (email: string) => Promise<void> = (
       email: string,

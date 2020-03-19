@@ -110,7 +110,6 @@ export const makeLoginForm: (config: FullConfig) => { LoginForm: FC; LoginView: 
               e.preventDefault();
               login(ident, password)
                 .catch((error: AxiosError) => {
-                  console.log(error.response);
                   if (error.response) {
                     setErrorMessage(error.response.data);
                   }

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import {
-  CsrfResponse, MeResponse, User,
+  CsrfResponse, MeResponse, PasswordValidationInput, User,
 } from './types';
 
 axios.defaults.withCredentials = true;
@@ -49,9 +49,9 @@ export const activateEmailAddressAPI = (apiUrl: string, ident: string, token: st
 );
 
 export const validatePasswordAPI = (
-  apiUrl: string, ident: string, password: string,
+  apiUrl: string, input: PasswordValidationInput,
 ) => axios.post<{}>(
-  makeUrl(apiUrl, 'validate_password/'), { ident, password },
+  makeUrl(apiUrl, 'validate_password/'), input,
 );
 
 export const sendPWResetEmail = (
