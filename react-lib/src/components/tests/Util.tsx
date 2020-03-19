@@ -26,7 +26,7 @@ export const renderWithRouterAndUser = (
         <AuthFunctionContext.Provider
           value={{
             apiUrl: 'https://example.com/api/v1',
-            csrf: '',
+            csrf: '1234',
             loading: false,
             login: successPromise,
             loggedIn: !!user,
