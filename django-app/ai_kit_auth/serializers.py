@@ -1,3 +1,5 @@
+import unicodedata
+import uuid
 from django.contrib.auth import authenticate, get_user_model
 from django.contrib.auth.password_validation import (
     get_password_validators,
@@ -109,3 +111,30 @@ class RegistrationSerializer(serializers.Serializer):
     username = serializers.CharField(required=api_settings.USERNAME_REQUIRED)
     password = serializers.CharField(required=True)
     email = serializers.EmailField(required=True)
+
+    def validate(self, attrs):
+        def normalize(value):
+            if not value:
+                value = str(uuid.uuid4())
+            return unicodedata.normalize("NFKC", value)
+
+        username = normalize(attrs["username"])
+        email = attrs["email"]
+        password = attrs["password"]
+
+        password_serializer = ValidatePasswordSerializer(
+            data={"username": username, "email": email, "password": password}
+        )
+        password_serializer.is_valid(raise_exception=True)
+
+        # make sure email is unique
+        if UserModel.objects.filter(email=email).exists():
+            raise ValidationError(code="unique_email")
+
+        user = UserModel(
+            username=username, email=email, password=password, is_active=False
+        )
+        user.save()
+
+        services.send_user_activation_mail(user)
+        return attrs
