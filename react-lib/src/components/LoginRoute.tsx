@@ -22,14 +22,16 @@ export const makeLoginRoute: (
   config: FullConfig,
 ) => FC<LoginRouteProps> = ({
   paths: { mainPage },
+  components: { loadingIndicator },
 }) => ({
   children,
   ...routeProps
 }) => {
-  const { loggedIn } = useContext(AuthFunctionContext);
+  const { loading, loggedIn } = useContext(AuthFunctionContext);
   const { from } = routeProps.location?.state
     || { from: { pathname: mainPage } };
 
+  if (loading) return <Route {...routeProps} component={loadingIndicator} />;
   if (loggedIn) return <Redirect to={from} />;
 
   return (
