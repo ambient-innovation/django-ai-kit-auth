@@ -175,3 +175,15 @@ test('register link is not shown if disabledUserRegistration', () => {
   const renderObject = renderFunction(<PureLoginForm />);
   expect(() => renderObject.getByText(strings.LoginForm.SignUp)).toThrowError();
 });
+
+test('submit button disabled when loading', () => {
+  const renderObject = renderWithRouterAndUser(
+    <LoginForm />,
+    { loading: true },
+  );
+  expect(renderObject.getAllByRole('button').find(
+    (element) => Object.values(element).find(
+      (part) => part.type === 'submit',
+    ),
+  )).toBeDisabled();
+});
