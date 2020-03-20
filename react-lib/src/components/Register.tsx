@@ -91,7 +91,7 @@ export const makeRegisterForm: (config: FullConfig) => {
             if (error.response) {
               setErrors((current: ErrorMessage) => ({
                 ...current,
-                password: error.response?.data.non_field_errors || [],
+                password: error.response?.data.password || [],
               }));
             }
           });

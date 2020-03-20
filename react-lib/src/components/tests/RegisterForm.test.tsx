@@ -148,8 +148,7 @@ test('error in password while typing', async () => {
     throw ({
       response: {
         data: {
-          // eslint-disable-next-line @typescript-eslint/camelcase
-          non_field_errors: ['password_too_short'],
+          password: ['password_too_short'],
         },
       },
     });

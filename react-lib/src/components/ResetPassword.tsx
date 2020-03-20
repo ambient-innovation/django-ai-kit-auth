@@ -74,9 +74,7 @@ export const makeResetPasswordForm: (config: FullConfig) => {
             setPasswordErrorMessages(undefined);
           }).catch((error: AxiosError) => {
             if (error.response) {
-              setPasswordErrorMessages({
-                password: error.response.data.non_field_errors,
-              });
+              setPasswordErrorMessages(error.response.data);
             }
           });
       }
