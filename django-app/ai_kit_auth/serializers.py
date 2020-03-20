@@ -125,7 +125,7 @@ class RegistrationSerializer(serializers.Serializer):
 
         # make sure email is unique
         if UserModel.objects.filter(email=email).exists():
-            raise ValidationError(code="unique_email")
+            raise ValidationError({"email": ["unique"]})
 
         try:
             user = UserModel(
@@ -133,6 +133,6 @@ class RegistrationSerializer(serializers.Serializer):
             )
             user.save()
         except IntegrityError as e:
-            raise ValidationError(code="unique_username")
+            raise ValidationError({"username": ["unique"]})
         services.send_user_activation_mail(user)
         return attrs

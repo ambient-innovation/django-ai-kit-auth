@@ -216,6 +216,7 @@ class LoginTests(APITestCase):
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(str(response.data["username"][0]), "unique")
 
     def test_register_user_same_email_fail(self):
         response = self.client.post(
@@ -224,6 +225,7 @@ class LoginTests(APITestCase):
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(str(response.data["email"][0]), "unique")
 
     def test_register_user_invalid_password_fail(self):
         response = self.client.post(
@@ -236,3 +238,4 @@ class LoginTests(APITestCase):
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(str(response.data["password"][0]), "password_too_short")
