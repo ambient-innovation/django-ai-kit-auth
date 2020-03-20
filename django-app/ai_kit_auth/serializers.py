@@ -103,7 +103,7 @@ class PasswordResetSerializer(serializers.Serializer):
 
 
 class RegistrationSerializer(serializers.Serializer):
-    username = serializers.CharField(required=api_settings.USERNAME_REQUIRED)
+    username = serializers.CharField(allow_blank=not api_settings.USERNAME_REQUIRED)
     password = serializers.CharField(required=True)
     email = serializers.EmailField(required=True)
 
