@@ -125,7 +125,7 @@ class RegistrationSerializer(serializers.Serializer):
 
         # make sure email is unique
         if UserModel.objects.filter(email=email).exists():
-            raise ValidationError({"email": ["unique"]})
+            raise ValidationError({"email": ["username_unique"]})
 
         try:
             user = UserModel(
