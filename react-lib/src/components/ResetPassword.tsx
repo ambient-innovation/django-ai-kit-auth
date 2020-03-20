@@ -69,14 +69,12 @@ export const makeResetPasswordForm: (config: FullConfig) => {
     const validatePassword = (pw: string) => {
       if (ident) {
         // TODO: add debounce to prevent race conditions
-        validatePasswordAPI(apiUrl, ident, pw)
+        validatePasswordAPI(apiUrl, { ident, password: pw })
           .then(() => {
             setPasswordErrorMessages(undefined);
           }).catch((error: AxiosError) => {
             if (error.response) {
-              setPasswordErrorMessages({
-                password: error.response.data.non_field_errors,
-              });
+              setPasswordErrorMessages(error.response.data);
             }
           });
       }

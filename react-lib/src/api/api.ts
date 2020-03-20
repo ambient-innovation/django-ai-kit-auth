@@ -1,6 +1,6 @@
 import axios from 'axios';
 import {
-  CsrfResponse, MeResponse, User,
+  CsrfResponse, MeResponse, PasswordValidationInput, User,
 } from './types';
 
 axios.defaults.withCredentials = true;
@@ -45,13 +45,13 @@ export const logoutAPI = (
   .then(({ data }) => setCsrfHeader(data));
 
 export const activateEmailAddressAPI = (apiUrl: string, ident: string, token: string) => (
-  axios.post(makeUrl(apiUrl, `activate_email/${ident}/${token}/`))
+  axios.post(makeUrl(apiUrl, 'activate_email/'), { ident, token })
 );
 
 export const validatePasswordAPI = (
-  apiUrl: string, ident: string, password: string,
+  apiUrl: string, input: PasswordValidationInput,
 ) => axios.post<{}>(
-  makeUrl(apiUrl, 'validate_password/'), { ident, password },
+  makeUrl(apiUrl, 'validate_password/'), input,
 );
 
 export const sendPWResetEmail = (
@@ -65,3 +65,7 @@ export const resetPasswordAPI = (
 ) => axios.post(
   makeUrl(apiUrl, 'reset_password/'), { ident, token, password },
 );
+
+export const registerAPI = (
+  apiUrl: string, username: string, email: string, password: string,
+) => axios.post(makeUrl(apiUrl, 'register/'), { username, email, password });

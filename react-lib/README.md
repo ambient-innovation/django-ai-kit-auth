@@ -18,7 +18,15 @@ yarn add ai-kit-auth
 
 ## Quickstart
 
-While it is possible to customize many aspects of appearance and behaviou,
+`ai-kit-auth` has a number of peer dependencies that you need to install yourself before you get started:
+
+* `react@^16.8.0`
+* `react-router-dom@^5.0.0`
+* `history@^4.0.0`
+* `@material-ui/core@^4.9.0`
+* `@material-ui/icons@^4.9.0`
+
+While it is possible to customize many aspects of appearance and behaviour,
 the fastest way to get a functioning authentication module is to use the standard
 components provided by this library.
 You can set them up in your `App.tsx` (or `App.jsx`) like so:
@@ -77,10 +85,13 @@ AI-KIT: Authentication provides the following components and functions:
     * [makeAuthRoutes](#makeAuthRoutes)
     * [ProtectedRoute](#protectedroute)
     * [LoginRoute](#loginroute)
-* LoginView
-    * [LoginView](#loginview)
-    * [LoginForm](#loginform)
-* ActivationView
+* Login
+    * [LoginView](#LoginView)
+    * [LoginForm](#LoginForm)
+* Registration
+    * [RegisterView](#RegisterView)
+    * [RegisterForm](#RegisterForm)
+* Email-Activation
     * [ActivateEmailAddress](#ActivateEmailAddress)
     * [ActivationCard](#ActivationCard)
     * [ActivationView](#ActivationView)
@@ -217,6 +228,11 @@ and sets the `user` in [`UserContext`](#UserContext) to `null`.
 * `justLoggedOut: boolean`: Is set to true after a successful `logout`. However, it is not
 persistent, so after the next page refresh, it will be set to `false` again. It is used to
 display a non-persistent notification that the logout was successful on the login page.
+* `register: (username: string, email: string, password: string) => Promise<void>`:
+triggers a request to register a new user. If successful, the server will have sent an email
+to the email provided as parameter. If unsuccessful, it will raise an exception containing
+information about which fields need to be corrected. If there are errors not pertaining to a
+single field, they will be placed in `non_field_errors`.
 * `activateEmailAddress: (userIdentifier: string, token: string) => Promise<void>`:
 triggers a request to validate a user's email address and activate their account. If successful,
 the user in question is able to login.
@@ -337,7 +353,7 @@ If there is no referrer, it redirects to the `main page` (default `'/'`).
 
 ### LoginView
 
-Styled page wrapper for a LoginForm.
+Styled page wrapper for a [LoginForm](#LoginForm).
 
 #### Example
 
@@ -357,6 +373,32 @@ const App: React.FC = () => (
 `LoginForm` is a react component that provides a
 [Material UI Paper](https://material-ui.com/components/paper/) wrapper and contains two
 input fields (username/email and password) and a submit button.
+There are also links to registration and password recovery.
+
+
+### RegisterView
+
+Styled page wrapper for a [RegisterForm](#RegisterForm).
+
+#### Example
+
+```typescript jsx
+const App: React.FC = () => (
+  <UserStore
+    apiUrl="http://localhost:8000/api/v1/"
+  >
+    <RegisterView />
+  </UserStore>
+);
+```
+
+
+### RegisterForm
+
+`RegisterForm` is a react component that provides a
+[Material UI Paper](https://material-ui.com/components/paper/) wrapper and contains three
+input fields (username, email and password) and a submit button.
+There is also a link to the login page.
 
 
 ### ActivateEmailAddress

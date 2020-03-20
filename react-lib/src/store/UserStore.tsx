@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 import { AxiosError } from 'axios';
 import { CssBaseline, Theme, ThemeProvider } from '@material-ui/core';
-import { User } from '../api/types';
+import { PasswordValidationInput, User } from '../api/types';
 import {
   activateEmailAddressAPI,
   loginAPI,
@@ -12,6 +12,7 @@ import {
   resetPasswordAPI,
   sendPWResetEmail,
   validatePasswordAPI,
+  registerAPI,
 } from '../api/api';
 import { AuthFunctionContextValue, LogoutReason, UserStoreValue } from './types';
 import { defaultTheme } from '../styles/styles';
@@ -39,6 +40,7 @@ export const AuthFunctionContext = createContext<AuthFunctionContextValue>({
   validatePassword: errorPromise,
   requestPasswordReset: errorPromise,
   resetPassword: errorPromise,
+  register: errorPromise,
 });
 
 export function makeGenericUserStore<U extends unknown = User>() {
@@ -92,10 +94,10 @@ export function makeGenericUserStore<U extends unknown = User>() {
       .then(noop);
 
     const validatePassword: (
-      ident: string, password: string,
+      input: PasswordValidationInput,
     ) => Promise<void> = (
-      ident, password,
-    ) => validatePasswordAPI(apiUrl, ident, password).then(noop);
+      input,
+    ) => validatePasswordAPI(apiUrl, input).then(noop);
 
     const requestPasswordReset: (email: string) => Promise<void> = (
       email: string,
@@ -106,6 +108,12 @@ export function makeGenericUserStore<U extends unknown = User>() {
     ) => Promise<void> = (
       ident, token, password,
     ) => resetPasswordAPI(apiUrl, ident, token, password).then(noop);
+
+    const register: (
+      username: string, email: string, password: string,
+    ) => Promise<void> = (
+      username, email, password,
+    ) => registerAPI(apiUrl, username, email, password).then(noop);
 
     useEffect(() => {
       // If we don't have a user, we need to obtain it via  the me endpoint
@@ -144,6 +152,7 @@ export function makeGenericUserStore<U extends unknown = User>() {
             validatePassword,
             requestPasswordReset,
             resetPassword,
+            register,
           }}
         >
           <CssBaseline />

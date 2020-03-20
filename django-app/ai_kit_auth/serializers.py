@@ -1,3 +1,5 @@
+import unicodedata
+import uuid
 from django.contrib.auth import authenticate, get_user_model
 from django.contrib.auth.password_validation import (
     get_password_validators,
@@ -5,6 +7,7 @@ from django.contrib.auth.password_validation import (
 )
 from django.conf import settings
 from django.core.exceptions import ValidationError as DjangoValidationError
+from django.db.utils import IntegrityError
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from .settings import api_settings
@@ -51,8 +54,8 @@ class ValidatePasswordSerializer(serializers.Serializer):
     # either ident or email and username (only if configured) is required,
     # but we test that manually
     ident = serializers.CharField(required=False)
-    username = serializers.CharField(required=False)
-    email = serializers.EmailField(required=False)
+    username = serializers.CharField(required=False, allow_blank=True)
+    email = serializers.EmailField(required=False, allow_blank=True)
     password = serializers.CharField(required=True)
 
     def validate(self, attrs):
@@ -69,15 +72,10 @@ class ValidatePasswordSerializer(serializers.Serializer):
                 user = UserModel.objects.get(pk=pk)
             except UserModel.DoesNotExist:
                 # if anything goes wrong, we error out
-                raise ValidationError("unkown_user")
+                raise ValidationError("unknown_user")
         else:
             # usermodel does not already exist, we create a one off only for the
             # validation
-            if not email:
-                raise ValidationError("email_required")
-            if api_settings.USERNAME_REQUIRED and not username:
-                raise ValidationError("username_required")
-
             user = UserModel(username=username, email=email,)
 
         try:
@@ -91,7 +89,7 @@ class ValidatePasswordSerializer(serializers.Serializer):
         except DjangoValidationError as e:
             # convert to error codes since translations are implemented in the
             # frontend
-            raise ValidationError([error.code for error in e.error_list])
+            raise ValidationError({"password": [error.code for error in e.error_list]})
         return attrs
 
 
@@ -103,3 +101,38 @@ class PasswordResetSerializer(serializers.Serializer):
     ident = serializers.CharField(required=True)
     token = serializers.CharField(required=True)
     password = serializers.CharField(required=True)
+
+
+class RegistrationSerializer(serializers.Serializer):
+    username = serializers.CharField(allow_blank=not api_settings.USERNAME_REQUIRED)
+    password = serializers.CharField(required=True)
+    email = serializers.EmailField(required=True)
+
+    def validate(self, attrs):
+        def normalize(value):
+            if not value:
+                value = str(uuid.uuid4())
+            return unicodedata.normalize("NFKC", value)
+
+        username = normalize(attrs["username"])
+        email = attrs["email"]
+        password = attrs["password"]
+
+        password_serializer = ValidatePasswordSerializer(
+            data={"username": username, "email": email, "password": password}
+        )
+        password_serializer.is_valid(raise_exception=True)
+
+        # make sure email is unique
+        if UserModel.objects.filter(email=email).exists():
+            raise ValidationError({"email": ["username_unique"]})
+
+        try:
+            user = UserModel(
+                username=username, email=email, password=password, is_active=False
+            )
+            user.save()
+        except IntegrityError as e:
+            raise ValidationError({"username": ["username_unique"]})
+        services.send_user_activation_mail(user)
+        return attrs

@@ -116,7 +116,7 @@ for details.
 
     urlpatterns = [
         # ...
-        re_path("^api/v1/", include("ai_kit_auth.urls"))
+        path("api/v1/", include("ai_kit_auth.urls"))
         # ...
     ]
 
