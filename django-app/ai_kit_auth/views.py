@@ -2,7 +2,10 @@ from django.contrib.auth import login, logout, get_user_model, tokens
 from rest_framework import status, generics, views
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.exceptions import ValidationError
 from . import serializers, services
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_protect
 from django.middleware import csrf
 
 UserModel = get_user_model()
@@ -14,6 +17,7 @@ class LoginView(generics.GenericAPIView):
     permission_classes = (AllowAny,)
     user_serializer = serializers.UserSerializer
 
+    @method_decorator(csrf_protect)
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(
             data=self.request.data, context={"request": request}
@@ -42,10 +46,11 @@ class LogoutView(views.APIView):
 
     def post(self, request, *args, **kwargs):
         logout(request)
-        return Response(status=status.HTTP_200_OK)
+        csrf_token = csrf.get_token(request)
+        return Response({"csrf": csrf_token}, status=status.HTTP_200_OK)
 
 
-class Me(generics.GenericAPIView):
+class MeView(generics.GenericAPIView):
     """
     Barebones user model detail view
     """
@@ -66,6 +71,18 @@ class Me(generics.GenericAPIView):
         return Response(
             {"user": user_data, "csrf": csrf_token,}, status=status.HTTP_200_OK
         )
+
+
+class RegistrationView(generics.GenericAPIView):
+
+    permission_classes = (AllowAny,)
+
+    serializer_class = serializers.RegistrationSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response({}, status=status.HTTP_201_CREATED)
 
 
 class ValidatePassword(views.APIView):
@@ -90,8 +107,10 @@ class ActivateUser(views.APIView):
 
     permission_classes = (AllowAny,)
 
-    def post(self, request, ident, token, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         try:
+            ident = request.data["ident"]
+            token = request.data["token"]
             pk = services.scramble_id(ident)
             user = UserModel.objects.get(pk=pk)
             assert tokens.PasswordResetTokenGenerator().check_token(user, token)
@@ -107,7 +126,6 @@ class ActivateUser(views.APIView):
             )
         user.is_active = True
         user.save()
-        login(request, user)
         return Response(status=status.HTTP_200_OK)
 
 

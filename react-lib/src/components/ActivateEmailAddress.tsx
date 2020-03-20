@@ -20,21 +20,20 @@ export const makeActivateEmailAddress: (
 
   const ActivateEmailAddress = () => {
     const { ident, token } = useParams();
-    const { activateEmailAddress } = useContext(AuthFunctionContext);
+    const { activateEmailAddress, csrf } = useContext(AuthFunctionContext);
     const [error, setError] = useState<string|undefined>(undefined);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-      if (ident && token) {
+      if (ident && token && csrf) {
         activateEmailAddress(ident, token)
           .catch((error_: AxiosError) => {
-            if (error_.response?.status === 400) {
-              setError(error_.response.data.error);
-            }
+            setError(error_.response?.data.error || 'general');
           })
           .finally(() => setLoading(false));
       }
-    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [ident, token, csrf]);
 
     if (loading) return config.components.loadingIndicator();
 

@@ -12,12 +12,12 @@ export const makeProtectedRoute: (
   component,
   render,
   children,
-  ...routerProps
+  ...routeProps
 }) => {
   const { loggedIn, loading } = useContext(AuthFunctionContext);
-  const pathname = routerProps.location?.pathname || mainPage;
+  const pathname = routeProps.location?.pathname || mainPage;
 
-  if (loading) return <Route {...routerProps} component={loadingIndicator} />;
+  if (loading) return <Route {...routeProps} component={loadingIndicator} />;
   if (!loggedIn) {
     return (
       <Redirect to={{
@@ -30,7 +30,7 @@ export const makeProtectedRoute: (
 
   return (
     <Route
-      {...routerProps}
+      {...routeProps}
       component={component}
       render={render}
     >

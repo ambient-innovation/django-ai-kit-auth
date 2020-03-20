@@ -1,5 +1,7 @@
 import axios from 'axios';
-import { MeResponse, User } from './types';
+import {
+  CsrfResponse, MeResponse, PasswordValidationInput, User,
+} from './types';
 
 axios.defaults.withCredentials = true;
 
@@ -9,7 +11,7 @@ export const makeUrl = (apiUrl: string, suffix: string) => {
   return `${apiUrl}${separator}${suffix}`;
 };
 
-function setCsrfHeader<U>(data: MeResponse<U>) {
+function setCsrfHeader<T extends CsrfResponse>(data: T) {
   axios.defaults.headers.common['X-CSRFToken'] = data.csrf;
 
   return data;
@@ -39,16 +41,17 @@ export const meAPI = <U = User>(apiUrl: string) => (
  */
 export const logoutAPI = (
   apiUrl: string,
-) => axios.post(makeUrl(apiUrl, 'logout/')).then(({ data }) => data);
+) => axios.post<CsrfResponse>(makeUrl(apiUrl, 'logout/'))
+  .then(({ data }) => setCsrfHeader(data));
 
 export const activateEmailAddressAPI = (apiUrl: string, ident: string, token: string) => (
-  axios.post(makeUrl(apiUrl, `activate_email/${ident}/${token}/`))
+  axios.post(makeUrl(apiUrl, 'activate_email/'), { ident, token })
 );
 
 export const validatePasswordAPI = (
-  apiUrl: string, ident: string, password: string,
+  apiUrl: string, input: PasswordValidationInput,
 ) => axios.post<{}>(
-  makeUrl(apiUrl, 'validate_password/'), { ident, password },
+  makeUrl(apiUrl, 'validate_password/'), input,
 );
 
 export const sendPWResetEmail = (
@@ -62,3 +65,7 @@ export const resetPasswordAPI = (
 ) => axios.post(
   makeUrl(apiUrl, 'reset_password/'), { ident, token, password },
 );
+
+export const registerAPI = (
+  apiUrl: string, username: string, email: string, password: string,
+) => axios.post(makeUrl(apiUrl, 'register/'), { username, email, password });

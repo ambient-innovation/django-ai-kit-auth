@@ -138,7 +138,7 @@ e2e-test-demo:
       bash -c "npm install && cypress run --browser chrome"
 
 deploy-react:
-  image: node:13
+  image: node:12
   stage: deploy
   except:
     - tags

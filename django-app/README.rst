@@ -16,7 +16,7 @@ Standard Django sessions are used for authentification.
 Quick Start
 -----------
 
-1.) Add ``ai-kit-auth`` to your ``INSTALLED_APPS`` like so:
+1.) Add ``ai_kit_auth`` to your ``INSTALLED_APPS`` like so:
 
 ::
 
@@ -24,12 +24,13 @@ Quick Start
         # ...
         "rest_framework",
         # ...
-        "ai-kit-auth",
+        "ai_kit_auth",
         # ...
         "corsheaders",
     )
 
-``rest_framework`` and ``corsheaders`` are dependencies and must be
+``rest_framework`` from the pip package ``djangorestframework`` and ``corsheaders``
+from the pip package ``django-cors-headers`` are dependencies and must be
 installed.
 
 2.) Configuration is namespaced unter ``AI_KIT_AUTH`` like so:
@@ -37,30 +38,42 @@ installed.
 ::
 
     AI_KIT_AUTH = {
-        "ACTIVATION_ROUTE": "activation",
-        "FRONTEND_URL": "example.com",
+        "FRONTEND": {
+            "URL": "example.com",
+        },
         # ...
     }
 
-Note that ``FRONTEND_URL`` is a required configuration that does not have a
+Note that ``FRONTEND.URL`` is a required configuration that does not have a
 default. Default configurations are:
 
 ::
 
     DEFAULTS = {
+        # Templates for all the email notifications to the user
         "EMAIL_TEMPLATES": {
+            # is send when the user is created by registration
             "USER_CREATED": {
                 "TITLE": "ai_kit_auth/user_created_title.txt",
                 "BODY_PLAINTEXT": "ai_kit_auth/user_created_body.txt",
                 "BODY_HTML": "ai_kit_auth/user_created_body.html",
             },
+            # is send to the user after they triggered the forget password
+            # feature. Contains the time limited password reset link
             "RESET_PASSWORD": {
                 "TITLE": "ai_kit_auth/reset_password_title.txt",
                 "BODY_PLAINTEXT": "ai_kit_auth/reset_password_body.txt",
                 "BODY_HTML": "ai_kit_auth/reset_password_body.html",
             },
         },
+        # If true, the user has to specify a username in addition to the
+        # mail address
         "USERNAME_REQUIRED": False,
+        # information about the frontend, mostly the used routes. In most cases
+        # the defaults are fine, but can be changed for localisation of the
+        # urls.
+        # Only the actual frontend url is unset and you will get an
+        # configuration error if you don't specify it.
         "FRONTEND": {
             "URL": "",
             "ACTIVATION_ROUTE": "/auth/activation/",
@@ -80,8 +93,6 @@ In addition to that some general configuration is required:
 
     CORS_ALLOW_CREDENTIALS = True
 
-    # otherwise authentification to the django admin and the frontend can
-    # interfere with eath other
     CSRF_USE_SESSIONS = True
 
     CSRF_TRUSTED_ORIGINS = [
@@ -90,7 +101,12 @@ In addition to that some general configuration is required:
         # add other front-end backend urls
     ]
 
-See the
+The ``CSRF_USE_SESSIONS`` configuration doesn't need to be set to enable
+Ai-Kit-Auth, but in prevents problems with double logins, for example
+if a user is logged into the Admin interface and also logged in the
+frontend. Django saves CSRF tokens in cookies by default.
+
+Also see the
 `django-cors-headers <https://github.com/adamchainz/django-cors-headers>`__
 for details.
 
@@ -100,7 +116,7 @@ for details.
 
     urlpatterns = [
         # ...
-        re_path("^api/v1/", include("ai_kit.urls"))
+        path("api/v1/", include("ai_kit_auth.urls"))
         # ...
     ]
 
