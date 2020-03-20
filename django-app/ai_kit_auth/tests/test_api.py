@@ -204,3 +204,35 @@ class LoginTests(APITestCase):
         user = UserModel.objects.get(email="testuser@example.com")
         self.assertEqual(user.username, "testuser")
         self.assertFalse(user.is_active)
+
+    def test_register_user_same_username_fail(self):
+        response = self.client.post(
+            self.register_url,
+            {
+                "username": self.user.username,
+                "email": "testuser@example.de",
+                "password": PASSWORD,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_register_user_same_email_fail(self):
+        response = self.client.post(
+            self.register_url,
+            {"username": "testuser", "email": self.user.email, "password": PASSWORD,},
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_register_user_invalid_password_fail(self):
+        response = self.client.post(
+            self.register_url,
+            {
+                "username": "testuser",
+                "email": "testuser@example.com",
+                "password": "short",
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

@@ -7,6 +7,7 @@ from django.contrib.auth.password_validation import (
 )
 from django.conf import settings
 from django.core.exceptions import ValidationError as DjangoValidationError
+from django.db.utils import IntegrityError
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from .settings import api_settings
@@ -126,10 +127,12 @@ class RegistrationSerializer(serializers.Serializer):
         if UserModel.objects.filter(email=email).exists():
             raise ValidationError(code="unique_email")
 
-        user = UserModel(
-            username=username, email=email, password=password, is_active=False
-        )
-        user.save()
-
+        try:
+            user = UserModel(
+                username=username, email=email, password=password, is_active=False
+            )
+            user.save()
+        except IntegrityError as e:
+            raise ValidationError(code="unique_username")
         services.send_user_activation_mail(user)
         return attrs
