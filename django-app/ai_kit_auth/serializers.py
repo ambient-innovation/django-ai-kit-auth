@@ -88,7 +88,6 @@ class ValidatePasswordSerializer(serializers.Serializer):
         except DjangoValidationError as e:
             # convert to error codes since translations are implemented in the
             # frontend
-            print("raising", e)
             raise ValidationError([error.code for error in e.error_list])
         return attrs
 
