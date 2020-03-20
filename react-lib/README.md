@@ -26,7 +26,7 @@ yarn add ai-kit-auth
 * `@material-ui/core@^4.9.0`
 * `@material-ui/icons@^4.9.0`
 
-While it is possible to customize many aspects of appearance and behaviou,
+While it is possible to customize many aspects of appearance and behaviour,
 the fastest way to get a functioning authentication module is to use the standard
 components provided by this library.
 You can set them up in your `App.tsx` (or `App.jsx`) like so:
