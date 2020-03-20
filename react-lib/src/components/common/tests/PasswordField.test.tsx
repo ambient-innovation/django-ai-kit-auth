@@ -12,13 +12,13 @@ const renderFunction = (
 
 test('password visibility', () => {
   const renderObject = renderFunction();
-  expect(renderObject.getByLabelText(strings.LoginForm.Password))
+  expect(renderObject.getByLabelText(strings.Common.Password))
     .toHaveProperty('type', 'password');
   fireEvent.click(renderObject.getByLabelText('toggle password visibility'));
-  expect(renderObject.getByLabelText(strings.LoginForm.Password))
+  expect(renderObject.getByLabelText(strings.Common.Password))
     .toHaveProperty('type', 'text');
   fireEvent.click(renderObject.getByLabelText('toggle password visibility'));
-  expect(renderObject.getByLabelText(strings.LoginForm.Password))
+  expect(renderObject.getByLabelText(strings.Common.Password))
     .toHaveProperty('type', 'password');
 });
 

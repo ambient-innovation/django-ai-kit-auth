@@ -30,7 +30,7 @@ export const PasswordField: FC<PasswordFieldProps> = (
       className={className}
       fullWidth
       id={id || 'login_password'}
-      label={label || strings.LoginForm.Password}
+      label={label || strings.Common.Password}
       variant="outlined"
       value={password}
       type={showPassword ? 'text' : 'password'}

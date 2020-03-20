@@ -2,6 +2,7 @@
   "Common": {
     "ok": "OK",
     "cancel": "Cancel",
+    "Password": "Password",
     "FieldErrors": {
       "blank": "This field may not be blank.",
       "password_too_short": "Password too short, it should contain at least 8 characters.",
@@ -21,7 +22,6 @@
     "Username": "Username",
     "Email": "Email",
     "UsernameOrEmail": "Username or Email",
-    "Password": "Password",
     "Login": "Login",
     "LogoutSuccess": "You have been logged out successfully.",
     "AuthLogoutNotification": "Please login before you continue.",

@@ -35,7 +35,7 @@ test('submit calls login', () => {
     },
   );
   fireEvent.change(
-    renderObject.getByLabelText(strings.LoginForm.Password),
+    renderObject.getByLabelText(strings.Common.Password),
     {
       target: {
         value: mockPassword,
