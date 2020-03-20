@@ -56,7 +56,9 @@ class ValidatePasswordSerializer(serializers.Serializer):
     ident = serializers.CharField(required=False)
     username = serializers.CharField(required=False, allow_blank=True)
     email = serializers.EmailField(required=False, allow_blank=True)
-    password = serializers.CharField(required=True, error_messages={"required": "required", "blank": "blank"},)
+    password = serializers.CharField(
+        required=True, error_messages={"required": "required", "blank": "blank"},
+    )
 
     def validate(self, attrs):
         ident = attrs.get("ident")
@@ -108,7 +110,9 @@ class PasswordResetSerializer(serializers.Serializer):
 class RegistrationSerializer(serializers.Serializer):
     username = serializers.CharField(allow_blank=not api_settings.USERNAME_REQUIRED)
     password = serializers.CharField(required=True)
-    email = serializers.EmailField(required=True, error_messages={"required": "required", "blank": "blank"},)
+    email = serializers.EmailField(
+        required=True, error_messages={"required": "required", "blank": "blank"},
+    )
 
     def validate(self, attrs):
         def normalize(value):

@@ -11,7 +11,6 @@ import { FullConfig } from '../Configuration';
 import { AuthView } from './AuthView';
 import { strings } from '../internationalization';
 import { PasswordField } from './common/PasswordField';
-import { validatePasswordAPI } from '../api/api';
 import { ErrorMessage } from '../api/types';
 
 enum SuccessState {
@@ -69,13 +68,14 @@ export const makeResetPasswordForm: (config: FullConfig) => {
     const [password2, setPassword2] = useState('');
     const [passwordErrors, setPasswordErrors] = useState<ErrorMessage|undefined>();
     const [successState, setSuccessState] = useState<SuccessState>(SuccessState.INITIAL);
-    const { apiUrl, resetPassword } = useContext(AuthFunctionContext);
+    const { validatePassword, resetPassword } = useContext(AuthFunctionContext);
     const { ident, token } = useParams();
 
-    const validatePassword = (pw: string) => {
+    const setAndValidatePassword = (pw: string) => {
+      setPassword(pw);
       if (ident) {
         // TODO: add debounce to prevent race conditions
-        validatePasswordAPI(apiUrl, { ident, password: pw })
+        validatePassword({ ident, password: pw })
           .then(() => {
             setPasswordErrors(undefined);
           }).catch((error: AxiosError) => {
@@ -123,10 +123,7 @@ export const makeResetPasswordForm: (config: FullConfig) => {
                 errorMessage={passwordErrors || {}}
                 label={strings.ResetPassword.NewPassword}
                 id="reset_password"
-                onChange={(value) => {
-                  setPassword(value);
-                  validatePassword(value);
-                }}
+                onChange={setAndValidatePassword}
               />
 
               <PasswordField
