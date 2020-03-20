@@ -4,7 +4,7 @@ import { fireEvent, waitForElement } from '@testing-library/react';
 import { defaultConfig, RegisterForm } from '../..';
 import { makeRegisterForm } from '../Register';
 import { strings } from '../../internationalization';
-import { dontResolvePromise, renderWithRouterAndUser, successPromise } from './Util';
+import { dontResolvePromise, renderWithRouterAndUser } from './Util';
 import { mergeConfig } from '../../Configuration';
 
 const mockUser = ({
@@ -75,7 +75,7 @@ test('cannot submit while loading', () => {
 });
 
 test('on success, text is shown and form vanishes', async () => {
-  register.mockReturnValue(successPromise());
+  register.mockReturnValue(Promise.resolve());
   const renderObject = renderFunction();
   fireEvent.submit(renderObject.getByRole('form'));
   await waitForElement(() => renderObject.getByText(strings.RegisterForm.SuccessText));

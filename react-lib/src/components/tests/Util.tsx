@@ -8,7 +8,6 @@ import { UserContext } from '../..';
 import { User } from '../../api/types';
 import { AuthFunctionContextValue, LogoutReason, UserStoreValue } from '../../store/types';
 
-export const successPromise = () => new Promise<void>((r) => r());
 export const dontResolvePromise = () => new Promise<void>(() => null);
 
 export const renderWithRouterAndUser = (

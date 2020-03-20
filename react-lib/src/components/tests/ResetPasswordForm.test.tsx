@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Route } from 'react-router-dom';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fireEvent, waitForElement } from '@testing-library/dom';
-import { renderWithRouterAndUser } from './Util';
+import { dontResolvePromise, renderWithRouterAndUser } from './Util';
 import { ResetPasswordForm } from '../..';
 import { strings } from '../../internationalization';
 
@@ -11,14 +11,6 @@ const mockData = {
   ident: '87654321',
   token: '1234-1234',
 };
-
-jest.mock('axios', () => ({
-  defaults: { withCredentials: true },
-  post: jest.fn(() => Promise.resolve({
-    data: [{}],
-  })),
-}));
-
 
 // eslint-disable-next-line jest/expect-expect
 test('renders the password form when ident and token are provided', async () => {
@@ -30,6 +22,26 @@ test('renders the password form when ident and token are provided', async () => 
     ['/reset-password/1234/1234-1234'],
   );
   await waitForElement(() => renderObject.getByText(strings.ResetPassword.ResetPassword));
+});
+
+test('password is validated while typing', () => {
+  const validatePassword = jest.fn();
+  validatePassword.mockReturnValue(dontResolvePromise());
+  const renderObject = renderWithRouterAndUser(
+    <Route path="/reset-password/:ident/:token">
+      <ResetPasswordForm />
+    </Route>,
+    { validatePassword },
+    [`/reset-password/${mockData.ident}/1234-1234`],
+  );
+  fireEvent.change(
+    renderObject.getByLabelText(strings.ResetPassword.NewPassword),
+    { target: { value: mockData.password } },
+  );
+  expect(validatePassword).toHaveBeenCalledWith({
+    ident: mockData.ident,
+    password: mockData.password,
+  });
 });
 
 test('error state', async () => {
