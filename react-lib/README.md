@@ -18,6 +18,14 @@ yarn add ai-kit-auth
 
 ## Quickstart
 
+`ai-kit-auth` has a number of peer dependencies that you need to install yourself before you get started:
+
+* `react@^16.8.0`
+* `react-router-dom@^5.0.0`
+* `history@^4.0.0`
+* `@material-ui/core@^4.9.0`
+* `@material-ui/icons@^4.9.0`
+
 While it is possible to customize many aspects of appearance and behaviou,
 the fastest way to get a functioning authentication module is to use the standard
 components provided by this library.
