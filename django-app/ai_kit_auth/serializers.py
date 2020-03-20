@@ -133,6 +133,6 @@ class RegistrationSerializer(serializers.Serializer):
             )
             user.save()
         except IntegrityError as e:
-            raise ValidationError({"username": ["unique"]})
+            raise ValidationError({"username": ["username_unique"]})
         services.send_user_activation_mail(user)
         return attrs
