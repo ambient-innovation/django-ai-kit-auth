@@ -69,13 +69,12 @@ const renderStoreValue = () => render(
 
 const sleep = async () => new Promise((r) => setTimeout(r, 200));
 
-// eslint-disable-next-line jest/expect-expect
 test('UserStore tries to obtain user information', async () => {
   const csrf = 'abcdsdcbasdasd';
   maxios.onGet('/me/').reply(200, { user: mockUser, csrf });
   const renderObject = renderStoreValue();
   await waitForElement(() => renderObject.getByText(mockUser.username));
-  await waitForElement(() => renderObject.getByText(csrf));
+  expect(renderObject.getByText(csrf)).toBeInTheDocument();
 });
 
 test('UserStore is loading initially', () => {
@@ -98,7 +97,6 @@ test('UserStore behaviour if me-call fails', async () => {
   });
 });
 
-// eslint-disable-next-line jest/expect-expect
 test('UserStore sends login', async () => {
   const csrf = 'alsdkbcqlieucblarkb';
   maxios.onGet('/me/').reply(200, { user: null, csrf: '' });
@@ -107,7 +105,7 @@ test('UserStore sends login', async () => {
   await waitForElement(() => renderObject.getByText('Login'));
   fireEvent.click(renderObject.getByText('Login'));
   await waitForElement(() => renderObject.getByText(mockUser.username));
-  await waitForElement(() => renderObject.getByText(csrf));
+  expect(renderObject.getByText(csrf)).toBeInTheDocument();
 });
 
 test('UserStore shows loading while logging in', async () => {

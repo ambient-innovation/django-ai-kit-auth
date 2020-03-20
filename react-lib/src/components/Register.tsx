@@ -16,7 +16,6 @@ import { strings } from '../internationalization';
 import { ErrorMessage, ObjectOfStrings } from '../api/types';
 import { FullConfig } from '../Configuration';
 import { PasswordField } from './common/PasswordField';
-import { validatePasswordAPI } from '../api/api';
 
 const fieldErrors: ObjectOfStrings = strings.Common.FieldErrors;
 const nonFieldErrors: ObjectOfStrings = strings.RegisterForm.NonFieldErrors;
@@ -74,7 +73,7 @@ export const makeRegisterForm: (config: FullConfig) => {
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
 
-    const { apiUrl, register } = useContext(AuthFunctionContext);
+    const { validatePassword, register } = useContext(AuthFunctionContext);
 
     const classes = useStyles();
 
@@ -82,7 +81,7 @@ export const makeRegisterForm: (config: FullConfig) => {
       setPassword(pw);
       if (pw) {
         // TODO: add debounce to prevent race conditions
-        validatePasswordAPI(apiUrl, { username, email, password: pw })
+        validatePassword({ username, email, password: pw })
           .then(() => {
             setErrors((current: ErrorMessage) => ({
               ...current,
