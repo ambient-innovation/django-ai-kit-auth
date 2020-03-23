@@ -219,6 +219,8 @@ class RegisterTests(AuthTestCase):
         user = UserModel.objects.get(email="testuser@example.com")
         self.assertEqual(user.username, "testuser")
         self.assertFalse(user.is_active)
+        # Make sure that password is not stored in plain text
+        self.assertNotEqual(user.password, PASSWORD)
 
     def test_register_user_same_username_fail(self):
         response = self.client.post(
