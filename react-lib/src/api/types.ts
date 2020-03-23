@@ -29,5 +29,5 @@ export interface MetaDict {
 }
 
 export interface ErrorMessage {
-  [key: string]: string[];
+  [key: string]: string[]|undefined;
 }
