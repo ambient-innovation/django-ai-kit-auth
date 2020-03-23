@@ -54,13 +54,13 @@ const App: React.FC = () => (
 export default App;
 ```
 
-Let's break this down: the most important component is [`UserStore`](#UserStore), which
+Let's break this down: the most important component is [`UserStore`](#userstore), which
 stores user data and provides login/logout etc. functions.
-[`makeAuthRoutes`](#makeauthRoutes) returns a list of important routes which enable
+[`makeAuthRoutes`](#makeauthroutes) returns a list of important routes which enable
 basic authentication functionality.
-[`ProtectedRoute`](#ProtectedRoute) provides a quick way to force users to log in if
+[`ProtectedRoute`](#protectedroute) provides a quick way to force users to log in if
 they want to access specific pages.
-See the [API reference](#API Reference) for more information.
+See the [API reference](#api-reference) for more information.
 
 ### CSRF Protection
 
@@ -73,31 +73,37 @@ that is not `OPTIONS`, `GET`, `HEAD` or `TRACE`) as `X-CSRFToken`-header.
 
 AI-KIT: Authentication provides the following components and functions:
 * Configuration
-    * [configureAuth](#configureAuth)
-    * [defautlConfig](#defaultConfig)
-    * [Identifier](#Identifier)
+    * [configureAuth](#configureauth)
+    * [defautlConfig](#defaultconfig)
+    * [Identifier](#identifier)
 * UserStore
     * [UserStore](#userstore)
-    * [UserContext](#Usercontext)
-    * [AuthFunctionContext](#AuthFunctionContext)
+    * [UserContext](#usercontext)
+    * [AuthFunctionContext](#authfunctioncontext)
     * [useUserStore](#useuserstore)
 * Routes
-    * [makeAuthRoutes](#makeAuthRoutes)
+    * [makeAuthRoutes](#makeauthroutes)
     * [ProtectedRoute](#protectedroute)
     * [LoginRoute](#loginroute)
 * Login
-    * [LoginView](#LoginView)
-    * [LoginForm](#LoginForm)
+    * [LoginView](#loginview)
+    * [LoginForm](#loginform)
 * Registration
-    * [RegisterView](#RegisterView)
-    * [RegisterForm](#RegisterForm)
+    * [RegisterView](#registerview)
+    * [RegisterForm](#registerform)
+* Forgot Password
+    * [ForgotPasswordView](#forgotpasswordview)
+    * [ForgotPasswordForm](#forgotpasswordform)
+* Reset Password
+    * [ResetPasswordView](#resetpasswordview)
+    * [ResetPasswordForm](#resetpasswordform)
 * Email-Activation
-    * [ActivateEmailAddress](#ActivateEmailAddress)
-    * [ActivationCard](#ActivationCard)
-    * [ActivationView](#ActivationView)
+    * [ActivateEmailAddress](#activateemailaddress)
+    * [ActivationCard](#activationcard)
+    * [ActivationView](#activationview)
 * Errors
-    * [ErrorCard](#ErrorCard)
-    * [ErrorView](#ErrorView)
+    * [ErrorCard](#errorcard)
+    * [ErrorView](#errorview)
 
 ### configureAuth
 
@@ -111,7 +117,7 @@ If you want to load more data than just the username and email of a user, you ne
 your django backend to use a custom `UserSerializer` and a custom `User` interface, which you pass
 to this function.
 * `config: Configuration`: a configuration object with information about route paths, components etc.
-Configuration is a deep `Partial` of [`defaultConfig`](#defaultConfig)'s type.
+Configuration is a deep `Partial` of [`defaultConfig`](#defaultconfig)'s type.
 So you are free to provide whichever settings, and the ones you don't provide will fall back to default.
 
 #### Returns
@@ -222,9 +228,9 @@ true if a login request has been sent, but the reply has not yet arrived.
 It requires an identifier string, which is either the username or email of the user.
 Depending on the configuration, the backend accepts either one or only one of them.
 * `loggedIn: boolean`: an indicator, whether the user is logged in. For this check,
-you can either use this `boolean`, or you check if `user` of [`UserContext`](#UserContext) is `null`.
+you can either use this `boolean`, or you check if `user` of [`UserContext`](#usercontext) is `null`.
 * `logout: () => Promise<void>`: triggers a logout request. If successful, it removes the cookies
-and sets the `user` in [`UserContext`](#UserContext) to `null`.
+and sets the `user` in [`UserContext`](#usercontext) to `null`.
 * `justLoggedOut: boolean`: Is set to true after a successful `logout`. However, it is not
 persistent, so after the next page refresh, it will be set to `false` again. It is used to
 display a non-persistent notification that the logout was successful on the login page.
@@ -240,6 +246,9 @@ the user in question is able to login.
 reset endpoint, which sends an email with a link to the provided email, if that email indeed
 belongs to a user in the database. However, the backend's response is positive regardless, of whether
 the email is in the database or not.
+* `resetPassword: (ident: string, token: string, password: string) => Promise<void>`: triggers a request
+to reset a users password. If successful, the promise will be resolved. If unsuccessful, it will raise an exception containing
+information about which fields need to be corrected.
 
 
 ### UserContext
@@ -248,7 +257,7 @@ This is a react `Context` and can be used as such. Its Consumer will receive the
 
 * `user: { id: number; username: string; email: string }|undefined`
 
-You can configure the type of `user` with [`configAuth`](#configAuth).
+You can configure the type of `user` with [`configAuth`](#configauth).
 If it is undefined, the user is not logged in.
 
 
@@ -256,8 +265,8 @@ If it is undefined, the user is not logged in.
 
 `useUserStore` is a react hook, which can be used to obtain user information and helper
 functions stored in the `UserStore`.
-It returns an object containing the `user` object provided by [`UserContext`](#UserContext),
-as well as all the fields that [`AuthfunctionContext`](#AuthFunctionContext) provides.
+It returns an object containing the `user` object provided by [`UserContext`](#usercontext),
+as well as all the fields that [`AuthfunctionContext`](#authfunctioncontext) provides.
 
 
 ### makeAuthRoutes
@@ -330,8 +339,8 @@ During the check a loading indicator is shown.
 ### LoginRoute
 
 Use this wrapper for [\<Route\>](https://reacttraining.com/react-router/web/api/Route)
-as Route for a login page, if you are not using [`makeAuthRoutes`](#makeAuthRoutes).
-It uses the [`AuthFunctionsContext`](#AuthFunctionsContext) to see if a user is logged in or not.
+as Route for a login page, if you are not using [`makeAuthRoutes`](#makeauthroutes).
+It uses the [`AuthFunctionContext`](#authfunctioncontext) to see if a user is logged in or not.
 When the user is logged in it redirects to it's referrer.
 If there is no referrer, it redirects to the `main page` (default `'/'`).
 
@@ -353,7 +362,7 @@ If there is no referrer, it redirects to the `main page` (default `'/'`).
 
 ### LoginView
 
-Styled page wrapper for a [LoginForm](#LoginForm).
+Styled page wrapper for a [LoginForm](#loginform).
 
 #### Example
 
@@ -378,7 +387,7 @@ There are also links to registration and password recovery.
 
 ### RegisterView
 
-Styled page wrapper for a [RegisterForm](#RegisterForm).
+Styled page wrapper for a [RegisterForm](#registerform).
 
 #### Example
 
@@ -423,6 +432,53 @@ and also needs a `UserStore` as parent somewhere in the tree, so that it can fin
     />,
 
 ```
+
+### ForgotPasswordView
+
+Styled page wrapper for a [ForgotPasswordForm](#forgotpasswordform).
+
+#### Example
+
+```typescript jsx
+const App: React.FC = () => (
+  <UserStore
+    apiUrl="http://localhost:8000/api/v1/"
+  >
+    <ForgotPasswordView />
+  </UserStore>
+);
+```
+
+
+### ForgotPasswordForm
+
+`ForgotPasswordForm` is a react component that provides a
+[Material UI Paper](https://material-ui.com/components/paper/) wrapper and contains one
+input field (email) and a submit button. Upon submit the `requestPasswordReset()` method of the [AuthFunctionContext](#authfunctioncontext) is called.
+There is also a link to the login page.
+
+### ResetPasswordView
+
+Styled page wrapper for a [ResetPasswordForm](#resetpasswordform).
+
+#### Example
+
+```typescript jsx
+const App: React.FC = () => (
+  <UserStore
+    apiUrl="http://localhost:8000/api/v1/"
+  >
+    <ResetPasswordView />
+  </UserStore>
+);
+```
+
+
+### ResetPasswordForm
+
+`ResetPasswordForm` is a react component that provides a
+[Material UI Paper](https://material-ui.com/components/paper/) wrapper and contains two
+input fields (password and password-repeat) and a submit button. Upon submit the `resetPassword()` method of the [AuthFunctionContext](#authfunctioncontext) is called.
 
 #### Note
 
