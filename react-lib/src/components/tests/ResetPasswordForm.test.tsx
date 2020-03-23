@@ -26,7 +26,7 @@ test('renders the password form when ident and token are provided', async () => 
   await waitForElement(() => renderObject.getByText(strings.ResetPassword.ResetPassword));
 });
 
-test('password is validated while typing', async () => {
+test('password is validated once, when typing is finished', async () => {
   const validatePassword = jest.fn();
   validatePassword.mockReturnValue(dontResolvePromise());
   const renderObject = renderWithRouterAndUser(
@@ -35,6 +35,10 @@ test('password is validated while typing', async () => {
     </Route>,
     { validatePassword },
     [`/reset-password/${mockData.ident}/1234-1234`],
+  );
+  fireEvent.change(
+    renderObject.getByLabelText(strings.ResetPassword.NewPassword),
+    { target: { value: 'placeholder' } },
   );
   fireEvent.change(
     renderObject.getByLabelText(strings.ResetPassword.NewPassword),
@@ -48,8 +52,10 @@ test('password is validated while typing', async () => {
     ident: mockData.ident,
     password: mockData.password,
   });
+  expect(validatePassword).toHaveBeenCalledTimes(1);
 });
 
+// eslint-disable-next-line jest/expect-expect
 test('error state', async () => {
   const renderObject = renderWithRouterAndUser(
     <Route path="/reset-password/:ident/:token">
@@ -82,6 +88,7 @@ test('error state', async () => {
   await waitForElement(() => renderObject.getByText(strings.ResetPassword.InvalidLink));
 });
 
+// eslint-disable-next-line jest/expect-expect
 test('success state', async () => {
   const renderObject = renderWithRouterAndUser(
     <Route path="/reset-password/:ident/:token">

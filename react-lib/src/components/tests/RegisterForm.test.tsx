@@ -47,7 +47,7 @@ test('submit calls register', () => {
   );
 });
 
-test('password is validated while typing', async () => {
+test('password is validated once, when typing is finished', async () => {
   const validatePassword = jest.fn();
   validatePassword.mockReturnValue(dontResolvePromise());
   const renderObject = renderWithRouterAndUser(
@@ -64,6 +64,10 @@ test('password is validated while typing', async () => {
   );
   fireEvent.change(
     renderObject.getByLabelText(strings.RegisterForm.Password),
+    { target: { value: 'placeholder' } },
+  );
+  fireEvent.change(
+    renderObject.getByLabelText(strings.RegisterForm.Password),
     { target: { value: mockUser.password } },
   );
 
@@ -71,6 +75,7 @@ test('password is validated while typing', async () => {
   await sleep();
 
   expect(validatePassword).toHaveBeenCalledWith(mockUser);
+  expect(validatePassword).toHaveBeenCalledTimes(1);
 });
 
 test('cannot submit while loading', () => {
