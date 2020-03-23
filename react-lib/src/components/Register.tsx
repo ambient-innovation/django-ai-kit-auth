@@ -146,6 +146,8 @@ export const makeRegisterForm: (config: FullConfig) => {
               error={!!errors.username}
               onChange={(event) => {
                 setUsername(event.target.value);
+                // always reset errors after typing
+                setErrors((prev) => ({ ...prev, username: undefined }));
               }}
             />
             <TextField
@@ -161,6 +163,8 @@ export const makeRegisterForm: (config: FullConfig) => {
               error={!!errors.email}
               onChange={(event) => {
                 setEmail(event.target.value);
+                // always reset errors after typing
+                setErrors((prev) => ({ ...prev, email: undefined }));
               }}
             />
             <PasswordField

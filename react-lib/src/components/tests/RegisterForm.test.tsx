@@ -83,7 +83,6 @@ test('on success, text is shown and form vanishes', async () => {
   expect(() => renderObject.getByRole('form')).toThrowError();
 });
 
-// eslint-disable-next-line jest/expect-expect
 test('error in username field', async () => {
   register.mockReturnValue(new Promise<void>(() => {
     // eslint-disable-next-line no-throw-literal
@@ -100,9 +99,13 @@ test('error in username field', async () => {
   await waitForElement(
     () => renderObject.getByText(strings.Common.FieldErrors.blank),
   );
+  fireEvent.change(
+    renderObject.getByLabelText(strings.RegisterForm.Username),
+    { target: { value: 'a' } },
+  );
+  expect(() => renderObject.getByText(strings.Common.FieldErrors.blank)).toThrowError();
 });
 
-// eslint-disable-next-line jest/expect-expect
 test('error in email field', async () => {
   register.mockReturnValue(new Promise<void>(() => {
     // eslint-disable-next-line no-throw-literal
@@ -119,6 +122,11 @@ test('error in email field', async () => {
   await waitForElement(
     () => renderObject.getByText(strings.Common.FieldErrors.blank),
   );
+  fireEvent.change(
+    renderObject.getByLabelText(strings.RegisterForm.Email),
+    { target: { value: 'a' } },
+  );
+  expect(() => renderObject.getByText(strings.Common.FieldErrors.blank)).toThrowError();
 });
 
 // eslint-disable-next-line jest/expect-expect
