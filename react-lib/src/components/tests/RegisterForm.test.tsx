@@ -11,6 +11,8 @@ const mockUser = ({
   username: 'Donald', email: 'donald@example.com', password: 'longpass',
 });
 
+const sleep = async () => new Promise((r) => setTimeout(r, 400));
+
 const register = jest.fn();
 
 const renderFunction = (
@@ -45,7 +47,7 @@ test('submit calls register', () => {
   );
 });
 
-test('password is validated while typing', () => {
+test('password is validated while typing', async () => {
   const validatePassword = jest.fn();
   validatePassword.mockReturnValue(dontResolvePromise());
   const renderObject = renderWithRouterAndUser(
@@ -64,6 +66,10 @@ test('password is validated while typing', () => {
     renderObject.getByLabelText(strings.RegisterForm.Password),
     { target: { value: mockUser.password } },
   );
+
+  // wait for debounce
+  await sleep();
+
   expect(validatePassword).toHaveBeenCalledWith(mockUser);
 });
 

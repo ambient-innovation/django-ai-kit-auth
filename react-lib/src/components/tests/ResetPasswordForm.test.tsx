@@ -12,6 +12,8 @@ const mockData = {
   token: '1234-1234',
 };
 
+const sleep = async () => new Promise((r) => setTimeout(r, 400));
+
 // eslint-disable-next-line jest/expect-expect
 test('renders the password form when ident and token are provided', async () => {
   const renderObject = renderWithRouterAndUser(
@@ -24,7 +26,7 @@ test('renders the password form when ident and token are provided', async () => 
   await waitForElement(() => renderObject.getByText(strings.ResetPassword.ResetPassword));
 });
 
-test('password is validated while typing', () => {
+test('password is validated while typing', async () => {
   const validatePassword = jest.fn();
   validatePassword.mockReturnValue(dontResolvePromise());
   const renderObject = renderWithRouterAndUser(
@@ -38,6 +40,10 @@ test('password is validated while typing', () => {
     renderObject.getByLabelText(strings.ResetPassword.NewPassword),
     { target: { value: mockData.password } },
   );
+
+  // wait for debounce
+  await sleep();
+
   expect(validatePassword).toHaveBeenCalledWith({
     ident: mockData.ident,
     password: mockData.password,
