@@ -33,6 +33,22 @@ Quick Start
 from the pip package ``django-cors-headers`` are dependencies and must be
 installed.
 
+The cors headers middleware has to be put into the middleware configuration
+like so:
+
+::
+
+    MIDDLEWARE = (
+        "corsheaders.middleware.CorsMiddleware",
+        # ...
+    )
+
+This middleware has to be put as high as possible in the middlware list.
+
+For more details see the
+`django-cors-headers <https://github.com/adamchainz/django-cors-headers>`__
+documentation.
+
 2.) Configuration is namespaced unter ``AI_KIT_AUTH`` like so:
 
 ::
@@ -106,9 +122,6 @@ Ai-Kit-Auth, but in prevents problems with double logins, for example
 if a user is logged into the Admin interface and also logged in the
 frontend. Django saves CSRF tokens in cookies by default.
 
-Also see the
-`django-cors-headers <https://github.com/adamchainz/django-cors-headers>`__
-for details.
 
 3.) Include the routes in your ``urls.py``:
 
