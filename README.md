@@ -103,7 +103,8 @@ But if you start to mix and match, you have to speak to the Rest-API directly.
 
 To do that, here are the endpoints:
 
----
+
+#### Login
 
 POST `../login/`
 
@@ -147,7 +148,7 @@ Errors that are not field specific are mapped to the key `non_field_errors`.
 Currently, the only error code that can be returned here is `invalid_credentials`.
 
 
----
+#### Logout
 
 POST `../logout/`
 
@@ -170,7 +171,7 @@ At least when the csrf token is stored via session storage, it changes
 at logout and you have to update it in the frontend.
 
 
----
+#### Me
 
 GET `../me/`
 
