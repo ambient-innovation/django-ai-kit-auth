@@ -133,7 +133,18 @@ and
 
 Error cases:
 
-...
+Field specific errors are given back like so:
+
+```
+{
+    <field name>: <error code> 
+}
+```
+
+fields are `ident` or `password` and the only possible error code is `blank`.
+
+Errors that are not field specific are mapped to the key `non_field_errors`. 
+Currently, the only error code that can be returned here is `invalid_credentials`.
 
 
 ---
@@ -188,4 +199,15 @@ are not (yet) logged in. In that case, the user property is set to
 ### Error codes
 
 The backend never sends user facing error messages, but general error codes.
-Internationalisation happens in the frontend
+Internationalisation happens in the frontend.
+
+| error code                | possible user facing message                                 |
+| ---                       | ---                                                          |
+| `blank`                   | This field may not be blank.                                 |
+| `username_unique`         | This username has already been taken.                        | 
+| `password_too_short`      | Password too short, it should contain at least 8 characters. |
+| `password_too_similar`    | Password too similar to your username or email address.      |
+| `password_too_common`     | The password you've entered is too common and thus unsafe. Please try to think of something else. |
+| `passwords_not_identical` | Both passwords entered are not identical.                    |
+| `invalid_credentials`     | The combination of username (or email, depending on configuration) and password is invalid. Please try again. |
+| `activation_link_invalid` | The activation link you tried to use is invalid. This may be due to a typo, or because it has been used already. |              
