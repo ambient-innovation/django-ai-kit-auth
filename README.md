@@ -95,3 +95,97 @@ http header to the value of the CSRF token yourself
 
 If your application runs front- and backend from the same domain, you don't need
 the cors header library and configuration shown in the django-app documentation.
+
+### API
+
+Of course you don't have to use the front and backend components in tandem.
+But if you start to mix and match, you have to speak to the Rest-API directly.
+
+To do that, here are the endpoints:
+
+---
+
+POST `../login/`
+
+visibility: everyone
+
+expects 
+```
+{
+    ident: <username or email>,
+    password: <the password>
+}
+``` 
+
+both fields are required. The endpoint answers with the status code 200
+and 
+
+```
+{
+    user: {
+        username: <the username>,
+        email: <the email address>,
+        id: <the internal id>,
+    },
+    csrf: <csrf token>
+}
+``` 
+
+Error cases:
+
+...
+
+
+---
+
+POST `../logout/`
+
+visibility: authenticated users
+
+expects 
+```
+{}
+``` 
+
+and answers with status code 200 and 
+
+```
+{
+    csrf: <csrf token>
+}
+``` 
+
+At least when the csrf token is stored via session storage, it changes
+at logout and you have to update it in the frontend.
+
+
+---
+
+GET `../me/`
+
+visibility: everyone
+
+The answer is very similar to login: status code 200 and 
+
+```
+{
+    user: null | {
+        username: <the username>,
+        email: <the email address>,
+        id: <the internal id>,
+    },
+    csrf: <csrf token>
+}
+``` 
+
+
+The only difference is that me is reachable for anonymous users that
+are not (yet) logged in. In that case, the user property is set to
+`null`.
+
+
+
+### Error codes
+
+The backend never sends user facing error messages, but general error codes.
+Internationalisation happens in the frontend
