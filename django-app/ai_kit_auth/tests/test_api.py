@@ -219,6 +219,8 @@ class RegisterTests(AuthTestCase):
         user = UserModel.objects.get(email="testuser@example.com")
         self.assertEqual(user.username, "testuser")
         self.assertFalse(user.is_active)
+        # Make sure that password is not stored in plain text
+        self.assertNotEqual(user.password, PASSWORD)
 
     def test_register_user_same_username_fail(self):
         response = self.client.post(
@@ -240,7 +242,7 @@ class RegisterTests(AuthTestCase):
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(str(response.data["email"][0]), "username_unique")
+        self.assertEqual(str(response.data["email"][0]), "email_unique")
 
     def test_register_user_invalid_password_fail(self):
         response = self.client.post(

@@ -17,6 +17,7 @@ import { strings } from '../internationalization';
 import { ErrorMessage, ObjectOfStrings } from '../api/types';
 import { FullConfig } from '../Configuration';
 import { PasswordField } from './common/PasswordField';
+import { MailSvg } from '../assets/MailSvg';
 
 const fieldErrors: ObjectOfStrings = strings.Common.FieldErrors;
 const nonFieldErrors: ObjectOfStrings = strings.RegisterForm.NonFieldErrors;
@@ -36,6 +37,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     paddingBottom: 36,
     boxShadow: '0 1px 36px 0 rgba(211, 211, 211, 0.5)',
     width: '100%',
+    position: 'relative',
     [theme.breakpoints.down('md')]: {
       paddingLeft: 30,
     },
@@ -58,6 +60,11 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     marginBottom: 41,
     fontSize: '1rem',
     color: theme.palette.primary.main,
+  },
+  MailSvg: {
+    position: 'absolute',
+    top: 30,
+    right: 40,
   },
   linkUnderPaper: {
     marginTop: 20,
@@ -208,6 +215,7 @@ export const makeRegisterForm: (config: FullConfig) => {
             </Grid>
           </form>
           )}
+          <MailSvg className={classes.MailSvg} />
         </Paper>
         <Link
           classes={{
