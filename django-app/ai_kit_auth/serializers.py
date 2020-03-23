@@ -15,16 +15,16 @@ from . import services
 
 UserModel = get_user_model()
 
+# common arguments to the serializer fields
+FIELD_ARGS = {
+    "required": True,
+    "error_messages": {"required": "required", "blank": "blank"},
+}
+
 
 class LoginSerializer(serializers.Serializer):
-    ident = serializers.CharField(
-        required=True, error_messages={"required": "required", "blank": "blank"}
-    )
-    password = serializers.CharField(
-        style={"input_type": "password"},
-        required=True,
-        error_messages={"required": "required", "blank": "blank"},
-    )
+    ident = serializers.CharField(**FIELD_ARGS)
+    password = serializers.CharField(style={"input_type": "password"}, **FIELD_ARGS,)
 
     def validate(self, attrs):
         ident = attrs.get("ident")
@@ -96,34 +96,23 @@ class ValidatePasswordSerializer(serializers.Serializer):
 
 
 class InitiatePasswordResetSerializer(serializers.Serializer):
-    email = serializers.EmailField(
-        required=True, error_messages={"required": "required", "blank": "blank"},
-    )
+    email = serializers.EmailField(**FIELD_ARGS)
 
 
 class PasswordResetSerializer(serializers.Serializer):
-    ident = serializers.CharField(
-        required=True, error_messages={"required": "required", "blank": "blank"},
-    )
-    token = serializers.CharField(
-        required=True, error_messages={"required": "required", "blank": "blank"},
-    )
-    password = serializers.CharField(
-        required=True, error_messages={"required": "required", "blank": "blank"},
-    )
+    ident = serializers.CharField(**FIELD_ARGS)
+    token = serializers.CharField(**FIELD_ARGS)
+    password = serializers.CharField(**FIELD_ARGS)
 
 
 class RegistrationSerializer(serializers.Serializer):
     username = serializers.CharField(
+        required=api_settings.USERNAME_REQUIRED,
         allow_blank=not api_settings.USERNAME_REQUIRED,
-        error_messages={"required": "required", "blank": "blank"},
+        error_messages=FIELD_ARGS["error_messages"],
     )
-    password = serializers.CharField(
-        required=True, error_messages={"required": "required", "blank": "blank"},
-    )
-    email = serializers.EmailField(
-        required=True, error_messages={"required": "required", "blank": "blank"},
-    )
+    password = serializers.CharField(**FIELD_ARGS)
+    email = serializers.EmailField(**FIELD_ARGS)
 
     def validate(self, attrs):
         def normalize(value):
@@ -131,7 +120,7 @@ class RegistrationSerializer(serializers.Serializer):
                 value = str(uuid.uuid4())
             return unicodedata.normalize("NFKC", value)
 
-        username = normalize(attrs["username"])
+        username = normalize(attrs.get("username"))
         email = attrs["email"]
         password = attrs["password"]
 

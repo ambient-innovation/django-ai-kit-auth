@@ -263,14 +263,6 @@ class RegisterTests(AuthTestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-    def test_register_required_username(self):
-        response = self.client.post(
-            register_url,
-            {"email": "a@example.com", "password": PASSWORD},
-            format="json",
-        )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
     def test_register_required_email_error(self):
         response = self.client.post(
             register_url,
