@@ -10,6 +10,7 @@ import React, { FC, useContext, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 
 import { AxiosError } from 'axios';
+import { useDebouncedCallback } from 'use-debounce';
 import { AuthFunctionContext } from '../store/UserStore';
 import { AuthView } from './AuthView';
 import { strings } from '../internationalization';
@@ -26,6 +27,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'flex-end',
+    width: '100%',
   },
   paper: {
     paddingTop: 35,
@@ -77,10 +79,8 @@ export const makeRegisterForm: (config: FullConfig) => {
 
     const classes = useStyles();
 
-    const setAndValidatePassword = (pw: string) => {
-      setPassword(pw);
-      if (pw) {
-        // TODO: add debounce to prevent race conditions
+    const [debouncedPasswordValidation] = useDebouncedCallback(
+      (pw) => {
         validatePassword({ username, email, password: pw })
           .then(() => {
             setErrors((current: ErrorMessage) => ({
@@ -95,7 +95,13 @@ export const makeRegisterForm: (config: FullConfig) => {
               }));
             }
           });
-      }
+      },
+      300,
+    );
+
+    const setAndValidatePassword = (pw: string) => {
+      setPassword(pw);
+      debouncedPasswordValidation(pw);
     };
 
     return (
