@@ -139,9 +139,8 @@ class RegistrationSerializer(serializers.Serializer):
             raise ValidationError({"email": ["email_unique"]})
 
         try:
-            user = UserModel(
-                username=username, email=email, password=password, is_active=False
-            )
+            user = UserModel(username=username, email=email, is_active=False)
+            user.set_password(password)
             user.save()
         except IntegrityError as e:
             raise ValidationError({"username": ["username_unique"]})
