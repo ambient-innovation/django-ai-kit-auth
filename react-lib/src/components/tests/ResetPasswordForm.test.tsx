@@ -50,6 +50,7 @@ test('password is validated while typing', async () => {
   });
 });
 
+// eslint-disable-next-line jest/expect-expect
 test('error state', async () => {
   const renderObject = renderWithRouterAndUser(
     <Route path="/reset-password/:ident/:token">
@@ -82,6 +83,7 @@ test('error state', async () => {
   await waitForElement(() => renderObject.getByText(strings.ResetPassword.InvalidLink));
 });
 
+// eslint-disable-next-line jest/expect-expect
 test('success state', async () => {
   const renderObject = renderWithRouterAndUser(
     <Route path="/reset-password/:ident/:token">
