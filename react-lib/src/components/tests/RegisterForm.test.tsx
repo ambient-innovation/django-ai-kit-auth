@@ -4,12 +4,14 @@ import { fireEvent, waitForElement } from '@testing-library/react';
 import { defaultConfig, RegisterForm } from '../..';
 import { makeRegisterForm } from '../Register';
 import { strings } from '../../internationalization';
-import { dontResolvePromise, renderWithRouterAndUser, successPromise } from './Util';
+import { dontResolvePromise, renderWithRouterAndUser } from './Util';
 import { mergeConfig } from '../../Configuration';
 
 const mockUser = ({
   username: 'Donald', email: 'donald@example.com', password: 'longpass',
 });
+
+const sleep = async () => new Promise((r) => setTimeout(r, 400));
 
 const register = jest.fn();
 
@@ -45,7 +47,7 @@ test('submit calls register', () => {
   );
 });
 
-test('password is validated while typing', () => {
+test('password is validated once, when typing is finished', async () => {
   const validatePassword = jest.fn();
   validatePassword.mockReturnValue(dontResolvePromise());
   const renderObject = renderWithRouterAndUser(
@@ -62,9 +64,18 @@ test('password is validated while typing', () => {
   );
   fireEvent.change(
     renderObject.getByLabelText(strings.RegisterForm.Password),
+    { target: { value: 'placeholder' } },
+  );
+  fireEvent.change(
+    renderObject.getByLabelText(strings.RegisterForm.Password),
     { target: { value: mockUser.password } },
   );
+
+  // wait for debounce
+  await sleep();
+
   expect(validatePassword).toHaveBeenCalledWith(mockUser);
+  expect(validatePassword).toHaveBeenCalledTimes(1);
 });
 
 test('cannot submit while loading', () => {
@@ -75,7 +86,7 @@ test('cannot submit while loading', () => {
 });
 
 test('on success, text is shown and form vanishes', async () => {
-  register.mockReturnValue(successPromise());
+  register.mockReturnValue(Promise.resolve());
   const renderObject = renderFunction();
   fireEvent.submit(renderObject.getByRole('form'));
   await waitForElement(() => renderObject.getByText(strings.RegisterForm.SuccessText));

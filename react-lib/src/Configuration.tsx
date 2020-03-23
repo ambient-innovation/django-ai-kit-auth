@@ -147,6 +147,7 @@ export const configureAuth = <UserType extends unknown = User>(config: Configura
     ...login,
     ...register,
     ...forgot,
+    ...reset,
     ...activate,
     ...emailSent,
     ProtectedRoute,

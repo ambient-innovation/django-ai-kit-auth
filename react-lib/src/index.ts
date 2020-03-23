@@ -22,6 +22,8 @@ export const {
   ProtectedRoute,
   RegisterForm,
   RegisterView,
+  ResetPasswordForm,
+  ResetPasswordView,
   UserContext,
   UserStore,
   useUserStore,

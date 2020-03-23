@@ -35,7 +35,7 @@ test('submit calls login', () => {
     },
   );
   fireEvent.change(
-    renderObject.getByLabelText(strings.LoginForm.Password),
+    renderObject.getByLabelText(strings.Common.Password),
     {
       target: {
         value: mockPassword,
@@ -107,18 +107,6 @@ test('show general error', async () => {
       strings.Common.NonFieldErrors.invalid_credentials.UsernameOrEmail,
     ),
   );
-});
-
-test('password visibility', () => {
-  const renderObject = renderFunction();
-  expect(renderObject.getByLabelText(strings.LoginForm.Password))
-    .toHaveProperty('type', 'password');
-  fireEvent.click(renderObject.getByLabelText('toggle password visibility'));
-  expect(renderObject.getByLabelText(strings.LoginForm.Password))
-    .toHaveProperty('type', 'text');
-  fireEvent.click(renderObject.getByLabelText('toggle password visibility'));
-  expect(renderObject.getByLabelText(strings.LoginForm.Password))
-    .toHaveProperty('type', 'password');
 });
 
 test('Email type in ident input field', () => {

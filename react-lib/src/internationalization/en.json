@@ -2,6 +2,7 @@
   "Common": {
     "ok": "OK",
     "cancel": "Cancel",
+    "Password": "Password",
     "FieldErrors": {
       "blank": "This field may not be blank.",
       "username_unique": "This username has already been taken.",
@@ -22,7 +23,6 @@
     "Username": "Username",
     "Email": "Email",
     "UsernameOrEmail": "Username or Email",
-    "Password": "Password",
     "Login": "Login",
     "LogoutSuccess": "You have been logged out successfully.",
     "AuthLogoutNotification": "Please login before you continue.",
@@ -35,7 +35,9 @@
     "RepeatNewPassword": "Repeat new password",
     "ButtonText": "Save password",
     "SuccessText": "Your password has been changed successfully. Please continue to login.",
-    "SuccessButtonText": "Continue to Login"
+    "SuccessButtonText": "Continue to Login",
+    "InvalidLink": "This link is no longer valid! Click on the button below to get a new link.",
+    "InvalidLinkButtonText": "Forgot Password"
   },
   "ForgotPassword": {
     "ForgotPassword": "Forgot Password",
