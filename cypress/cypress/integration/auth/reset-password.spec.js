@@ -1,5 +1,5 @@
 /**
- * This tests the reset password form with usual flow
+ * This tests the reset password form with usual flow. Includes password validation tests.
  */
 describe('Rest password and password validation', function () {
   // we need a real ident to do password validation
@@ -22,7 +22,7 @@ describe('Rest password and password validation', function () {
 
   // These will trigger race conditions as long as there is no debounce for the password validation
 
-  /*it('should show an error message when the entered password is too short', () => {
+  it('should show an error message when the entered password is too short', () => {
     cy.visit(resetPasswordPage);
     fillOutForm('opiopdi');
     cy.get('.Mui-error').should('have.lengthOf.above', 0);
@@ -32,7 +32,7 @@ describe('Rest password and password validation', function () {
     cy.visit(resetPasswordPage);
     fillOutForm('root@example.com');
     cy.get('.Mui-error').should('have.lengthOf.above', 0);
-  });*/
+  });
 
   it('should show an error message when the entered passwords are not identical', () => {
     cy.visit(resetPasswordPage);

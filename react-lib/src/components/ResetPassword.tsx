@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import { useParams } from 'react-router-dom';
+import { useDebouncedCallback } from 'use-debounce';
 import { AuthFunctionContext } from '../store/UserStore';
 import { FullConfig } from '../Configuration';
 import { AuthView } from './AuthView';
@@ -71,10 +72,8 @@ export const makeResetPasswordForm: (config: FullConfig) => {
     const { validatePassword, resetPassword } = useContext(AuthFunctionContext);
     const { ident, token } = useParams();
 
-    const setAndValidatePassword = (pw: string) => {
-      setPassword(pw);
-      if (ident) {
-        // TODO: add debounce to prevent race conditions
+    const [debouncedPasswordValidation] = useDebouncedCallback(
+      (pw) => {
         validatePassword({ ident, password: pw })
           .then(() => {
             setPasswordErrors(undefined);
@@ -83,6 +82,14 @@ export const makeResetPasswordForm: (config: FullConfig) => {
               setPasswordErrors(error.response.data);
             }
           });
+      },
+      300,
+    );
+
+    const setAndValidatePassword = (pw: string) => {
+      setPassword(pw);
+      if (ident) {
+        debouncedPasswordValidation(pw);
       }
     };
 
