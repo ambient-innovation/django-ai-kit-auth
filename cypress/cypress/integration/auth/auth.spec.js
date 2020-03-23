@@ -22,7 +22,7 @@ describe('Login with E-Mail and password', function () {
       .type(password)
       .should('have.value', password);
 
-    cy.get('button[id=login_submit]').click();
+    cy.get('button[id=login_submit]').should('not.be.disabled').click();
   };
 
   it('displays error message if form was submitted without data', () => {

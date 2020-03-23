@@ -20,6 +20,8 @@ export const {
   LoginView,
   LoginRoute,
   ProtectedRoute,
+  RegisterForm,
+  RegisterView,
   UserContext,
   UserStore,
   useUserStore,

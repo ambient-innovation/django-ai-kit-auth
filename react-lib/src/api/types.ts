@@ -9,6 +9,13 @@ export interface CsrfResponse {
   csrf: string;
 }
 
+export interface PasswordValidationInput {
+  ident?: string;
+  username?: string;
+  email?: string;
+  password: string;
+}
+
 export interface MeResponse<U> extends CsrfResponse{
   user: U|null;
 }

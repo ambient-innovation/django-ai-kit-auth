@@ -140,4 +140,5 @@ AI_KIT_AUTH = {
     "EMAIL_TEMPLATES": {
         "RESET_PASSWORD": {"BODY_HTML": "my_custom_reset_password_body.html",},
     },
+    "USERNAME_REQUIRED": False,
 }

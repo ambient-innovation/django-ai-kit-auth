@@ -129,7 +129,7 @@ frontend. Django saves CSRF tokens in cookies by default.
 
     urlpatterns = [
         # ...
-        re_path("^api/v1/", include("ai_kit_auth.urls"))
+        path("api/v1/", include("ai_kit_auth.urls"))
         # ...
     ]
 

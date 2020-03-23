@@ -22,6 +22,8 @@ class LoginTests(APITestCase):
         self.logout_url = reverse("ai_kit_auth:logout")
         self.me_url = reverse("ai_kit_auth:me")
         self.validate_password_url = reverse("ai_kit_auth:validate_password")
+        self.activate_url = reverse("ai_kit_auth:activate")
+        self.register_url = reverse("ai_kit_auth:register")
         self.send_pw_reset_email_url = reverse("ai_kit_auth:send_pw_reset_email")
         self.pw_reset_url = reverse("ai_kit_auth:pw_reset")
         self.client.logout()
@@ -127,7 +129,7 @@ class LoginTests(APITestCase):
         user = baker.make(UserModel, is_active=False, email="to@example.com")
         ident, token = services.send_user_activation_mail(user)
         response = self.client.post(
-            reverse("ai_kit_auth:activate", args=[ident, token])
+            self.activate_url, {"ident": ident, "token": token}, format="json"
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # we have to get the user object again to see the updates
@@ -187,3 +189,53 @@ class LoginTests(APITestCase):
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_register_user(self):
+        response = self.client.post(
+            self.register_url,
+            {
+                "username": "testuser",
+                "email": "testuser@example.com",
+                "password": PASSWORD,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        user = UserModel.objects.get(email="testuser@example.com")
+        self.assertEqual(user.username, "testuser")
+        self.assertFalse(user.is_active)
+
+    def test_register_user_same_username_fail(self):
+        response = self.client.post(
+            self.register_url,
+            {
+                "username": self.user.username,
+                "email": "testuser@example.de",
+                "password": PASSWORD,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(str(response.data["username"][0]), "username_unique")
+
+    def test_register_user_same_email_fail(self):
+        response = self.client.post(
+            self.register_url,
+            {"username": "testuser", "email": self.user.email, "password": PASSWORD,},
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(str(response.data["email"][0]), "username_unique")
+
+    def test_register_user_invalid_password_fail(self):
+        response = self.client.post(
+            self.register_url,
+            {
+                "username": "testuser",
+                "email": "testuser@example.com",
+                "password": "short",
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(str(response.data["password"][0]), "password_too_short")
