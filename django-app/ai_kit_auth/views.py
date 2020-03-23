@@ -2,7 +2,6 @@ from django.contrib.auth import login, logout, get_user_model, tokens
 from rest_framework import status, generics, views
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework.exceptions import ValidationError
 from . import serializers, services
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
