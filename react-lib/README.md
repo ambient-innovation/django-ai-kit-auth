@@ -432,6 +432,11 @@ and also needs a `UserStore` as parent somewhere in the tree, so that it can fin
     />,
 
 ```
+#### Note
+   
+   Be aware that `ActivateEmailAddress` should not reside inside a `ProtectedRoute`, as it needs to be
+   accessible to users who are not logged in.
+
 
 ### ForgotPasswordView
 
@@ -479,8 +484,3 @@ const App: React.FC = () => (
 `ResetPasswordForm` is a react component that provides a
 [Material UI Paper](https://material-ui.com/components/paper/) wrapper and contains two
 input fields (password and password-repeat) and a submit button. Upon submit the `resetPassword()` method of the [AuthFunctionContext](#authfunctioncontext) is called.
-
-#### Note
-
-Be aware that `ActivateEmailAddress` should not reside inside a `ProtectedRoute`, as it needs to be
-accessible to users who are not logged in.
