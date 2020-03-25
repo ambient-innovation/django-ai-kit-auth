@@ -22,19 +22,20 @@ export enum Identifier {
 
 export const defaultConfig = {
   paths: {
-    mainPage: '/',
-    base: '/auth',
+    mainPage: '/', // login redirects here by default
+    base: '/auth', // this path will be prepended to all other paths
     login: '/login',
     register: '/register',
-    activation: '/activation',
-    forgotPassword: '/forgot-password',
-    resetPassword: '/reset-password',
-    emailSent: '/email-sent',
+    activation: '/activation', // email activation path
+    forgotPassword: '/forgot-password', // clicking 'forgot password' on the login page leads here
+    resetPassword: '/reset-password', // actual page to reset the password. Only accessible via link, which is sent by email.
+    emailSent: '/email-sent', // success feedback after email was sent from the forgot password page
   },
-  userIdentifier: Identifier.UsernameOrEmail,
-  disableUserRegistration: false,
+  userIdentifier: Identifier.UsernameOrEmail, // what should the user type in the login screen?
+  disableUserRegistration: false, // setting this to true will remove the register path completely
   components: {
     loadingIndicator: () => <CircularProgress />,
+    // is shown while user info is retrieved from server
   },
 };
 
