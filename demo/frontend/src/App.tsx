@@ -16,7 +16,11 @@ const App: React.FC = () => (
       >
         <BrowserRouter>
           <Switch>
-            {makeAuthRoutes()}
+            {
+              // generate routes for essential authentication views
+              // like login, registration, password reset etc.
+              makeAuthRoutes()
+            }
             <ProtectedRoute exact path="/" component={Dashboard} />
             <ProtectedRoute path="/">
               <Dashboard title="Fallback Dashboard" />

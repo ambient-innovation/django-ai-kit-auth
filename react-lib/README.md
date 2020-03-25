@@ -49,7 +49,10 @@ const App: React.FC = () => (
       >
         <BrowserRouter>
             <Switch>
-                {makeAuthRoutes()}
+                {
+                  // Create routes for login, registration, password reset etc.
+                  makeAuthRoutes()
+                }
                 <ProtectedRoute exact path="/" component={MainPage} />
             </Switch>
         </BrowserRouter>
@@ -163,17 +166,20 @@ This object contains default values for AI-KIT: Auth configuration.
 ```typescript jsx
 export const defaultConfig = {
   paths: {
-    mainPage: '/',
-    base: '/auth',
+    mainPage: '/', // login redirects here by default
+    base: '/auth', // this path will be prepended to all other paths
     login: '/login',
-    activation: '/activation/:ident/:token([0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})',
-    forgotPassword: '/forgot-password',
-    resetPassword: '/reset-password',
-    emailSent: '/email-sent',
+    register: '/register',
+    activation: '/activation', // email activation path
+    forgotPassword: '/forgot-password', // clicking 'forgot password' on the login page leads here
+    resetPassword: '/reset-password', // actual page to reset the password. Only accessible via link, which is sent by email.
+    emailSent: '/email-sent', // success feedback after email was sent from the forgot password page
   },
-  userIdentifier: Identifier.UsernameOrEmail,
+  userIdentifier: Identifier.UsernameOrEmail, // what should the user type in the login screen?
+  disableUserRegistration: false, // setting this to true will remove the register path completely
   components: {
     loadingIndicator: () => <CircularProgress />,
+    // is shown while user info is retrieved from server
   },
 };
 ```
@@ -285,7 +291,11 @@ as well as all the fields that [`AuthfunctionContext`](#authfunctioncontext) pro
 ### makeAuthRoutes
 
 This function is the fastest way to get started with AI-KIT.
-It returns an array of all the necessary frontend routes for authentication.
+It returns an array of all the necessary frontend routes and views for authentication,
+like login, registration, password reset etc.
+It creates a `Route` for each entry in [`defaultConfig`](#defaultconfig)`.paths`,
+except for `mainPage` and `base`.
+If you configured `disableUserRegistration: true`, the `register` path will also get no route.
 Call this function in your `App` component inside a `Switch`.
 
 #### Parameters
@@ -294,7 +304,7 @@ None
 
 #### Returns
 
-A list of `JSX.Element`s, which can be placed directly in a `react-router-dom` `Switch`.
+A list of `JSX.Element`s (`Routes`), which can be placed directly in a `react-router-dom` `Switch`.
 
 #### Example
 
@@ -446,7 +456,7 @@ and also needs a `UserStore` as parent somewhere in the tree, so that it can fin
 
 ```
 #### Note
-   
+
    Be aware that `ActivateEmailAddress` should not reside inside a `ProtectedRoute`, as it needs to be
    accessible to users who are not logged in.
 
