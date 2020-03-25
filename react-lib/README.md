@@ -34,21 +34,28 @@ You can set them up in your `App.tsx` (or `App.jsx`) like so:
 ```typescript jsx
 import React from 'react';
 import { BrowserRouter, Switch } from 'react-router-dom';
+import { CssBaseline, ThemeProvider } from '@material-ui/core';
 import { UserStore, makeAuthRoutes, ProtectedRoute } from 'ai-kit-auth';
+import { DefaultTheme } from 'ai-kit-common';
 
 import MainPage from './components/MainPage';
 
 const App: React.FC = () => (
-  <UserStore
-    apiUrl="http://localhost:8000/api/v1/"
-  >
-    <BrowserRouter>
-        <Switch>
-            {makeAuthRoutes()}
-            <ProtectedRoute exact path="/" component={MainPage} />
-        </Switch>
-    </BrowserRouter>
-  </UserStore>
+  <>
+    <CssBaseline />
+    <ThemeProvider theme={DefaultTheme}>
+      <UserStore
+        apiUrl="http://localhost:8000/api/v1/"
+      >
+        <BrowserRouter>
+            <Switch>
+                {makeAuthRoutes()}
+                <ProtectedRoute exact path="/" component={MainPage} />
+            </Switch>
+        </BrowserRouter>
+      </UserStore>
+    </ThemeProvider>
+  </>
 );
 
 export default App;
@@ -68,6 +75,14 @@ In order to guard against CSRF attacks, the `UserStore` obtains and provides a c
 you to use.
 You can obtain it from the `useUserStore` hook and add it to each 'unsafe' request (anything
 that is not `OPTIONS`, `GET`, `HEAD` or `TRACE`) as `X-CSRFToken`-header.
+
+### Styling and Material Theme
+
+The components were designed with the [AI KIT DefaultTheme](https://gitlab.ambient-innovation.com/ai/ai.kit/common/-/tree/master/react-lib#defaulttheme) theme in mind.
+To use it, add [`ai-kit-common`](https://www.npmjs.com/package/ai-kit-common) to your project,
+wrap your application in `<ThemeProvider>` tags and add the [required fonts](https://gitlab.ambient-innovation.com/ai/ai.kit/common/-/tree/master/react-lib#fonts) to your application.
+You are also advised to add a [`<CssBaseline />`](https://material-ui.com/components/css-baseline/) component to your application's root to 'normalize' the browser styles.
+Ofcourse, you are also free to use whatever custom Material Theme you wish.
 
 ## API Reference
 
@@ -186,7 +201,6 @@ or perform user actions like login, logout etc.
 #### Props
 * `apiUrl`: tells the store, where to send login requests.
   This should be the url to the django backend of your project.
-* `customTheme` a MaterialUI Theme which overrides any default themes this package provides.
 
 #### Example
 
@@ -199,7 +213,6 @@ import ...
 const App: React.FC = () => (
   <UserStore
     apiUrl="http://localhost:8000/api/v1/"
-    customTheme={myCustomTheme}
   >
     <BrowserRouter>
       ...

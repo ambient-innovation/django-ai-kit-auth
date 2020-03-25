@@ -2,7 +2,6 @@ import React, {
   createContext, FC, useContext, useEffect, useState,
 } from 'react';
 import { AxiosError } from 'axios';
-import { CssBaseline, Theme, ThemeProvider } from '@material-ui/core';
 import { PasswordValidationInput, User } from '../api/types';
 import {
   activateEmailAddressAPI,
@@ -15,11 +14,9 @@ import {
   registerAPI,
 } from '../api/api';
 import { AuthFunctionContextValue, LogoutReason, UserStoreValue } from './types';
-import { defaultTheme } from '../styles/styles';
 
 export interface UserStoreProps {
   apiUrl: string;
-  customTheme?: Theme;
 }
 
 const noop: () => void = () => null;
@@ -47,7 +44,7 @@ export function makeGenericUserStore<U extends unknown = User>() {
   const UserContext = createContext<UserStoreValue<U>>({ user: null });
 
   const UserStore: FC<UserStoreProps> = ({
-    children, apiUrl, customTheme,
+    children, apiUrl,
   }) => {
     const [loggedOut, setLoggedOut] = useState<LogoutReason>(LogoutReason.NONE);
     const [loading, setLoading] = useState(true);
@@ -155,10 +152,7 @@ export function makeGenericUserStore<U extends unknown = User>() {
             register,
           }}
         >
-          <CssBaseline />
-          <ThemeProvider theme={customTheme || defaultTheme}>
-            {children}
-          </ThemeProvider>
+          {children}
         </AuthFunctionContext.Provider>
       </UserContext.Provider>
     );
