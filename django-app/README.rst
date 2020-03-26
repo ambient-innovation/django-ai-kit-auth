@@ -18,15 +18,17 @@ Standard Django sessions are used for authentification.
 Index
 -----
 
-* Quick Start
-* Api Documentation
-    * Login
-    * Logout
-    * Me
-    * Registration (todo)
-    * Initiate Password Reset (todo)
-    * Password Reset (todo)
-* Error Codes
+* `Quick Start`_.
+* `Api Documentation`_.
+    * `Login`_.
+    * `Logout`_.
+    * `Me`_.
+    * `Registration`_.
+    * `Initiate Password Reset`_.
+    * `Password Reset`_.
+    * `Validate Password`_.
+    * `Activate User`_.
+* `Error Codes`_.
 
 
 Quick Start
@@ -154,8 +156,8 @@ dependencies
 to your project since this package does not define models on its own.
 
 
-API
-===
+Api Documentation
+=================
 
 Of course you don't have to use the front and backend components in tandem.
 But if you start to mix and match, you have to speak to the Rest-API directly.
@@ -264,7 +266,118 @@ are not (yet) logged in. In that case, the user property is set to
 ``null``.
 
 
-Error codes
+Registration
+============
+
+POST ``register``
+
+
+visibility: everyone
+
+expects
+
+::
+
+    {
+    }
+
+
+and answers with status code xxx and
+
+::
+
+    {
+    }
+
+Initiate Password Reset
+=======================
+
+POST ``send_pw_reset_email``
+
+visibility: everyone
+
+expects
+
+::
+
+    {
+    }
+
+
+and answers with status code xxx and
+
+::
+
+    {
+    }
+
+Password Reset
+==============
+
+POST ``reset_password``
+
+
+visibility: everyone
+
+expects
+
+::
+
+    {
+    }
+
+
+and answers with status code xxx and
+
+::
+
+    {
+    }
+
+Validate Password
+=================
+
+POST ``validate_password``
+
+
+visibility: everyone
+
+expects
+
+::
+
+    {
+    }
+
+
+and answers with status code xxx and
+
+::
+
+    {
+    }
+
+Activate User
+=============
+
+POST ``activate_email``
+
+expects
+
+::
+
+    {
+    }
+
+
+and answers with status code xxx and
+
+::
+
+    {
+    }
+
+Error Codes
 -----------
 
 The backend never sends user facing error messages, but general error codes.
