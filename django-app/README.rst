@@ -18,17 +18,19 @@ Standard Django sessions are used for authentification.
 Index
 -----
 
-* `Quick Start`_.
-* `Api Documentation`_.
-    * `Login`_.
-    * `Logout`_.
-    * `Me`_.
-    * `Registration`_.
-    * `Initiate Password Reset`_.
-    * `Password Reset`_.
-    * `Validate Password`_.
-    * `Activate User`_.
-* `Error Codes`_.
+* `Quick Start`_
+
+* `Api Documentation`_
+    * `Login`_
+    * `Logout`_
+    * `Me`_
+    * `Registration`_
+    * `Initiate Password Reset`_
+    * `Password Reset`_
+    * `Validate Password`_
+    * `Activate User`_
+
+* `Error Codes`_
 
 
 Quick Start
