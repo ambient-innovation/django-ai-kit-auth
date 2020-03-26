@@ -1,71 +1,65 @@
-import axios from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 import {
   CsrfResponse, MeResponse, PasswordValidationInput, User,
 } from './types';
 
-axios.defaults.withCredentials = true;
+export const makeUrl = (authPath: string, suffix: string) => {
+  const separator = authPath.endsWith('/') ? '' : '/';
 
-export const makeUrl = (apiUrl: string, suffix: string) => {
-  const separator = apiUrl.endsWith('/') ? '' : '/';
-
-  return `${apiUrl}${separator}${suffix}`;
+  return `${authPath}${separator}${suffix}`;
 };
 
-function setCsrfHeader<T extends CsrfResponse>(data: T) {
-  axios.defaults.headers.common['X-CSRFToken'] = data.csrf;
-
-  return data;
-}
-
-/**
- * @description Send a login request to the backend .
- * @param apiUrl - URL to the backend api -- including `/api/v?/`.
- * @param ident - Email or Username of the user.
- * @param password - Password of the user.
- */
 export const loginAPI = <U = User>(
-  apiUrl: string, ident: string, password: string,
+  authPath: string, ident: string, password: string, config: AxiosRequestConfig,
 ) => axios.post<MeResponse<U>>(
-  makeUrl(apiUrl, 'login/'), { ident, password },
-).then(({ data }) => setCsrfHeader(data));
+  makeUrl(authPath, 'login/'), { ident, password }, config,
+).then(({ data }) => data);
 
-export const meAPI = <U = User>(apiUrl: string) => (
-  axios.get<MeResponse<U>>(makeUrl(apiUrl, 'me/'))
-    .then(({ data }) => setCsrfHeader(data))
+
+export const meAPI = <U = User>(authPath: string, config: AxiosRequestConfig) => (
+  axios.get<MeResponse<U>>(makeUrl(authPath, 'me/'), config)
+    .then(({ data }) => data)
 );
 
 
-/**
- * @description Send a logout request to the backend.
- * @param apiUrl - URL to the backend api -- including `/api/v?/`.
- */
 export const logoutAPI = (
-  apiUrl: string,
-) => axios.post<CsrfResponse>(makeUrl(apiUrl, 'logout/'))
-  .then(({ data }) => setCsrfHeader(data));
+  authPath: string, config: AxiosRequestConfig,
+) => axios.post<CsrfResponse>(makeUrl(authPath, 'logout/'), {}, config)
+  .then(({ data }) => data);
 
-export const activateEmailAddressAPI = (apiUrl: string, ident: string, token: string) => (
-  axios.post(makeUrl(apiUrl, 'activate_email/'), { ident, token })
+
+export const activateEmailAddressAPI = (
+  authPath: string, ident: string, token: string, config: AxiosRequestConfig,
+) => (
+  axios.post(
+    makeUrl(authPath, 'activate_email/'), { ident, token }, config,
+  )
 );
+
 
 export const validatePasswordAPI = (
-  apiUrl: string, input: PasswordValidationInput,
+  authPath: string, input: PasswordValidationInput, config: AxiosRequestConfig,
 ) => axios.post<{}>(
-  makeUrl(apiUrl, 'validate_password/'), input,
+  makeUrl(authPath, 'validate_password/'), input, config,
 );
+
 
 export const sendPWResetEmail = (
-  apiUrl: string, email: string,
+  authPath: string, email: string, config: AxiosRequestConfig,
 ) => axios.post(
-  makeUrl(apiUrl, 'send_pw_reset_email/'), { email },
+  makeUrl(authPath, 'send_pw_reset_email/'), { email }, config,
 );
+
 
 export const resetPasswordAPI = (
-  apiUrl: string, ident: string, token: string, password: string,
+  authPath: string, ident: string, token: string, password: string, config: AxiosRequestConfig,
 ) => axios.post(
-  makeUrl(apiUrl, 'reset_password/'), { ident, token, password },
+  makeUrl(authPath, 'reset_password/'), { ident, token, password }, config,
 );
 
+
 export const registerAPI = (
-  apiUrl: string, username: string, email: string, password: string,
-) => axios.post(makeUrl(apiUrl, 'register/'), { username, email, password });
+  authPath: string, username: string, email: string, password: string, config: AxiosRequestConfig,
+) => axios.post(
+  makeUrl(authPath, 'register/'), { username, email, password }, config,
+);

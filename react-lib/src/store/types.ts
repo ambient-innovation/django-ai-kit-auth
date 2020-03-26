@@ -1,3 +1,4 @@
+import { AxiosRequestConfig } from 'axios';
 import { PasswordValidationInput, User } from '../api/types';
 
 export interface UserStoreValue<U = User> {
@@ -13,6 +14,7 @@ export enum LogoutReason {
 export interface AuthFunctionContextValue {
   apiUrl: string;
   csrf: string;
+  axiosRequestConfig: AxiosRequestConfig;
   loading: boolean;
   login: (userIdentifier: string, password: string) => Promise<void>;
   loggedIn: boolean;

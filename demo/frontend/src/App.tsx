@@ -13,6 +13,7 @@ const App: React.FC = () => (
     <ThemeProvider theme={AiKitTheme}>
       <UserStore
         apiUrl="http://localhost:8000/api/v1/"
+        apiAuthPath="auth/"
       >
         <BrowserRouter>
           <Switch>

@@ -13,7 +13,7 @@ auth_patterns = (
             name="validate_password",
         ),
         path(
-            "send_pw_reset_email/",
+            r"send_pw_reset_email/",
             views.InitiatePasswordResetView.as_view(),
             name="send_pw_reset_email",
         ),
