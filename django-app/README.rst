@@ -18,15 +18,19 @@ Standard Django sessions are used for authentification.
 Index
 -----
 
-* Quick Start
-* Api Documentation
-    * Login
-    * Logout
-    * Me
-    * Registration (todo)
-    * Initiate Password Reset (todo)
-    * Password Reset (todo)
-* Error Codes
+* `Quick Start`_
+
+* `Api Documentation`_
+    * `Login`_
+    * `Logout`_
+    * `Me`_
+    * `Registration`_
+    * `Initiate Password Reset`_
+    * `Password Reset`_
+    * `Validate Password`_
+    * `Activate User`_
+
+* `Error Codes`_
 
 
 Quick Start
@@ -154,8 +158,8 @@ dependencies
 to your project since this package does not define models on its own.
 
 
-API
-===
+Api Documentation
+=================
 
 Of course you don't have to use the front and backend components in tandem.
 But if you start to mix and match, you have to speak to the Rest-API directly.
@@ -264,7 +268,147 @@ are not (yet) logged in. In that case, the user property is set to
 ``null``.
 
 
-Error codes
+Registration
+============
+
+POST ``register``
+
+
+visibility: everyone
+
+expects
+
+::
+
+    {
+        "username": <username, only if the USERNAME_REQUIRED option is set>,
+        "email": <email>,
+        "password": <password>,
+    }
+
+
+and answers with status code 201 and
+
+::
+
+    {}
+
+or errors out with status code 400 because fields is missing or the password
+validation fails.
+
+
+Initiate Password Reset
+=======================
+
+POST ``send_pw_reset_email``
+
+visibility: everyone
+
+expects
+
+::
+
+    {
+        "email": <email>,
+    }
+
+
+and answers with status code 200
+
+::
+
+    {}
+
+This endpoint never gives back errors to not give out unnecessary information.
+
+Password Reset
+==============
+
+POST ``reset_password``
+
+
+visibility: everyone
+
+expects
+
+::
+
+    {
+        "ident": <identifer for the user, from the reset link>,
+        "token": <reset token, from the reset link>,
+        "password": <password>,
+    }
+
+
+and answers with status code 200 and
+
+::
+
+    {}
+
+On error, status code 400 is given back and the errors can be missing fields,
+``reset_password_link_invalid`` for invalid identifiers or token or the standard
+invalid password errors.
+
+Validate Password
+=================
+
+POST ``validate_password``
+
+
+visibility: everyone
+
+expects
+
+::
+
+    {
+        "ident": <identifier>,
+        "username": <username>,
+        "email": <email>,
+        "password": <password>,
+    }
+
+you have to supply either ident or both username and email if
+``USERNAME_REQUIRED`` is configured. Otherwise you have to supply either ident
+or email.
+
+
+and answers with status code 200 and
+
+::
+
+    {}
+
+if the password respects all the configured password validators or it errors out
+on status code 400 and gives back the respective error code to indicate what
+rule was violated.
+
+Activate User
+=============
+
+POST ``activate_email``
+
+expects
+
+::
+
+    {
+        "ident": <identifer for the user, from the reset link>,
+        "token": <reset token, from the reset link>,
+    }
+
+
+and answers with status code 200 and
+
+::
+
+    {}
+
+or errors out on status code 400 with the ``activation_link_invalid`` error
+code.
+
+Error Codes
 -----------
 
 The backend never sends user facing error messages, but general error codes.
