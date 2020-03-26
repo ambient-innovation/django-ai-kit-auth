@@ -291,8 +291,7 @@ and answers with status code 201 and
 
 ::
 
-    {
-    }
+    {}
 
 or errors out with status code 400 because fields is missing or the password
 validation fails.
