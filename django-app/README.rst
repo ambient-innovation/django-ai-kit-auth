@@ -7,8 +7,10 @@ work seamlessly with the ai-kit-auth react component.
 It provides routes for login, password validation, password reset, registration
 and account verification.
 
-It includes a services to trigger the account validation and other
-functionality. It works with the standard django and with a custom user model as
+It also handles email notifications on registration and password reset. Look
+at the template section of the settings to configure the email templates.
+
+It works with the standard django and with a custom user model as
 long as its provides an email address.
 
 Standard Django sessions are used for authentification.
