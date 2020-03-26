@@ -46,6 +46,7 @@ const App: React.FC = () => (
     <ThemeProvider theme={DefaultTheme}>
       <UserStore
         apiUrl="http://localhost:8000/api/v1/"
+        apiAuthPath="auth/"
       >
         <BrowserRouter>
             <Switch>
@@ -78,6 +79,9 @@ In order to guard against CSRF attacks, the `UserStore` obtains and provides a c
 you to use.
 You can obtain it from the `useUserStore` hook and add it to each 'unsafe' request (anything
 that is not `OPTIONS`, `GET`, `HEAD` or `TRACE`) as `X-CSRFToken`-header.
+
+If you use `axios`, you can use the `axiosRequestConfig` provided by `useUserStore`, which already
+contains the CSRF token in the correct header.
 
 ### Styling and Material Theme
 
@@ -206,7 +210,10 @@ or perform user actions like login, logout etc.
 
 #### Props
 * `apiUrl`: tells the store, where to send login requests.
-  This should be the url to the django backend of your project.
+  This should be the url to the django backend of your project including `api/v1/` or similar.
+* `apiAuthPath`: The path at which the auth routes are available in the backend.
+  If you included the ai-kit-auth paths as `path(r"api/v1/auth/", "ai_kit_auth.urls"),` in your django
+  app, you must set `apiAuthPath` to `auth/`.
 
 #### Example
 
@@ -219,6 +226,7 @@ import ...
 const App: React.FC = () => (
   <UserStore
     apiUrl="http://localhost:8000/api/v1/"
+    apiAuthPath="auth/"
   >
     <BrowserRouter>
       ...
@@ -241,6 +249,9 @@ a token obtained from the server, used to guard against Cross Site Request Forge
 Whenever you make a `POST`, `DELETE`, `PATCH` or `PUT` request to our backend, you need to
 place this token in the `X-CSRFToken` header of the request.
 Otherwise, the request will be rejected (provided that CSRF is enabled on the backend).
+* `axiosRequestConfig`:
+An object you can pass to axios calls as `config` object. It includes the backend url (`apiUrl`),
+`withCredentials: true` and the CSRF token as header.
 * `loading: boolean`:
 true if a login request has been sent, but the reply has not yet arrived.
 * `login: (userIdentifier: string, password: string) => Promise<void>`: triggers a login request.
@@ -316,6 +327,7 @@ import ...
 const App: React.FC = () => (
   <UserStore
     apiUrl="http://localhost:8000/api/v1/"
+    apiAuthPath="auth/"
   >
     <BrowserRouter>
         <Switch>
@@ -344,6 +356,7 @@ During the check a loading indicator is shown.
 ```typescript jsx
 <UserStore
   apiUrl="http://localhost:8000/api/v1/"
+  apiAuthPath="auth/"
 >
   <BrowserRouter>
     <Switch>
@@ -372,6 +385,7 @@ If there is no referrer, it redirects to the `main page` (default `'/'`).
 ```typescript jsx
 <UserStore
   apiUrl="http://localhost:8000/api/v1/"
+  apiAuthPath="auth/"
 >
   <BrowserRouter>
     <Switch>
@@ -393,6 +407,7 @@ Styled page wrapper for a [LoginForm](#loginform).
 const App: React.FC = () => (
   <UserStore
     apiUrl="http://localhost:8000/api/v1/"
+    apiAuthPath="auth/"
   >
     <LoginView />
   </UserStore>
@@ -418,6 +433,7 @@ Styled page wrapper for a [RegisterForm](#registerform).
 const App: React.FC = () => (
   <UserStore
     apiUrl="http://localhost:8000/api/v1/"
+    apiAuthPath="auth/"
   >
     <RegisterView />
   </UserStore>
@@ -471,6 +487,7 @@ Styled page wrapper for a [ForgotPasswordForm](#forgotpasswordform).
 const App: React.FC = () => (
   <UserStore
     apiUrl="http://localhost:8000/api/v1/"
+    apiAuthPath="auth/"
   >
     <ForgotPasswordView />
   </UserStore>
@@ -495,6 +512,7 @@ Styled page wrapper for a [ResetPasswordForm](#resetpasswordform).
 const App: React.FC = () => (
   <UserStore
     apiUrl="http://localhost:8000/api/v1/"
+    apiAuthPath="auth/"
   >
     <ResetPasswordView />
   </UserStore>
