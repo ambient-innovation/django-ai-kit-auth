@@ -281,15 +281,22 @@ expects
 ::
 
     {
+        "username": <username, only if the USERNAME_REQUIRED option is set>,
+        "email": <email>,
+        "password": <password>,
     }
 
 
-and answers with status code xxx and
+and answers with status code 201 and
 
 ::
 
     {
     }
+
+or errors out with status code 400 because fields is missing or the password
+validation fails.
+
 
 Initiate Password Reset
 =======================
@@ -303,15 +310,17 @@ expects
 ::
 
     {
+        "email": <email>,
     }
 
 
-and answers with status code xxx and
+and answers with status code 200
 
 ::
 
-    {
-    }
+    {}
+
+This endpoint never gives back errors to not give out unnecessary information.
 
 Password Reset
 ==============
@@ -326,15 +335,21 @@ expects
 ::
 
     {
+        "ident": <identifer for the user, from the reset link>,
+        "token": <reset token, from the reset link>,
+        "password": <password>,
     }
 
 
-and answers with status code xxx and
+and answers with status code 200 and
 
 ::
 
-    {
-    }
+    {}
+
+On error, status code 400 is given back and the errors can be missing fields,
+``reset_password_link_invalid`` for invalid identifiers or token or the standard
+invalid password errors.
 
 Validate Password
 =================
@@ -349,15 +364,26 @@ expects
 ::
 
     {
+        "ident": <identifier>,
+        "username": <username>,
+        "email": <email>,
+        "password": <password>,
     }
 
+you have to supply either ident or both username and email if
+``USERNAME_REQUIRED`` is configured. Otherwise you have to supply either ident
+or email.
 
-and answers with status code xxx and
+
+and answers with status code 200 and
 
 ::
 
-    {
-    }
+    {}
+
+if the password respects all the configured password validators or it errors out
+on status code 400 and gives back the respective error code to indicate what
+rule was violated.
 
 Activate User
 =============
@@ -369,15 +395,19 @@ expects
 ::
 
     {
+        "ident": <identifer for the user, from the reset link>,
+        "token": <reset token, from the reset link>,
     }
 
 
-and answers with status code xxx and
+and answers with status code 200 and
 
 ::
 
-    {
-    }
+    {}
+
+or errors out on status code 400 with the ``activation_link_invalid`` error
+code.
 
 Error Codes
 -----------
