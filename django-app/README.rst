@@ -233,6 +233,7 @@ expects
 and answers with status code 200 and
 
 ::
+
     {
         csrf: <csrf token>
     }
