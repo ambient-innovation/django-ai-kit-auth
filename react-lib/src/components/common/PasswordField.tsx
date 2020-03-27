@@ -30,13 +30,13 @@ export const PasswordField: FC<PasswordFieldProps> = (
       className={className}
       fullWidth
       id={id || 'login_password'}
-      label={label || strings.LoginForm.Password}
+      label={label || strings.Common.Password}
       variant="outlined"
       value={password}
       type={showPassword ? 'text' : 'password'}
       helperText={errorMessage.password ? errorMessage.password.map((message: string) => (
         `${fieldErrors[message]} `)) : ''}
-      error={!!errorMessage.password}
+      error={errorMessage.password && errorMessage.password.length > 0}
       onChange={(event) => {
         if (onChange) {
           onChange(event.target.value);

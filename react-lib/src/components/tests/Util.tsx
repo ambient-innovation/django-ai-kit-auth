@@ -8,7 +8,7 @@ import { UserContext } from '../..';
 import { User } from '../../api/types';
 import { AuthFunctionContextValue, LogoutReason, UserStoreValue } from '../../store/types';
 
-const successPromise = () => new Promise<void>((r) => r());
+export const dontResolvePromise = () => new Promise<void>(() => null);
 
 export const renderWithRouterAndUser = (
   element: JSX.Element,
@@ -26,16 +26,22 @@ export const renderWithRouterAndUser = (
         <AuthFunctionContext.Provider
           value={{
             apiUrl: 'https://example.com/api/v1',
-            csrf: '',
+            csrf: '1234',
+            axiosRequestConfig: {
+              headers: {
+                common: { 'X-CSRFToken': context?.csrf || '1234' },
+              },
+            },
             loading: false,
-            login: successPromise,
+            login: dontResolvePromise,
             loggedIn: !!user,
-            logout: successPromise,
+            logout: dontResolvePromise,
             justLoggedOut: LogoutReason.NONE,
-            activateEmailAddress: successPromise,
-            validatePassword: successPromise,
-            requestPasswordReset: successPromise,
-            resetPassword: successPromise,
+            activateEmailAddress: dontResolvePromise,
+            validatePassword: dontResolvePromise,
+            requestPasswordReset: dontResolvePromise,
+            resetPassword: dontResolvePromise,
+            register: dontResolvePromise,
             ...context,
           }}
         >

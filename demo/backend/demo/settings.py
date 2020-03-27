@@ -60,7 +60,7 @@ ROOT_URLCONF = "demo.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [os.path.join(BASE_DIR, "demo/templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -136,7 +136,9 @@ CSRF_TRUSTED_ORIGINS = [
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 AI_KIT_AUTH = {
-    "FRONTEND": {
-        "URL": "http://localhost:3000",
+    "FRONTEND": {"URL": "http://localhost:3000",},
+    "EMAIL_TEMPLATES": {
+        "RESET_PASSWORD": {"BODY_HTML": "my_custom_reset_password_body.html",},
     },
+    "USERNAME_REQUIRED": False,
 }

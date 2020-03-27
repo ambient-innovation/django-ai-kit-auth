@@ -29,6 +29,11 @@ DEFAULTS = {
             "BODY_PLAINTEXT": "ai_kit_auth/reset_password_body.txt",
             "BODY_HTML": "ai_kit_auth/reset_password_body.html",
         },
+        "SET_PASSWORD": {
+            "TITLE": "ai_kit_auth/reset_password_title.txt",
+            "BODY_PLAINTEXT": "ai_kit_auth/reset_password_body.txt",
+            "BODY_HTML": "ai_kit_auth/reset_password_body.html",
+        },
     },
     "USERNAME_REQUIRED": False,
     "FRONTEND": {

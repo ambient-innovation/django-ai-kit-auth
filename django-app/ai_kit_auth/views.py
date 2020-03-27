@@ -49,7 +49,7 @@ class LogoutView(views.APIView):
         return Response({"csrf": csrf_token}, status=status.HTTP_200_OK)
 
 
-class Me(generics.GenericAPIView):
+class MeView(generics.GenericAPIView):
     """
     Barebones user model detail view
     """
@@ -70,6 +70,18 @@ class Me(generics.GenericAPIView):
         return Response(
             {"user": user_data, "csrf": csrf_token,}, status=status.HTTP_200_OK
         )
+
+
+class RegistrationView(generics.GenericAPIView):
+
+    permission_classes = (AllowAny,)
+
+    serializer_class = serializers.RegistrationSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response({}, status=status.HTTP_201_CREATED)
 
 
 class ValidatePassword(views.APIView):
@@ -94,8 +106,10 @@ class ActivateUser(views.APIView):
 
     permission_classes = (AllowAny,)
 
-    def post(self, request, ident, token, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         try:
+            ident = request.data["ident"]
+            token = request.data["token"]
             pk = services.scramble_id(ident)
             user = UserModel.objects.get(pk=pk)
             assert tokens.PasswordResetTokenGenerator().check_token(user, token)
@@ -111,7 +125,6 @@ class ActivateUser(views.APIView):
             )
         user.is_active = True
         user.save()
-        login(request, user)
         return Response(status=status.HTTP_200_OK)
 
 

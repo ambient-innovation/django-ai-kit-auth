@@ -2,11 +2,14 @@
   "Common": {
     "ok": "OK",
     "cancel": "Cancel",
+    "Password": "Password",
     "FieldErrors": {
       "blank": "This field may not be blank.",
+      "username_unique": "This username has already been taken.",
+      "email_unique": "This email is already in use.",
       "password_too_short": "Password too short, it should contain at least 8 characters.",
-      "password_too_similar": "Password too similar to your username or email address",
-      "password_too_common": "The password you've entered is too common and thus unsafe. Please try to think of something else",
+      "password_too_similar": "Password too similar to your username or email address.",
+      "password_too_common": "The password you've entered is too common and thus unsafe. Please try to think of something else.",
       "passwords_not_identical": "Both passwords entered are not identical."
     },
     "NonFieldErrors": {
@@ -21,11 +24,11 @@
     "Username": "Username",
     "Email": "Email",
     "UsernameOrEmail": "Username or Email",
-    "Password": "Password",
     "Login": "Login",
     "LogoutSuccess": "You have been logged out successfully.",
     "AuthLogoutNotification": "Please login before you continue.",
-    "ForgotPassword": "Forgot your password?"
+    "ForgotPassword": "Forgot your password?",
+    "SignUp": "No account yet? Sign up here!"
   },
   "ResetPassword": {
     "ResetPassword": "Reset Password",
@@ -33,7 +36,9 @@
     "RepeatNewPassword": "Repeat new password",
     "ButtonText": "Save password",
     "SuccessText": "Your password has been changed successfully. Please continue to login.",
-    "SuccessButtonText": "Continue to Login"
+    "SuccessButtonText": "Continue to Login",
+    "InvalidLink": "This link is no longer valid! Click on the button below to get a new link.",
+    "InvalidLinkButtonText": "Forgot Password"
   },
   "ForgotPassword": {
     "ForgotPassword": "Forgot Password",
@@ -47,6 +52,20 @@
     "Description": "Check your inbox. If the email address you provided matches one in our database, you will get an email in a few minutes containing a link to recover your password.",
     "ContinueToLogin": "Continue to Login",
     "RequestAgain": "Resend email"
+  },
+  "RegisterForm": {
+    "Title": "Registration",
+    "Description": "Please choose a username and password and enter them alongside your email address below.",
+    "Username": "Username",
+    "Email": "Email",
+    "Password": "Password",
+    "Register": "Register",
+    "BackToLogin": "Already have an account? Back to login",
+    "NonFieldErrors": {
+      "general": "An error has occurred during the registration process."
+    },
+    "SuccessTitle": "Email Sent",
+    "SuccessText": "Check you inbox. An email containing an activation link was sent. After activating your account you will be able to login."
   },
   "EmailActivation": {
     "SuccessTitle": "Your email address has been activated successfully",

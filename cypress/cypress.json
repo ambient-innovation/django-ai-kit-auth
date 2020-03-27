@@ -6,8 +6,14 @@
   "apiUrl": "http://127.0.0.1:8000/api/v1/",
   "users": {
     "default": {
-      "ident": "testuser",
+      "username": "testuser",
       "password": "testuserpassword"
+    },
+    "root": {
+      "username": "root",
+      "password": "root",
+      "email": "root@example.com",
+      "ident": "561465857"
     }
   }
 }
