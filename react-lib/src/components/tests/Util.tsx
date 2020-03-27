@@ -27,6 +27,11 @@ export const renderWithRouterAndUser = (
           value={{
             apiUrl: 'https://example.com/api/v1',
             csrf: '1234',
+            axiosRequestConfig: {
+              headers: {
+                common: { 'X-CSRFToken': context?.csrf || '1234' },
+              },
+            },
             loading: false,
             login: dontResolvePromise,
             loggedIn: !!user,

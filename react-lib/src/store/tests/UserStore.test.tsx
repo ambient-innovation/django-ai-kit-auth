@@ -62,7 +62,7 @@ const StoreDisplay: FC = () => {
 };
 
 const renderStoreValue = () => render(
-  <UserStore apiUrl="">
+  <UserStore apiUrl="" apiAuthPath="">
     <StoreDisplay />
   </UserStore>,
 );

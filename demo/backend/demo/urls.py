@@ -20,6 +20,6 @@ from .views import unauthorized, PostTest
 urlpatterns = [
     path("admin/", admin.site.urls),
     path(r"api/v1/unauthorized/", unauthorized),
-    path("api/v1/", include("ai_kit_auth.urls")),
+    path(r"api/v1/auth/", include("ai_kit_auth.urls")),
     path(r"api/v1/test/", PostTest.as_view()),
 ]
