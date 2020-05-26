@@ -4,7 +4,7 @@ import { CssBaseline, ThemeProvider } from '@material-ui/core';
 import { DefaultTheme as AiKitTheme } from 'ai-kit-common';
 import {
   UserStore, ProtectedRoute, makeAuthRoutes,
-} from './configuredAuth';
+} from './ConfiguredAuth';
 import { Dashboard } from './Dashboard';
 
 const App: React.FC = () => (

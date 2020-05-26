@@ -69,10 +69,10 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 type IdentifierType = keyof typeof Identifier;
 
 export const makeLoginForm: (config: FullConfig) => { LoginForm: FC; LoginView: FC } = ({
+  components: { backgroundImage },
   paths: { forgotPassword, register },
   userIdentifier,
   disableUserRegistration,
-  backgroundImage,
 }) => {
   const LoginForm = () => {
     const classes = useStyles();

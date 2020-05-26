@@ -43,11 +43,11 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 export const makeActivationCard: (config: FullConfig) => {
   ActivationCard: FC; ActivationView: FC;
 } = ({
+  components: { backgroundImage },
   paths: {
     login,
     mainPage,
   },
-  backgroundImage,
 }) => {
   const ActivationCard = () => {
     const classes = useStyles();

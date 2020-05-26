@@ -13,6 +13,7 @@ import { ErrorCard } from './components/ErrorCard';
 import { User } from './api/types';
 import { makeResetPasswordForm } from './components/ResetPassword';
 import { makeRegisterForm } from './components/Register';
+import { DefaultBackgroundImage } from './assets/DefaultBackgroundImage';
 
 export enum Identifier {
   Username = 1,
@@ -34,10 +35,10 @@ export const defaultConfig = {
   userIdentifier: Identifier.UsernameOrEmail, // what should the user type in the login screen?
   disableUserRegistration: false, // setting this to true will remove the register path completely
   components: {
+    backgroundImage: () => <DefaultBackgroundImage />,
     loadingIndicator: () => <CircularProgress />,
     // is shown while user info is retrieved from server
   },
-  backgroundImage: '',
 };
 
 export type FullConfig = typeof defaultConfig;

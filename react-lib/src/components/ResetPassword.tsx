@@ -60,9 +60,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 export const makeResetPasswordForm: (config: FullConfig) => {
   ResetPasswordForm: FC; ResetPasswordView: FC;
 } = ({
-  components: { loadingIndicator },
+  components: { loadingIndicator, backgroundImage },
   paths: { login, forgotPassword },
-  backgroundImage,
 }) => {
   const ResetPasswordForm = () => {
     const classes = useStyles();

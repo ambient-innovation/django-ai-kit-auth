@@ -42,7 +42,7 @@ export const makeActivateEmailAddress: (
         <ErrorView
           title={strings.EmailActivation.ErrorTitle}
           message={Errors[error] || Errors.general}
-          backgroundImage={config.backgroundImage}
+          backgroundImage={config.components.backgroundImage}
         />
       );
     }
