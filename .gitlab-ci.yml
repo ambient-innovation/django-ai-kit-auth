@@ -7,6 +7,7 @@ variables:
   IMAGE_TAG_BACKEND: $CI_REGISTRY_IMAGE/demo/backend:$CI_COMMIT_REF_SLUG
   IMAGE_TAG_FRONTEND: $CI_REGISTRY_IMAGE/demo/frontend:$CI_COMMIT_REF_SLUG
   DOCKER_HOST: tcp://localhost:2375
+  DOCKER_API_VERSION: "1.39"
 
 stages:
   - lint
