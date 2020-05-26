@@ -62,6 +62,7 @@ export const makeResetPasswordForm: (config: FullConfig) => {
 } = ({
   components: { loadingIndicator },
   paths: { login, forgotPassword },
+  backgroundImage,
 }) => {
   const ResetPasswordForm = () => {
     const classes = useStyles();
@@ -235,7 +236,7 @@ export const makeResetPasswordForm: (config: FullConfig) => {
   };
 
   const ResetPasswordView = () => (
-    <AuthView>
+    <AuthView backgroundImage={backgroundImage}>
       <ResetPasswordForm />
     </AuthView>
   );

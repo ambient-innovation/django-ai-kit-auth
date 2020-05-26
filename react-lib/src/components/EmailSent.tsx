@@ -55,6 +55,7 @@ export const makeEmailSentCard: (config: FullConfig) => {
     login,
     forgotPassword,
   },
+  backgroundImage,
 }) => {
   const EmailSentCard: FC = () => {
     const classes = useStyles();
@@ -104,7 +105,7 @@ export const makeEmailSentCard: (config: FullConfig) => {
   };
 
   const EmailSentView: FC = () => (
-    <AuthView>
+    <AuthView backgroundImage={backgroundImage}>
       <EmailSentCard />
     </AuthView>
   );

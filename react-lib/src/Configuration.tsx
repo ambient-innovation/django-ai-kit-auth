@@ -37,6 +37,7 @@ export const defaultConfig = {
     loadingIndicator: () => <CircularProgress />,
     // is shown while user info is retrieved from server
   },
+  backgroundImage: '',
 };
 
 export type FullConfig = typeof defaultConfig;

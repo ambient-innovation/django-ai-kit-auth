@@ -72,6 +72,7 @@ export const makeLoginForm: (config: FullConfig) => { LoginForm: FC; LoginView: 
   paths: { forgotPassword, register },
   userIdentifier,
   disableUserRegistration,
+  backgroundImage,
 }) => {
   const LoginForm = () => {
     const classes = useStyles();
@@ -199,7 +200,7 @@ export const makeLoginForm: (config: FullConfig) => { LoginForm: FC; LoginView: 
   };
 
   const LoginView = () => (
-    <AuthView>
+    <AuthView backgroundImage={backgroundImage}>
       <LoginForm />
     </AuthView>
   );
