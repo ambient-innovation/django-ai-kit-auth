@@ -3,15 +3,14 @@ import React, { FC } from 'react';
 import { createStyles, Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { ErrorCard, ErrorCardProps } from './ErrorCard';
-import { DefaultBackgroundImage } from '../assets/DefaultBackgroundImage';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
-  loginView: {
+  authView: {
     [theme.breakpoints.up('lg')]: {
       height: '100vh',
     },
   },
-  loginFormContainer: {
+  formContainer: {
     justifyContent: 'center',
     [theme.breakpoints.up('lg')]: {
       alignItems: 'center',
@@ -28,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
       paddingRight: 17,
     },
   },
-  loginSideBanner: {
+  sideBanner: {
     [theme.breakpoints.down('md')]: {
       height: '37.5vh',
     },
@@ -46,14 +45,14 @@ export const AuthView: FC<AuthViewProps> = ({ children, backgroundImage }) => {
   const classes = useStyles();
 
   return (
-    <Grid container className={classes.loginView}>
-      <Grid item xs={12} lg={4} className={classes.loginSideBanner}>
+    <Grid container className={classes.authView}>
+      <Grid item xs={12} lg={4} className={classes.sideBanner}>
         {backgroundImage()}
       </Grid>
 
       <Grid item lg={2} />
 
-      <Grid container item xs={12} lg={4} className={classes.loginFormContainer}>
+      <Grid container item xs={12} lg={4} className={classes.formContainer}>
         {
           children
         }

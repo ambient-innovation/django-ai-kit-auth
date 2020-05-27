@@ -8,7 +8,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import CheckIcon from '@material-ui/icons/Check';
 import { strings } from '../internationalization';
 import { FullConfig } from '../Configuration';
-import { AuthView, ErrorView } from './AuthView';
+import { AuthView } from './AuthView';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   PaperCard: {
