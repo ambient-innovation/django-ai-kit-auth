@@ -50,6 +50,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 export const makeEmailSentCard: (config: FullConfig) => {
   EmailSentCard: FC; EmailSentView: FC;
 } = ({
+  components: { backgroundImage },
   paths: {
     mainPage,
     login,
@@ -104,7 +105,7 @@ export const makeEmailSentCard: (config: FullConfig) => {
   };
 
   const EmailSentView: FC = () => (
-    <AuthView>
+    <AuthView backgroundImage={backgroundImage}>
       <EmailSentCard />
     </AuthView>
   );

@@ -49,6 +49,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 export const makeForgotPasswordForm: (config: FullConfig) => {
   ForgotPasswordForm: FC; ForgotPasswordView: FC;
 } = ({
+  components: { backgroundImage },
   paths: { login, emailSent },
 }) => {
   const ForgotPasswordForm = () => {
@@ -125,7 +126,7 @@ export const makeForgotPasswordForm: (config: FullConfig) => {
   };
 
   const ForgotPasswordView = () => (
-    <AuthView>
+    <AuthView backgroundImage={backgroundImage}>
       <ForgotPasswordForm />
     </AuthView>
   );

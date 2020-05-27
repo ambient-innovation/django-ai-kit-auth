@@ -96,7 +96,7 @@ Ofcourse, you are also free to use whatever custom Material Theme you wish.
 AI-KIT: Authentication provides the following components and functions:
 * Configuration
     * [configureAuth](#configureauth)
-    * [defautlConfig](#defaultconfig)
+    * [defaultConfig](#defaultconfig)
     * [Identifier](#identifier)
 * UserStore
     * [UserStore](#userstore)
@@ -182,11 +182,14 @@ export const defaultConfig = {
   userIdentifier: Identifier.UsernameOrEmail, // what should the user type in the login screen?
   disableUserRegistration: false, // setting this to true will remove the register path completely
   components: {
+    backgroundImage: () => <MySpecialBackground />,
     loadingIndicator: () => <CircularProgress />,
     // is shown while user info is retrieved from server
   },
 };
 ```
+
+The `backgroundImage` is used in all the views that are wrapped in `AuthView`.
 
 The `CircularProgress` component is imported from [Material-UI](https://material-ui.com/api/circular-progress/).
 
