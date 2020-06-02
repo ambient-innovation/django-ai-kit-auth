@@ -7,7 +7,7 @@ import Link from '@material-ui/core/Link';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { FC, useContext, useState } from 'react';
 import { useHistory, Link as RouterLink } from 'react-router-dom';
-import { StringsProps } from '../internationalization';
+import allStrings, { StringsProps } from '../internationalization';
 import { AuthFunctionContext } from '../store/UserStore';
 import { FullConfig } from '../Configuration';
 import { AuthView } from './AuthView';
@@ -52,8 +52,11 @@ export const makeForgotPasswordForm: (config: FullConfig) => {
 } = ({
   components: { backgroundImage },
   paths: { login, emailSent },
+  defaultLanguage,
 }) => {
-  const ForgotPasswordForm: FC<StringsProps> = ({ strings }) => {
+  const ForgotPasswordForm: FC<StringsProps> = ({
+    strings = allStrings[defaultLanguage],
+  }) => {
     const classes = useStyles();
     const [email, setEmail] = useState('');
     const { requestPasswordReset } = useContext(AuthFunctionContext);

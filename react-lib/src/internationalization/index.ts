@@ -10,7 +10,7 @@ export type Strings = typeof en;
 const typedStrings: { [language in Language]: Strings } = strings;
 
 export interface StringsProps {
-  strings: Strings;
+  strings?: Strings;
 }
 
 export default typedStrings;

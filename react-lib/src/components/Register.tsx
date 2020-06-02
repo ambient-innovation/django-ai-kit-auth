@@ -13,7 +13,7 @@ import { AxiosError } from 'axios';
 import { useDebouncedCallback } from 'use-debounce';
 import { AuthFunctionContext } from '../store/UserStore';
 import { AuthView } from './AuthView';
-import { StringsProps } from '../internationalization';
+import allStrings, { StringsProps } from '../internationalization';
 import { ErrorMessage, ObjectOfStrings } from '../api/types';
 import { FullConfig } from '../Configuration';
 import { PasswordField } from './common/PasswordField';
@@ -74,8 +74,11 @@ export const makeRegisterForm: (config: FullConfig) => {
 } = ({
   components: { backgroundImage },
   paths: { login },
+  defaultLanguage,
 }) => {
-  const RegisterForm: FC<StringsProps> = ({ strings }) => {
+  const RegisterForm: FC<StringsProps> = ({
+    strings = allStrings[defaultLanguage],
+  }) => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');

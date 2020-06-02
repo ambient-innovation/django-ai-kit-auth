@@ -14,7 +14,7 @@ import { User } from './api/types';
 import { makeResetPasswordForm } from './components/ResetPassword';
 import { makeRegisterForm } from './components/Register';
 import { DefaultBackgroundImage } from './assets/DefaultBackgroundImage';
-import intStrings, { Language } from './internationalization';
+import allStrings, { Language } from './internationalization';
 
 export enum Identifier {
   Username = 1,
@@ -109,7 +109,7 @@ export const configureAuth = <UserType extends unknown = User>(config: Configura
   const makeAuthRoutes: (language?: Language) => JSX.Element[] = (
     language = fullConfig.defaultLanguage,
   ) => {
-    const strings = intStrings[language] ?? intStrings[fullConfig.defaultLanguage];
+    const strings = allStrings[language];
 
     return [
       <Route

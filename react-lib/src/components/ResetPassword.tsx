@@ -10,7 +10,7 @@ import { useDebouncedCallback } from 'use-debounce';
 import { AuthFunctionContext } from '../store/UserStore';
 import { FullConfig } from '../Configuration';
 import { AuthView } from './AuthView';
-import { StringsProps } from '../internationalization';
+import allStrings, { StringsProps } from '../internationalization';
 import { PasswordField } from './common/PasswordField';
 import { ErrorMessage } from '../api/types';
 
@@ -63,8 +63,11 @@ export const makeResetPasswordForm: (config: FullConfig) => {
 } = ({
   components: { loadingIndicator, backgroundImage },
   paths: { login, forgotPassword },
+  defaultLanguage,
 }) => {
-  const ResetPasswordForm: FC<StringsProps> = ({ strings }) => {
+  const ResetPasswordForm: FC<StringsProps> = ({
+    strings = allStrings[defaultLanguage],
+  }) => {
     const classes = useStyles();
     const [password, setPassword] = useState('');
     const [password2, setPassword2] = useState('');
@@ -183,7 +186,9 @@ export const makeResetPasswordForm: (config: FullConfig) => {
     );
   };
 
-  const SuccessView: FC<StringsProps> = ({ strings }) => {
+  const SuccessView: FC<StringsProps> = ({
+    strings = allStrings[defaultLanguage],
+  }) => {
     const classes = useStyles();
 
     return (
@@ -210,7 +215,9 @@ export const makeResetPasswordForm: (config: FullConfig) => {
     );
   };
 
-  const InvalidLinkView: FC<StringsProps> = ({ strings }) => {
+  const InvalidLinkView: FC<StringsProps> = ({
+    strings = allStrings[defaultLanguage],
+  }) => {
     const classes = useStyles();
 
     return (

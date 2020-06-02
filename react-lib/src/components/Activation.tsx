@@ -6,7 +6,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import CheckIcon from '@material-ui/icons/Check';
-import { StringsProps } from '../internationalization';
+import allStrings, { StringsProps } from '../internationalization';
 import { FullConfig } from '../Configuration';
 import { AuthView } from './AuthView';
 
@@ -48,8 +48,11 @@ export const makeActivationCard: (config: FullConfig) => {
     login,
     mainPage,
   },
+  defaultLanguage,
 }) => {
-  const ActivationCard: FC<StringsProps> = ({ strings }) => {
+  const ActivationCard: FC<StringsProps> = ({
+    strings = allStrings[defaultLanguage],
+  }) => {
     const classes = useStyles();
     const history = useHistory();
 

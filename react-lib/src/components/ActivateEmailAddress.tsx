@@ -5,7 +5,7 @@ import { AxiosError } from 'axios';
 import { useParams } from 'react-router-dom';
 import { AuthFunctionContext } from '../store/UserStore';
 import { ErrorView } from './AuthView';
-import { StringsProps, Strings } from '../internationalization';
+import allStrings, { StringsProps, Strings } from '../internationalization';
 import { FullConfig } from '../Configuration';
 import { makeActivationCard } from './Activation';
 
@@ -20,7 +20,9 @@ export const makeActivateEmailAddress: (
 } = (config) => {
   const { ActivationView, ActivationCard } = makeActivationCard(config);
 
-  const ActivateEmailAddress: FC<StringsProps> = ({ strings }) => {
+  const ActivateEmailAddress: FC<StringsProps> = ({
+    strings = allStrings[config.defaultLanguage],
+  }) => {
     const { ident, token } = useParams();
     const { activateEmailAddress, csrf } = useContext(AuthFunctionContext);
     const [error, setError] = useState<Errortype|undefined>(undefined);

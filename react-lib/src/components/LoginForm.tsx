@@ -12,7 +12,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import { AxiosError } from 'axios';
 import { AuthFunctionContext } from '../store/UserStore';
 import { LogoutReason } from '../store/types';
-import { StringsProps } from '../internationalization';
+import allStrings, { StringsProps } from '../internationalization';
 import { ErrorMessage, MetaDict, ObjectOfStrings } from '../api/types';
 import { FullConfig, Identifier } from '../Configuration';
 import { AuthView } from './AuthView';
@@ -73,10 +73,13 @@ export const makeLoginForm: (config: FullConfig) => {
 } = ({
   components: { backgroundImage },
   paths: { forgotPassword, register },
+  defaultLanguage,
   userIdentifier,
   disableUserRegistration,
 }) => {
-  const LoginForm: FC<StringsProps> = ({ strings }) => {
+  const LoginForm: FC<StringsProps> = ({
+    strings = allStrings[defaultLanguage],
+  }) => {
     const classes = useStyles();
     const { loading, login, justLoggedOut } = useContext(AuthFunctionContext);
     const [ident, setIdent] = useState('');

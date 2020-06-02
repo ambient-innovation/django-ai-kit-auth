@@ -7,7 +7,7 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import Link from '@material-ui/core/Link';
 import { FullConfig } from '../Configuration';
-import { StringsProps } from '../internationalization';
+import allStrings, { StringsProps } from '../internationalization';
 import { AuthView } from './AuthView';
 import { MailSvg } from '../assets/MailSvg';
 
@@ -57,8 +57,11 @@ export const makeEmailSentCard: (config: FullConfig) => {
     login,
     forgotPassword,
   },
+  defaultLanguage,
 }) => {
-  const EmailSentCard: FC<StringsProps> = ({ strings }) => {
+  const EmailSentCard: FC<StringsProps> = ({
+    strings = allStrings[defaultLanguage],
+  }) => {
     const classes = useStyles();
     const history = useHistory();
 
