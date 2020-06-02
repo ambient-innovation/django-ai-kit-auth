@@ -13,14 +13,11 @@ import { AxiosError } from 'axios';
 import { useDebouncedCallback } from 'use-debounce';
 import { AuthFunctionContext } from '../store/UserStore';
 import { AuthView } from './AuthView';
-import { strings } from '../internationalization';
+import { StringsProps } from '../internationalization';
 import { ErrorMessage, ObjectOfStrings } from '../api/types';
 import { FullConfig } from '../Configuration';
 import { PasswordField } from './common/PasswordField';
 import { MailSvg } from '../assets/MailSvg';
-
-const fieldErrors: ObjectOfStrings = strings.Common.FieldErrors;
-const nonFieldErrors: ObjectOfStrings = strings.RegisterForm.NonFieldErrors;
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
@@ -72,12 +69,13 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 export const makeRegisterForm: (config: FullConfig) => {
-  RegisterForm: FC; RegisterView: FC;
+  RegisterForm: FC<StringsProps>;
+  RegisterView: FC<StringsProps>;
 } = ({
   components: { backgroundImage },
   paths: { login },
 }) => {
-  const RegisterForm: FC = () => {
+  const RegisterForm: FC<StringsProps> = ({ strings }) => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -86,6 +84,9 @@ export const makeRegisterForm: (config: FullConfig) => {
     const [success, setSuccess] = useState(false);
 
     const { validatePassword, register } = useContext(AuthFunctionContext);
+
+    const fieldErrors: ObjectOfStrings = strings.Common.FieldErrors;
+    const nonFieldErrors: ObjectOfStrings = strings.RegisterForm.NonFieldErrors;
 
     const classes = useStyles();
 
@@ -121,13 +122,15 @@ export const makeRegisterForm: (config: FullConfig) => {
             className={classes.title}
             variant="h3"
           >
-            {success ? strings.RegisterForm.SuccessTitle : strings.RegisterForm.Title}
+            {success ? strings.RegisterForm.SuccessTitle
+              : strings.RegisterForm.Title}
           </Typography>
 
           <Typography
             className={classes.inputField}
           >
-            {success ? strings.RegisterForm.SuccessText : strings.RegisterForm.Description}
+            {success ? strings.RegisterForm.SuccessText
+              : strings.RegisterForm.Description}
           </Typography>
 
           { !success && (
@@ -190,6 +193,7 @@ export const makeRegisterForm: (config: FullConfig) => {
               label={strings.RegisterForm.Password}
               errorMessage={errors}
               onChange={setAndValidatePassword}
+              strings={strings}
             />
             {
               errors.non_field_errors && (
@@ -236,9 +240,9 @@ export const makeRegisterForm: (config: FullConfig) => {
     );
   };
 
-  const RegisterView: FC = () => (
+  const RegisterView: FC<StringsProps> = (props) => (
     <AuthView backgroundImage={backgroundImage}>
-      <RegisterForm />
+      <RegisterForm {...props} />
     </AuthView>
   );
 

@@ -5,19 +5,18 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import React, { FC, useContext, useState } from 'react';
+import React, {
+  FC, useContext, useMemo, useState,
+} from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { AxiosError } from 'axios';
 import { AuthFunctionContext } from '../store/UserStore';
 import { LogoutReason } from '../store/types';
-import { strings } from '../internationalization';
+import { StringsProps } from '../internationalization';
 import { ErrorMessage, MetaDict, ObjectOfStrings } from '../api/types';
 import { FullConfig, Identifier } from '../Configuration';
 import { AuthView } from './AuthView';
 import { PasswordField } from './common/PasswordField';
-
-const fieldErrors: ObjectOfStrings = strings.Common.FieldErrors;
-const nonFieldErrors: MetaDict = strings.Common.NonFieldErrors;
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
@@ -68,18 +67,30 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
 type IdentifierType = keyof typeof Identifier;
 
-export const makeLoginForm: (config: FullConfig) => { LoginForm: FC; LoginView: FC } = ({
+export const makeLoginForm: (config: FullConfig) => {
+  LoginForm: FC<StringsProps>;
+  LoginView: FC<StringsProps>;
+} = ({
   components: { backgroundImage },
   paths: { forgotPassword, register },
   userIdentifier,
   disableUserRegistration,
 }) => {
-  const LoginForm = () => {
+  const LoginForm: FC<StringsProps> = ({ strings }) => {
     const classes = useStyles();
     const { loading, login, justLoggedOut } = useContext(AuthFunctionContext);
     const [ident, setIdent] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState<ErrorMessage>({});
+
+    const fieldErrors: ObjectOfStrings = useMemo(
+      () => strings.Common.FieldErrors,
+      [strings],
+    );
+    const nonFieldErrors: MetaDict = useMemo(
+      () => strings.Common.NonFieldErrors,
+      [strings],
+    );
 
     return (
       <div className={classes.root}>
@@ -139,6 +150,7 @@ export const makeLoginForm: (config: FullConfig) => { LoginForm: FC; LoginView: 
               password={password}
               onChange={setPassword}
               errorMessage={errorMessage}
+              strings={strings}
             />
 
             {
@@ -199,9 +211,9 @@ export const makeLoginForm: (config: FullConfig) => { LoginForm: FC; LoginView: 
     );
   };
 
-  const LoginView = () => (
+  const LoginView: FC<StringsProps> = (props) => (
     <AuthView backgroundImage={backgroundImage}>
-      <LoginForm />
+      <LoginForm {...props} />
     </AuthView>
   );
 

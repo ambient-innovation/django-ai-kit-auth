@@ -5,23 +5,25 @@ import { AxiosError } from 'axios';
 import { useParams } from 'react-router-dom';
 import { AuthFunctionContext } from '../store/UserStore';
 import { ErrorView } from './AuthView';
-import { strings } from '../internationalization';
+import { StringsProps, Strings } from '../internationalization';
 import { FullConfig } from '../Configuration';
 import { makeActivationCard } from './Activation';
 
-const Errors = strings.EmailActivation.Errors as { [key: string]: string };
+type Errortype = keyof Strings['EmailActivation']['Errors'];
 
 export const makeActivateEmailAddress: (
   config: FullConfig,
 ) => {
-  ActivateEmailAddress: FC; ActivationView: FC; ActivationCard: FC;
+  ActivateEmailAddress: FC<StringsProps>;
+  ActivationView: FC<StringsProps>;
+  ActivationCard: FC<StringsProps>;
 } = (config) => {
   const { ActivationView, ActivationCard } = makeActivationCard(config);
 
-  const ActivateEmailAddress = () => {
+  const ActivateEmailAddress: FC<StringsProps> = ({ strings }) => {
     const { ident, token } = useParams();
     const { activateEmailAddress, csrf } = useContext(AuthFunctionContext);
-    const [error, setError] = useState<string|undefined>(undefined);
+    const [error, setError] = useState<Errortype|undefined>(undefined);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -41,13 +43,14 @@ export const makeActivateEmailAddress: (
       return (
         <ErrorView
           title={strings.EmailActivation.ErrorTitle}
-          message={Errors[error] || Errors.general}
+          message={strings.EmailActivation.Errors[error]
+            || strings.EmailActivation.Errors.general}
           backgroundImage={config.components.backgroundImage}
         />
       );
     }
 
-    return <ActivationView />;
+    return <ActivationView strings={strings} />;
   };
 
   return { ActivateEmailAddress, ActivationCard, ActivationView };

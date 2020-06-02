@@ -6,7 +6,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import CheckIcon from '@material-ui/icons/Check';
-import { strings } from '../internationalization';
+import { StringsProps } from '../internationalization';
 import { FullConfig } from '../Configuration';
 import { AuthView } from './AuthView';
 
@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 export const makeActivationCard: (config: FullConfig) => {
-  ActivationCard: FC; ActivationView: FC;
+  ActivationCard: FC<StringsProps>; ActivationView: FC<StringsProps>;
 } = ({
   components: { backgroundImage },
   paths: {
@@ -49,7 +49,7 @@ export const makeActivationCard: (config: FullConfig) => {
     mainPage,
   },
 }) => {
-  const ActivationCard = () => {
+  const ActivationCard: FC<StringsProps> = ({ strings }) => {
     const classes = useStyles();
     const history = useHistory();
 
@@ -82,9 +82,9 @@ export const makeActivationCard: (config: FullConfig) => {
     );
   };
 
-  const ActivationView = () => (
+  const ActivationView: FC<StringsProps> = (props) => (
     <AuthView backgroundImage={backgroundImage}>
-      <ActivationCard />
+      <ActivationCard {...props} />
     </AuthView>
   );
 

@@ -7,7 +7,7 @@ import Link from '@material-ui/core/Link';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { FC, useContext, useState } from 'react';
 import { useHistory, Link as RouterLink } from 'react-router-dom';
-import { strings } from '../internationalization';
+import { StringsProps } from '../internationalization';
 import { AuthFunctionContext } from '../store/UserStore';
 import { FullConfig } from '../Configuration';
 import { AuthView } from './AuthView';
@@ -47,12 +47,13 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 export const makeForgotPasswordForm: (config: FullConfig) => {
-  ForgotPasswordForm: FC; ForgotPasswordView: FC;
+  ForgotPasswordForm: FC<StringsProps>;
+  ForgotPasswordView: FC<StringsProps>;
 } = ({
   components: { backgroundImage },
   paths: { login, emailSent },
 }) => {
-  const ForgotPasswordForm = () => {
+  const ForgotPasswordForm: FC<StringsProps> = ({ strings }) => {
     const classes = useStyles();
     const [email, setEmail] = useState('');
     const { requestPasswordReset } = useContext(AuthFunctionContext);
@@ -125,9 +126,9 @@ export const makeForgotPasswordForm: (config: FullConfig) => {
     );
   };
 
-  const ForgotPasswordView = () => (
+  const ForgotPasswordView: FC<StringsProps> = (props) => (
     <AuthView backgroundImage={backgroundImage}>
-      <ForgotPasswordForm />
+      <ForgotPasswordForm {...props} />
     </AuthView>
   );
 
