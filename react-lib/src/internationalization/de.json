@@ -1,0 +1,80 @@
+{
+  "Common": {
+    "ok": "OK",
+    "cancel": "Abbrechen",
+    "Password": "Password",
+    "FieldErrors": {
+      "blank": "Dieses Feld darf nicht leer sein.",
+      "username_unique": "Der Benutzername ist bereits vergeben.",
+      "email_unique": "Es gibt bereits ein Benutzerkonto mit dieser E-Mailadresse.",
+      "password_too_short": "Das Passwort ist zu kurz. Es sollte mindestens 8 Zeichen lang sein.",
+      "password_too_similar": "Das Passwort muss sich signifikant vom Benutzernamen und der E-Mailadresse unterscheiden.",
+      "password_too_common": "Das Passwort ist zu gewöhnlich und daher nicht sicher. Bitte wählen Sie ein anderes Password.",
+      "passwords_not_identical": "Die Passwörter müssen übereinstimmen."
+    },
+    "NonFieldErrors": {
+      "invalid_credentials": {
+        "Username": "Die Kombination von Benutzername und Passwort ist ungültig. Bitte versuchen Sie es erneut.",
+        "Email": "Die Kombination von E-Mailadresse und Passwort ist ungültig. Bitte versuchen Sie es erneut.",
+        "UsernameOrEmail": "Die Kombination von Benutzername oder E-Mailadresse und Passwort ist ungültig. Bitte versuchen Sie es erneut."
+      }
+    }
+  },
+  "LoginForm": {
+    "Username": "Benutzername",
+    "Email": "E-Mailadresse",
+    "UsernameOrEmail": "Benutzername oder E-Mailadresse",
+    "Login": "Anmelden",
+    "LogoutSuccess": "Sie wurden erfolgreich abgemeldet.",
+    "AuthLogoutNotification": "Bitte melden Sie sich an, bevor Sie weitermachen.",
+    "ForgotPassword": "Passwort vergessen?",
+    "SignUp": "Zur Registration"
+  },
+  "ResetPassword": {
+    "ResetPassword": "Passwort zurücksetzen",
+    "NewPassword": "Neues Passwort",
+    "RepeatNewPassword": "Passwort wiederholen",
+    "ButtonText": "Passwort speichern",
+    "SuccessText": "Ihr Passwort wurde erfolgreich gespeichert. Sie können sich jetzt damit anmelden.",
+    "SuccessButtonText": "Zur Anmeldung",
+    "InvalidLink": "Dieser Link ist nicht mehr gültig. Klicken Sie unten um einen neuen Link zu beantragen.",
+    "InvalidLinkButtonText": "Passwort vergessen"
+  },
+  "ForgotPassword": {
+    "ForgotPassword": "Passwort vergessen",
+    "Description": "Bitte geben Sie die E-Mailadresse ein, mit der Sie Ihr Konto angelegt haben. Danach erhalten Sie eine E-Mail mit einem Link, mit dem Sie ein neues Passwort wählen können.",
+    "InputLabel": "E-Mailadresse",
+    "ButtonText": "E-Mail senden",
+    "BackToLogin": "Zurück zur Anmeldung"
+  },
+  "EmailSent": {
+    "EmailSent": "E-Mail wurde verschickt",
+    "Description": "Schauen Sie in Ihrem Postfach nach. Wenn die angegebene E-Mailadresse in unserer Datenbank vorhanden ist, werden Sie in wenigen Minuten eine E-Mail mit dem Link erhalten.",
+    "ContinueToLogin": "Weiter zur Anmeldung",
+    "RequestAgain": "E-Mail erneut verschicken"
+  },
+  "RegisterForm": {
+    "Title": "Registration",
+    "Description": "Bitte wählen Sie Benutzernamen und Passwort und geben Sie sie nebst E-Mailadresse unten ein.",
+    "Username": "Benutzername",
+    "Email": "E-Mailadresse",
+    "Password": "Passwort",
+    "Register": "Registrieren",
+    "BackToLogin": "Zur Anmeldung",
+    "NonFieldErrors": {
+      "general": "Während der Registration ist ein Fehler aufgetreten."
+    },
+    "SuccessTitle": "E-Mail wurde verschickt",
+    "SuccessText": "Schauen Sie in Ihrem Postfach nach. Sie werden in wenigen Minuten eine E-Mail mit einem Aktivierungslink erhalten. Sobald Sie ihre E-Mailadresse aktiviert haben, können Sie sich anmelden."
+  },
+  "EmailActivation": {
+    "SuccessTitle": "E-Mailadresse wurde aktiviert",
+    "SuccessText": "Ihre E-Mailadresse wurde erfolgreich aktiviert. Sie können sich nun in unserem System anmelden.",
+    "ButtonText": "Zur Anmeldung",
+    "ErrorTitle": "Ein Fehler ist aufgetreten.",
+    "Errors": {
+      "activation_link_invalid": "Der Aktivierungslink ist ungültig. Grund hierfür könnte ein Tippfehler sein, oder der Link wurde bereits verwendet.",
+      "general": "Während der Aktivierung Ihrer E-Mailadresse ist ein Fehler aufgetreten."
+    }
+  }
+}
