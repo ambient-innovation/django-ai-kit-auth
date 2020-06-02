@@ -179,6 +179,7 @@ export const defaultConfig = {
     resetPassword: '/reset-password', // actual page to reset the password. Only accessible via link, which is sent by email.
     emailSent: '/email-sent', // success feedback after email was sent from the forgot password page
   },
+  defaultLanguage: 'en' as Language,
   userIdentifier: Identifier.UsernameOrEmail, // what should the user type in the login screen?
   disableUserRegistration: false, // setting this to true will remove the register path completely
   components: {
@@ -188,6 +189,10 @@ export const defaultConfig = {
   },
 };
 ```
+
+`defaultLanguage` is the language used if no language is provided, or if the
+provided language is not implemented. It must be one of the currently implemented
+languages: `'en'` or `'de'`.
 
 The `backgroundImage` is used in all the views that are wrapped in `AuthView`.
 
@@ -314,7 +319,8 @@ Call this function in your `App` component inside a `Switch`.
 
 #### Parameters
 
-None
+* `language?: Language`: the language used in all the user facing texts. It must be one
+    of the currently supported languages (see [`defaultConfig`](#defaultconfig))
 
 #### Returns
 
