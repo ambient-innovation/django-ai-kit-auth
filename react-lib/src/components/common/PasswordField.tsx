@@ -4,7 +4,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import TextField from '@material-ui/core/TextField';
-import { StringsProps } from '../../internationalization';
+import allStrings, { StringsProps } from '../../internationalization';
 import { ErrorMessage, ObjectOfStrings } from '../../api/types';
 
 export interface PasswordFieldProps extends StringsProps {
@@ -24,7 +24,7 @@ export const PasswordField: FC<PasswordFieldProps> = (
     label,
     id,
     onChange,
-    strings,
+    strings = allStrings.en,
   },
 ) => {
   const [showPassword, setShowPassword] = useState(false);
