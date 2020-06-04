@@ -1,10 +1,10 @@
 import React from 'react';
 import { BrowserRouter, Switch } from 'react-router-dom';
-import {
-  UserStore, ProtectedRoute, makeAuthRoutes,
-} from 'ai-kit-auth';
 import { CssBaseline, ThemeProvider } from '@material-ui/core';
 import { DefaultTheme as AiKitTheme } from 'ai-kit-common';
+import {
+  UserStore, ProtectedRoute, makeAuthRoutes,
+} from './ConfiguredAuth';
 import { Dashboard } from './Dashboard';
 
 const App: React.FC = () => (

@@ -73,7 +73,10 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
 export const makeRegisterForm: (config: FullConfig) => {
   RegisterForm: FC; RegisterView: FC;
-} = ({ paths: { login } }) => {
+} = ({
+  components: { backgroundImage },
+  paths: { login },
+}) => {
   const RegisterForm: FC = () => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
@@ -234,7 +237,7 @@ export const makeRegisterForm: (config: FullConfig) => {
   };
 
   const RegisterView: FC = () => (
-    <AuthView>
+    <AuthView backgroundImage={backgroundImage}>
       <RegisterForm />
     </AuthView>
   );

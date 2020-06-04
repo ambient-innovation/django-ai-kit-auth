@@ -43,6 +43,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 export const makeActivationCard: (config: FullConfig) => {
   ActivationCard: FC; ActivationView: FC;
 } = ({
+  components: { backgroundImage },
   paths: {
     login,
     mainPage,
@@ -82,7 +83,7 @@ export const makeActivationCard: (config: FullConfig) => {
   };
 
   const ActivationView = () => (
-    <AuthView>
+    <AuthView backgroundImage={backgroundImage}>
       <ActivationCard />
     </AuthView>
   );
