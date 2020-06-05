@@ -1,15 +1,13 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useMemo, useState } from 'react';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import TextField from '@material-ui/core/TextField';
-import { strings } from '../../internationalization';
+import allStrings, { StringsProps } from '../../internationalization';
 import { ErrorMessage, ObjectOfStrings } from '../../api/types';
 
-const fieldErrors: ObjectOfStrings = strings.Common.FieldErrors;
-
-export interface PasswordFieldProps {
+export interface PasswordFieldProps extends StringsProps {
   className?: string;
   password: string;
   errorMessage: ErrorMessage;
@@ -20,10 +18,21 @@ export interface PasswordFieldProps {
 
 export const PasswordField: FC<PasswordFieldProps> = (
   {
-    className, errorMessage, password, label, id, onChange,
+    className,
+    errorMessage,
+    password,
+    label,
+    id,
+    onChange,
+    strings = allStrings.en,
   },
 ) => {
   const [showPassword, setShowPassword] = useState(false);
+  const fieldErrors: ObjectOfStrings = useMemo(
+    () => strings.Common.FieldErrors,
+    [strings],
+  );
+
 
   return (
     <TextField

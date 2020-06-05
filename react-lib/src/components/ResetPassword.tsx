@@ -10,7 +10,7 @@ import { useDebouncedCallback } from 'use-debounce';
 import { AuthFunctionContext } from '../store/UserStore';
 import { FullConfig } from '../Configuration';
 import { AuthView } from './AuthView';
-import { strings } from '../internationalization';
+import allStrings, { StringsProps } from '../internationalization';
 import { PasswordField } from './common/PasswordField';
 import { ErrorMessage } from '../api/types';
 
@@ -58,12 +58,16 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 export const makeResetPasswordForm: (config: FullConfig) => {
-  ResetPasswordForm: FC; ResetPasswordView: FC;
+  ResetPasswordForm: FC<StringsProps>;
+  ResetPasswordView: FC<StringsProps>;
 } = ({
   components: { loadingIndicator, backgroundImage },
   paths: { login, forgotPassword },
+  defaultLanguage,
 }) => {
-  const ResetPasswordForm = () => {
+  const ResetPasswordForm: FC<StringsProps> = ({
+    strings = allStrings[defaultLanguage],
+  }) => {
     const classes = useStyles();
     const [password, setPassword] = useState('');
     const [password2, setPassword2] = useState('');
@@ -131,6 +135,7 @@ export const makeResetPasswordForm: (config: FullConfig) => {
                 label={strings.ResetPassword.NewPassword}
                 id="reset_password"
                 onChange={setAndValidatePassword}
+                strings={strings}
               />
 
               <PasswordField
@@ -142,6 +147,7 @@ export const makeResetPasswordForm: (config: FullConfig) => {
                 } : {}}
                 label={strings.ResetPassword.RepeatNewPassword}
                 id="reset_password2"
+                strings={strings}
               />
 
               <Grid container item xs={12} justify="center">
@@ -161,12 +167,12 @@ export const makeResetPasswordForm: (config: FullConfig) => {
         }
         {
           successState === SuccessState.SUCCESS && (
-            <SuccessView />
+            <SuccessView strings={strings} />
           )
         }
         {
           successState === SuccessState.INVALID_LINK && (
-            <InvalidLinkView />
+            <InvalidLinkView strings={strings} />
           )
         }
         {
@@ -180,7 +186,9 @@ export const makeResetPasswordForm: (config: FullConfig) => {
     );
   };
 
-  const SuccessView: FC = () => {
+  const SuccessView: FC<StringsProps> = ({
+    strings = allStrings[defaultLanguage],
+  }) => {
     const classes = useStyles();
 
     return (
@@ -207,7 +215,9 @@ export const makeResetPasswordForm: (config: FullConfig) => {
     );
   };
 
-  const InvalidLinkView: FC = () => {
+  const InvalidLinkView: FC<StringsProps> = ({
+    strings = allStrings[defaultLanguage],
+  }) => {
     const classes = useStyles();
 
     return (
@@ -234,9 +244,9 @@ export const makeResetPasswordForm: (config: FullConfig) => {
     );
   };
 
-  const ResetPasswordView = () => (
+  const ResetPasswordView: FC<StringsProps> = (props) => (
     <AuthView backgroundImage={backgroundImage}>
-      <ResetPasswordForm />
+      <ResetPasswordForm {...props} />
     </AuthView>
   );
 

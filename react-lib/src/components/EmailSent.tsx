@@ -7,7 +7,7 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import Link from '@material-ui/core/Link';
 import { FullConfig } from '../Configuration';
-import { strings } from '../internationalization';
+import allStrings, { StringsProps } from '../internationalization';
 import { AuthView } from './AuthView';
 import { MailSvg } from '../assets/MailSvg';
 
@@ -48,7 +48,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 export const makeEmailSentCard: (config: FullConfig) => {
-  EmailSentCard: FC; EmailSentView: FC;
+  EmailSentCard: FC<StringsProps>;
+  EmailSentView: FC<StringsProps>;
 } = ({
   components: { backgroundImage },
   paths: {
@@ -56,8 +57,11 @@ export const makeEmailSentCard: (config: FullConfig) => {
     login,
     forgotPassword,
   },
+  defaultLanguage,
 }) => {
-  const EmailSentCard: FC = () => {
+  const EmailSentCard: FC<StringsProps> = ({
+    strings = allStrings[defaultLanguage],
+  }) => {
     const classes = useStyles();
     const history = useHistory();
 
@@ -104,9 +108,9 @@ export const makeEmailSentCard: (config: FullConfig) => {
     );
   };
 
-  const EmailSentView: FC = () => (
+  const EmailSentView: FC<StringsProps> = (props) => (
     <AuthView backgroundImage={backgroundImage}>
-      <EmailSentCard />
+      <EmailSentCard {...props} />
     </AuthView>
   );
 

@@ -4,7 +4,9 @@ import { Route } from 'react-router-dom';
 import { fireEvent, waitForElement } from '@testing-library/dom';
 import { dontResolvePromise, renderWithRouterAndUser } from './Util';
 import { ResetPasswordForm } from '../..';
-import { strings } from '../../internationalization';
+import allStrings from '../../internationalization';
+
+const strings = allStrings.en;
 
 const mockData = {
   password: '12345678',
@@ -18,7 +20,7 @@ const sleep = async () => new Promise((r) => setTimeout(r, 400));
 test('renders the password form when ident and token are provided', async () => {
   const renderObject = renderWithRouterAndUser(
     <Route path="/reset-password/:ident/:token">
-      <ResetPasswordForm />
+      <ResetPasswordForm strings={strings} />
     </Route>,
     { resetPassword: () => Promise.resolve() },
     ['/reset-password/1234/1234-1234'],
@@ -31,7 +33,7 @@ test('password is validated once, when typing is finished', async () => {
   validatePassword.mockReturnValue(dontResolvePromise());
   const renderObject = renderWithRouterAndUser(
     <Route path="/reset-password/:ident/:token">
-      <ResetPasswordForm />
+      <ResetPasswordForm strings={strings} />
     </Route>,
     { validatePassword },
     [`/reset-password/${mockData.ident}/1234-1234`],
@@ -59,7 +61,7 @@ test('password is validated once, when typing is finished', async () => {
 test('error state', async () => {
   const renderObject = renderWithRouterAndUser(
     <Route path="/reset-password/:ident/:token">
-      <ResetPasswordForm />
+      <ResetPasswordForm strings={strings} />
     </Route>,
     {
       // eslint-disable-next-line prefer-promise-reject-errors
@@ -92,7 +94,7 @@ test('error state', async () => {
 test('success state', async () => {
   const renderObject = renderWithRouterAndUser(
     <Route path="/reset-password/:ident/:token">
-      <ResetPasswordForm />
+      <ResetPasswordForm strings={strings} />
     </Route>,
     {
       resetPassword: () => Promise.resolve(),

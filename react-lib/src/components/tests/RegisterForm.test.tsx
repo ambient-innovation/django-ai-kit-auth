@@ -3,9 +3,11 @@ import * as React from 'react';
 import { fireEvent, waitForElement } from '@testing-library/react';
 import { defaultConfig, RegisterForm } from '../..';
 import { makeRegisterForm } from '../Register';
-import { strings } from '../../internationalization';
+import allStrings from '../../internationalization';
 import { dontResolvePromise, renderWithRouterAndUser } from './Util';
 import { mergeConfig } from '../../Configuration';
+
+const strings = allStrings.en;
 
 const mockUser = ({
   username: 'Donald', email: 'donald@example.com', password: 'longpass',
@@ -16,7 +18,7 @@ const sleep = async () => new Promise((r) => setTimeout(r, 400));
 const register = jest.fn();
 
 const renderFunction = (
-  element: JSX.Element = <RegisterForm />,
+  element: JSX.Element = <RegisterForm strings={strings} />,
 ) => renderWithRouterAndUser(element, {
   register,
 });
@@ -51,7 +53,7 @@ test('password is validated once, when typing is finished', async () => {
   const validatePassword = jest.fn();
   validatePassword.mockReturnValue(dontResolvePromise());
   const renderObject = renderWithRouterAndUser(
-    <RegisterForm />,
+    <RegisterForm strings={strings} />,
     { validatePassword },
   );
   fireEvent.change(
@@ -173,7 +175,7 @@ test('error in password while typing', async () => {
     });
   });
   const renderObject = renderWithRouterAndUser(
-    <RegisterForm />,
+    <RegisterForm strings={strings} />,
     { validatePassword },
   );
   fireEvent.change(
@@ -210,7 +212,7 @@ test('sign in link leads to correct url', () => {
   const LoginRegisterForm = makeRegisterForm(mergeConfig(defaultConfig, {
     paths: { login: pathToLogin },
   })).RegisterForm;
-  const renderObject = renderFunction(<LoginRegisterForm />);
+  const renderObject = renderFunction(<LoginRegisterForm strings={strings} />);
   fireEvent.click(renderObject.getByText(strings.RegisterForm.BackToLogin));
   const { entries } = renderObject.history;
   expect(entries[entries.length - 1].pathname).toEqual(pathToLogin);

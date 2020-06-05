@@ -3,7 +3,7 @@ import axios from 'axios';
 import {
   Button, Grid, Typography,
 } from '@material-ui/core';
-import { useUserStore } from 'ai-kit-auth';
+import { useUserStore } from './ConfiguredAuth';
 
 axios.defaults.withCredentials = true;
 
