@@ -21,6 +21,7 @@ const BackgroundImage: FC = () => {
 
 export const {
   UserStore,
+  useUserStore,
   ProtectedRoute,
   makeAuthRoutes,
 } = configureAuth({

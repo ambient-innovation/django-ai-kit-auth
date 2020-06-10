@@ -3,11 +3,13 @@ import * as React from 'react';
 import { fireEvent, waitForElement } from '@testing-library/react';
 import { defaultConfig, Identifier, LoginForm } from '../..';
 import { makeLoginForm } from '../LoginForm';
-import { strings } from '../../internationalization';
+import allStrings from '../../internationalization';
 import { User } from '../../api/types';
 import { renderWithRouterAndUser } from './Util';
 import { LogoutReason } from '../../store/types';
 import { mergeConfig } from '../../Configuration';
+
+const strings = allStrings.en;
 
 const mockUser: User = ({
   id: 42, username: 'Donald', email: 'donald@example.com',
@@ -17,7 +19,7 @@ const mockPassword = '1324qwer';
 const login = jest.fn();
 
 const renderFunction = (
-  element: JSX.Element = <LoginForm />,
+  element: JSX.Element = <LoginForm strings={strings} />,
 ) => renderWithRouterAndUser(element, { login });
 
 beforeEach(() => {
@@ -113,14 +115,14 @@ test('Email type in ident input field', () => {
   const EmailLoginForm = makeLoginForm(mergeConfig(defaultConfig, {
     userIdentifier: Identifier.Email,
   })).LoginForm;
-  const renderOptions = renderFunction(<EmailLoginForm />);
+  const renderOptions = renderFunction(<EmailLoginForm strings={strings} />);
   expect(renderOptions.getByLabelText(strings.LoginForm.Email))
     .toHaveProperty('type', 'email');
 });
 
 test('user logout success text', () => {
   const renderObject = renderWithRouterAndUser(
-    <LoginForm />,
+    <LoginForm strings={strings} />,
     { justLoggedOut: LogoutReason.USER },
   );
   expect(renderObject.getByText(strings.LoginForm.LogoutSuccess)).toBeInTheDocument();
@@ -128,7 +130,7 @@ test('user logout success text', () => {
 
 test('auth logout notification', () => {
   const renderObject = renderWithRouterAndUser(
-    <LoginForm />,
+    <LoginForm strings={strings} />,
     { justLoggedOut: LogoutReason.AUTH },
   );
   expect(renderObject.getByText(strings.LoginForm.AuthLogoutNotification)).toBeInTheDocument();
@@ -139,7 +141,7 @@ test('reset link leads to correct url', () => {
   const ForgotLoginForm = makeLoginForm(mergeConfig(defaultConfig, {
     paths: { forgotPassword: pathToForgotPassword },
   })).LoginForm;
-  const renderObject = renderFunction(<ForgotLoginForm />);
+  const renderObject = renderFunction(<ForgotLoginForm strings={strings} />);
   fireEvent.click(renderObject.getByText(strings.LoginForm.ForgotPassword));
   const { entries } = renderObject.history;
   expect(entries[entries.length - 1].pathname).toEqual(pathToForgotPassword);
@@ -150,7 +152,7 @@ test('register link leads to correct url', () => {
   const RegisterLoginForm = makeLoginForm(mergeConfig(defaultConfig, {
     paths: { register: pathToRegister },
   })).LoginForm;
-  const renderObject = renderFunction(<RegisterLoginForm />);
+  const renderObject = renderFunction(<RegisterLoginForm strings={strings} />);
   fireEvent.click(renderObject.getByText(strings.LoginForm.SignUp));
   const { entries } = renderObject.history;
   expect(entries[entries.length - 1].pathname).toEqual(pathToRegister);
@@ -160,13 +162,13 @@ test('register link is not shown if disabledUserRegistration', () => {
   const PureLoginForm = makeLoginForm(mergeConfig(defaultConfig, {
     disableUserRegistration: true,
   })).LoginForm;
-  const renderObject = renderFunction(<PureLoginForm />);
+  const renderObject = renderFunction(<PureLoginForm strings={strings} />);
   expect(() => renderObject.getByText(strings.LoginForm.SignUp)).toThrowError();
 });
 
 test('submit button disabled when loading', () => {
   const renderObject = renderWithRouterAndUser(
-    <LoginForm />,
+    <LoginForm strings={strings} />,
     { loading: true },
   );
   expect(renderObject.getAllByRole('button').find(
