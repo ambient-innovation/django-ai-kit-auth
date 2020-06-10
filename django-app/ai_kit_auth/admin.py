@@ -85,33 +85,10 @@ class AIUserChangeForm(UserChangeForm):
 class AIUserAdmin(UserAdmin):
     form = AIUserChangeForm
     add_form = AIUserCreationForm
-    fieldsets = (
-        (None, {"fields": ("username", "email", "password")}),
-        (_("Personal info"), {"fields": ("first_name", "last_name")}),
-        (
-            _("Permissions"),
-            {
-                "fields": (
-                    "is_active",
-                    "is_staff",
-                    "is_superuser",
-                    "groups",
-                    "user_permissions",
-                ),
-            },
-        ),
-        (_("Important dates"), {"fields": ("last_login", "date_joined")}),
-    )
-    add_fieldsets = (
-        (
-            None,
-            {
-                "classes": ("wide",),
-                "fields": ("username", "email", "password1", "password2"),
-            },
-        ),
-    )
+    fieldsets = api_settings.ADMIN_FIELDSETS
+    add_fieldsets = api_settings.ADMIN_ADD_FIELDSETS
 
 
-admin.site.unregister(User)
+if admin.site.is_registered(User):
+    admin.site.unregister(User)
 admin.site.register(User, AIUserAdmin)
