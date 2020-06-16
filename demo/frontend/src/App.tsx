@@ -20,7 +20,7 @@ const App: React.FC = () => (
             {
               // generate routes for essential authentication views
               // like login, registration, password reset etc.
-              makeAuthRoutes('de')
+              makeAuthRoutes()
             }
             <ProtectedRoute exact path="/" component={Dashboard} />
             <ProtectedRoute path="/">
