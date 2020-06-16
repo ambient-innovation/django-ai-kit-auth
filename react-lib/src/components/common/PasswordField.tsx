@@ -1,19 +1,20 @@
-import React, { FC, useMemo, useState } from 'react';
+import React, { FC, useState } from 'react';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import TextField from '@material-ui/core/TextField';
-import allStrings, { StringsProps } from '../../internationalization';
-import { ErrorMessage, ObjectOfStrings } from '../../api/types';
+import { ErrorMessage } from '../../api/types';
+import { Translator } from '../../internationalization';
 
-export interface PasswordFieldProps extends StringsProps {
+export interface PasswordFieldProps {
   className?: string;
   password: string;
   errorMessage: ErrorMessage;
   label?: string;
   id?: string;
   onChange?: (value: string) => void;
+  translator: Translator;
 }
 
 export const PasswordField: FC<PasswordFieldProps> = (
@@ -24,27 +25,23 @@ export const PasswordField: FC<PasswordFieldProps> = (
     label,
     id,
     onChange,
-    strings = allStrings.en,
+    translator,
   },
 ) => {
   const [showPassword, setShowPassword] = useState(false);
-  const fieldErrors: ObjectOfStrings = useMemo(
-    () => strings.Common.FieldErrors,
-    [strings],
-  );
-
+  const t = translator;
+  const errorMap = (error: string) => t(`auth:Common.FieldErrors.${error}`);
 
   return (
     <TextField
       className={className}
       fullWidth
       id={id || 'login_password'}
-      label={label || strings.Common.Password}
+      label={label || t('auth:Common.Password')}
       variant="outlined"
       value={password}
       type={showPassword ? 'text' : 'password'}
-      helperText={errorMessage.password ? errorMessage.password.map((message: string) => (
-        `${fieldErrors[message]} `)) : ''}
+      helperText={errorMessage.password ? errorMessage.password.map(errorMap).join(' - ') : ''}
       error={errorMessage.password && errorMessage.password.length > 0}
       onChange={(event) => {
         if (onChange) {

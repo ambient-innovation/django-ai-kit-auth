@@ -6,28 +6,26 @@ import { waitForElement } from '@testing-library/react';
 import { renderWithRouterAndUser } from './Util';
 import { ActivateEmailAddress, defaultConfig } from '../..';
 import { makeActivateEmailAddress } from '../ActivateEmailAddress';
-import allStrings from '../../internationalization';
 import { mergeConfig } from '../../Configuration';
-
-const strings = allStrings.en;
+import { en } from '../../internationalization';
 
 // eslint-disable-next-line jest/expect-expect
 test('shows success message', async () => {
   const renderObject = renderWithRouterAndUser(
     <Route path="/activate/:ident/:token">
-      <ActivateEmailAddress strings={strings} />
+      <ActivateEmailAddress />
     </Route>,
     { activateEmailAddress: () => new Promise<void>((resolve) => resolve()) },
     ['/activate/1234/1234-1234'],
   );
-  await waitForElement(() => renderObject.getByText(strings.EmailActivation.SuccessText));
+  await waitForElement(() => renderObject.getByText(en('auth:EmailActivation.SuccessText')));
 });
 
 // eslint-disable-next-line jest/expect-expect
 test('shows error message', async () => {
   const renderObject = renderWithRouterAndUser(
     <Route path="/activate/:ident/:token">
-      <ActivateEmailAddress strings={strings} />
+      <ActivateEmailAddress />
     </Route>,
     {
       activateEmailAddress: () => new Promise<void>(() => {
@@ -43,7 +41,7 @@ test('shows error message', async () => {
     ['/activate/1234/1234-1234'],
   );
   await waitForElement(() => renderObject.getByText(
-    strings.EmailActivation.Errors.activation_link_invalid,
+    en('auth:EmailActivation.Errors.activation_link_invalid'),
   ));
 });
 
@@ -56,7 +54,7 @@ test('shows loading indicator', async () => {
   })).ActivateEmailAddress;
   const renderObject = renderWithRouterAndUser(
     <Route path="/activate/:ident/:token">
-      <CustomActivate strings={strings} />
+      <CustomActivate />
     </Route>,
     { activateEmailAddress: sleep },
     ['/activate/1234/1234-1234'],

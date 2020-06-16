@@ -14,7 +14,7 @@ import { User } from './api/types';
 import { makeResetPasswordForm } from './components/ResetPassword';
 import { makeRegisterForm } from './components/Register';
 import { DefaultBackgroundImage } from './assets/DefaultBackgroundImage';
-import allStrings, { Language } from './internationalization';
+import { en } from './internationalization';
 
 export enum Identifier {
   Username = 1,
@@ -33,7 +33,7 @@ export const defaultConfig = {
     resetPassword: '/reset-password', // actual page to reset the password. Only accessible via link, which is sent by email.
     emailSent: '/email-sent', // success feedback after email was sent from the forgot password page
   },
-  defaultLanguage: 'en' as Language,
+  translator: en,
   userIdentifier: Identifier.UsernameOrEmail, // what should the user type in the login screen?
   disableUserRegistration: false, // setting this to true will remove the register path completely
   components: {
@@ -106,52 +106,46 @@ export const configureAuth = <UserType extends unknown = User>(config: Configura
   const LoginRoute = makeLoginRoute(fullConfig);
   const emailSent = makeEmailSentCard(fullConfig);
 
-  const makeAuthRoutes: (language?: Language) => JSX.Element[] = (
-    language = fullConfig.defaultLanguage,
-  ) => {
-    const strings = allStrings[language];
-
-    return [
+  const makeAuthRoutes: () => JSX.Element[] = () => [
+    <Route
+      exact
+      path={fullConfig.paths.activation}
+      component={activate.ActivateEmailAddress}
+      key="activation"
+    />,
+    <LoginRoute
+      exact
+      path={fullConfig.paths.login}
+      component={login.LoginView}
+      key="login"
+    />,
+    ...fullConfig.disableUserRegistration ? [] : [
       <Route
         exact
-        path={fullConfig.paths.activation}
-        render={() => <activate.ActivateEmailAddress strings={strings} />}
-        key="activation"
+        path={fullConfig.paths.register}
+        component={register.RegisterView}
+        key="register"
       />,
-      <LoginRoute
-        exact
-        path={fullConfig.paths.login}
-        render={() => <login.LoginView strings={strings} />}
-        key="login"
-      />,
-      ...fullConfig.disableUserRegistration ? [] : [
-        <Route
-          exact
-          path={fullConfig.paths.register}
-          render={() => <register.RegisterView strings={strings} />}
-          key="register"
-        />,
-      ],
-      <LoginRoute
-        exact
-        path={fullConfig.paths.forgotPassword}
-        render={() => <forgot.ForgotPasswordView strings={strings} />}
-        key="forgot-password"
-      />,
-      <Route
-        exact
-        path={fullConfig.paths.emailSent}
-        render={() => <emailSent.EmailSentView strings={strings} />}
-        key="email-sent"
-      />,
-      <Route
-        exact
-        path={fullConfig.paths.resetPassword}
-        render={() => <reset.ResetPasswordView strings={strings} />}
-        key="reset-password"
-      />,
-    ];
-  };
+    ],
+    <LoginRoute
+      exact
+      path={fullConfig.paths.forgotPassword}
+      component={forgot.ForgotPasswordView}
+      key="forgot-password"
+    />,
+    <Route
+      exact
+      path={fullConfig.paths.emailSent}
+      component={emailSent.EmailSentView}
+      key="email-sent"
+    />,
+    <Route
+      exact
+      path={fullConfig.paths.resetPassword}
+      component={reset.ResetPasswordView}
+      key="reset-password"
+    />,
+  ];
 
   return ({
     ...store,

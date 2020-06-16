@@ -1,16 +1,37 @@
 
-import en from './en.json';
-import de from './de.json';
+import enStrings from './en.json';
+import deStrings from './de.json';
 
-const strings = { en, de };
+export type Strings = typeof enStrings;
 
-export type Language = keyof typeof strings;
-export type Strings = typeof en;
-
-const typedStrings: { [language in Language]: Strings } = strings;
-
-export interface StringsProps {
-  strings?: Strings;
+interface StringTree {
+  [key: string]: StringTree|string;
 }
 
-export default typedStrings;
+export type Translator = (key: string) => string;
+
+export const tFactory: (strings: Strings) => Translator = (strings) => (key) => {
+  let result: StringTree|string|undefined = strings;
+  const [, path] = key.split(':', 2);
+  const items = path?.split('.') || [];
+  items.forEach((item) => {
+    switch (typeof result) {
+      case 'object':
+        result = result[item];
+        break;
+      default:
+        result = undefined;
+        break;
+    }
+  });
+  if (typeof result !== 'string') {
+    console.warn('Unknown key for translation:', key);
+
+    return key;
+  }
+
+  return result;
+};
+
+export const en = tFactory(enStrings);
+export const de = tFactory(deStrings);
