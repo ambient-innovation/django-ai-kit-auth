@@ -8,6 +8,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import CheckIcon from '@material-ui/icons/Check';
 import { FullConfig } from '../Configuration';
 import { AuthView } from './AuthView';
+import { TranslatorProps } from '../internationalization';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   PaperCard: {
@@ -40,16 +41,19 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 export const makeActivationCard: (config: FullConfig) => {
-  ActivationCard: FC; ActivationView: FC;
+  ActivationCard: FC<TranslatorProps>;
+  ActivationView: FC<TranslatorProps>;
 } = ({
   components: { backgroundImage },
   paths: {
     login,
     mainPage,
   },
-  translator: t,
+  defaultTranslator,
 }) => {
-  const ActivationCard: FC = () => {
+  const ActivationCard: FC<TranslatorProps> = ({
+    translator: t = defaultTranslator,
+  }) => {
     const classes = useStyles();
     const history = useHistory();
 
@@ -82,7 +86,7 @@ export const makeActivationCard: (config: FullConfig) => {
     );
   };
 
-  const ActivationView: FC = (props) => (
+  const ActivationView: FC<TranslatorProps> = (props) => (
     <AuthView backgroundImage={backgroundImage}>
       <ActivationCard {...props} />
     </AuthView>

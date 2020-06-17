@@ -16,6 +16,7 @@ import { ErrorMessage } from '../api/types';
 import { FullConfig, Identifier } from '../Configuration';
 import { AuthView } from './AuthView';
 import { PasswordField } from './common/PasswordField';
+import { TranslatorProps } from '../internationalization';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
@@ -65,16 +66,18 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 export const makeLoginForm: (config: FullConfig) => {
-  LoginForm: FC;
-  LoginView: FC;
+  LoginForm: FC<TranslatorProps>;
+  LoginView: FC<TranslatorProps>;
 } = ({
   components: { backgroundImage },
   paths: { forgotPassword, register },
-  translator: t,
+  defaultTranslator,
   userIdentifier,
   disableUserRegistration,
 }) => {
-  const LoginForm: FC = () => {
+  const LoginForm: FC<TranslatorProps> = ({
+    translator: t = defaultTranslator,
+  }) => {
     const classes = useStyles();
     const { loading, login, justLoggedOut } = useContext(AuthFunctionContext);
     const [ident, setIdent] = useState('');
@@ -202,7 +205,7 @@ export const makeLoginForm: (config: FullConfig) => {
     );
   };
 
-  const LoginView: FC = (props) => (
+  const LoginView: FC<TranslatorProps> = (props) => (
     <AuthView backgroundImage={backgroundImage}>
       <LoginForm {...props} />
     </AuthView>

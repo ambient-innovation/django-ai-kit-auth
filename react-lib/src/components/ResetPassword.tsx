@@ -12,6 +12,7 @@ import { FullConfig } from '../Configuration';
 import { AuthView } from './AuthView';
 import { PasswordField } from './common/PasswordField';
 import { ErrorMessage } from '../api/types';
+import { TranslatorProps } from '../internationalization';
 
 enum SuccessState {
   INITIAL,
@@ -57,14 +58,16 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 export const makeResetPasswordForm: (config: FullConfig) => {
-  ResetPasswordForm: FC;
-  ResetPasswordView: FC;
+  ResetPasswordForm: FC<TranslatorProps>;
+  ResetPasswordView: FC<TranslatorProps>;
 } = ({
   components: { loadingIndicator, backgroundImage },
   paths: { login, forgotPassword },
-  translator: t,
+  defaultTranslator,
 }) => {
-  const ResetPasswordForm: FC = () => {
+  const ResetPasswordForm: FC<TranslatorProps> = ({
+    translator: t = defaultTranslator,
+  }) => {
     const classes = useStyles();
     const [password, setPassword] = useState('');
     const [password2, setPassword2] = useState('');
@@ -164,12 +167,12 @@ export const makeResetPasswordForm: (config: FullConfig) => {
         }
         {
           successState === SuccessState.SUCCESS && (
-            <SuccessView />
+            <SuccessView translator={t} />
           )
         }
         {
           successState === SuccessState.INVALID_LINK && (
-            <InvalidLinkView />
+            <InvalidLinkView translator={t} />
           )
         }
         {
@@ -183,7 +186,9 @@ export const makeResetPasswordForm: (config: FullConfig) => {
     );
   };
 
-  const SuccessView: FC = () => {
+  const SuccessView: FC<TranslatorProps> = ({
+    translator: t = defaultTranslator,
+  }) => {
     const classes = useStyles();
 
     return (
@@ -210,7 +215,9 @@ export const makeResetPasswordForm: (config: FullConfig) => {
     );
   };
 
-  const InvalidLinkView: FC = () => {
+  const InvalidLinkView: FC<TranslatorProps> = ({
+    translator: t = defaultTranslator,
+  }) => {
     const classes = useStyles();
 
     return (
@@ -237,7 +244,7 @@ export const makeResetPasswordForm: (config: FullConfig) => {
     );
   };
 
-  const ResetPasswordView: FC = (props) => (
+  const ResetPasswordView: FC<TranslatorProps> = (props) => (
     <AuthView backgroundImage={backgroundImage}>
       <ResetPasswordForm {...props} />
     </AuthView>

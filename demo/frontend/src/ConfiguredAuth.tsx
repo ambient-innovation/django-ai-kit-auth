@@ -25,7 +25,7 @@ export const {
   ProtectedRoute,
   makeAuthRoutes,
 } = configureAuth({
-  translator: de,
+  defaultTranslator: de,
   components: {
     backgroundImage: () => <BackgroundImage />,
   },
