@@ -97,6 +97,7 @@ AI-KIT: Authentication provides the following components and functions:
 * Configuration
     * [configureAuth](#configureauth)
     * [defaultConfig](#defaultconfig)
+    * [Translator](#translator)
     * [Identifier](#identifier)
 * UserStore
     * [UserStore](#userstore)
@@ -175,13 +176,19 @@ export const defaultConfig = {
     login: '/login',
     register: '/register',
     activation: '/activation', // email activation path
-    forgotPassword: '/forgot-password', // clicking 'forgot password' on the login page leads here
-    resetPassword: '/reset-password', // actual page to reset the password. Only accessible via link, which is sent by email.
-    emailSent: '/email-sent', // success feedback after email was sent from the forgot password page
+    forgotPassword: '/forgot-password', // clicking 'forgot password' on the login
+                                        // page leads here
+    resetPassword: '/reset-password', // actual page to reset the password.
+                                      // Only accessible via link, which is sent by email.
+    emailSent: '/email-sent', // success feedback after email was sent from the
+                              // forgot password page
   },
-  defaultLanguage: 'en' as Language,
-  userIdentifier: Identifier.UsernameOrEmail, // what should the user type in the login screen?
-  disableUserRegistration: false, // setting this to true will remove the register path completely
+  translator: en, // A 'Translator' function, responsible for mapping keys
+                  // to user facing strings.
+  userIdentifier: Identifier.UsernameOrEmail, // what should the user type in the
+                                              // login screen?
+  disableUserRegistration: false, // setting this to true will remove the register
+                                  // path completely
   components: {
     backgroundImage: () => <MySpecialBackground />,
     loadingIndicator: () => <CircularProgress />,
@@ -190,14 +197,61 @@ export const defaultConfig = {
 };
 ```
 
-`defaultLanguage` is the language used if no language is provided, or if the
-provided language is not implemented. It must be one of the currently implemented
-languages: `'en'` or `'de'`.
+See [`Translator`](#translator).
 
 The `backgroundImage` is used in all the views that are wrapped in `AuthView`.
 
 The `CircularProgress` component is imported from [Material-UI](https://material-ui.com/api/circular-progress/).
 
+
+### Translator
+
+Ai-Kit-Auth components use a translator function for displaying user-facing strings.
+Therefore, the [config](#configureauth) accepts `translator: Translator` as parameter.
+This type is defined as `(key: string) => string` and will receive strings of the form
+`auth:Path.To.Key`, conforming with [i18next](#https://www.i18next.com/).
+
+If you don't need dynamic translation and are just interested in a different supported
+language than the default (English), you can pass one of the predefined translator
+functions exported by `ai-kit-auth`. Currently available choices are `en` and `de`.
+If you need to translate only a few strings differently, we would advise you to inspect
+the source code in order to find the correct keys and write a wrapper function around
+one of the predefined translators in order to intercept the translation of those keys.
+
+#### Example
+
+```typescript jsx
+import { configureAuth, en } from 'ai-kit-auth';
+
+const customKey = 'auth:Common.ok';
+const customValue = `Okay, Okay!`;
+const t = (key: string) => {
+  if (key === customKey) return customValue;
+
+  return en(key);
+};
+
+export const {
+  UserStore, ProtectedRoute, makeAuthRoutes,
+} = configureAuth({ translator: t });
+```
+
+If you would like to use dynamic translations, we suggest to use [i18next](#https://www.i18next.com/)
+and simply pass your translator function `t` to `configureAuth`.
+In that case, you need to provide all the translations by yourself, in the namespace `auth`.
+To get started, you can copy the `.json` files containing our translations from the
+`dist/internationalization` folder of this module.
+
+#### Example
+
+```typescript jsx
+import { configureAuth } from 'ai-kit-auth';
+import { i18n } from './i18n';
+
+export const {
+  UserStore, ProtectedRoute, makeAuthRoutes,
+} = configureAuth({ translator: i18n.t });
+```
 
 ### Identifier
 

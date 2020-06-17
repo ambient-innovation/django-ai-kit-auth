@@ -1,7 +1,7 @@
 import { tFactory, Strings } from '..';
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
-import en from '../en.json';
+import en from '../en/auth.json';
 
 test('tFactory returns function', () => {
   const t = tFactory(en);
@@ -9,15 +9,15 @@ test('tFactory returns function', () => {
 });
 
 test('t returns correct strings', () => {
-  const mockStrings: Strings = {
-    ...en,
-    Common: {
-      ...en.Common,
-      ok: 'MockOK',
-    },
+  const e = tFactory(en);
+  const customKey = 'auth:Common.ok';
+  const customValue = `habibi`;
+  const t = (key: string) => {
+    if (key === customKey) return customValue;
+
+    return e(key);
   };
-  const t = tFactory(mockStrings);
-  expect(t('auth:Common.ok')).toEqual(mockStrings.Common.ok);
+  expect(t('auth:Common.ok')).toEqual(customValue);
 });
 
 test.each([

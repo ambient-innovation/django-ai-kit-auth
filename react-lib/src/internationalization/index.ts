@@ -1,6 +1,6 @@
 
-import enStrings from './en.json';
-import deStrings from './de.json';
+import enStrings from './en/auth.json';
+import deStrings from './de/auth.json';
 
 export type Strings = typeof enStrings;
 
