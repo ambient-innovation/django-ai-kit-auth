@@ -183,8 +183,8 @@ export const defaultConfig = {
     emailSent: '/email-sent', // success feedback after email was sent from the
                               // forgot password page
   },
-  translator: en, // A 'Translator' function, responsible for mapping keys
-                  // to user facing strings.
+  defailtTranslator: en, // A 'Translator' function, responsible for mapping keys
+                         // to user facing strings.
   userIdentifier: Identifier.UsernameOrEmail, // what should the user type in the
                                               // login screen?
   disableUserRegistration: false, // setting this to true will remove the register
@@ -237,7 +237,9 @@ export const {
 ```
 
 If you would like to use dynamic translations, we suggest to use [i18next](#https://www.i18next.com/)
-and simply pass your translator function `t` to `configureAuth`.
+and to pass your translator function `t` to `makeAuthRoutes` or to the respective
+view components, if you are using them separately.
+That way, auth components are re-rendered whenever the language changes.
 In that case, you need to provide all the translations by yourself, in the namespace `auth`.
 To get started, you can copy the `.json` files containing our translations from the
 `dist/internationalization` folder of this module.
@@ -245,12 +247,19 @@ To get started, you can copy the `.json` files containing our translations from 
 #### Example
 
 ```typescript jsx
-import { configureAuth } from 'ai-kit-auth';
-import { i18n } from './i18n';
+import { useTranslation } from 'react-i18next';
+import { makeAuthRoutes } from 'ai-kit-auth';
+...
 
-export const {
-  UserStore, ProtectedRoute, makeAuthRoutes,
-} = configureAuth({ translator: i18n.t });
+const App: FC = () => {
+  const { t } = useTranslation(['auth']);
+
+  return (
+    <Switch>
+      {makeAuthRoutes(t)}
+    </Switch>
+  );
+};
 ```
 
 ### Identifier
@@ -373,8 +382,7 @@ Call this function in your `App` component inside a `Switch`.
 
 #### Parameters
 
-* `language?: Language`: the language used in all the user facing texts. It must be one
-    of the currently supported languages (see [`defaultConfig`](#defaultconfig))
+* `translator?: Translator`: A function which maps keys to user facing strings.
 
 #### Returns
 
@@ -464,6 +472,10 @@ If there is no referrer, it redirects to the `main page` (default `'/'`).
 
 Styled page wrapper for a [LoginForm](#loginform).
 
+#### Parameters
+
+* `translator?: Translator`: A function which maps keys to user facing strings.
+
 #### Example
 
 ```typescript jsx
@@ -485,10 +497,18 @@ const App: React.FC = () => (
 input fields (username/email and password) and a submit button.
 There are also links to registration and password recovery.
 
+#### Parameters
+
+* `translator?: Translator`: A function which maps keys to user facing strings.
+
 
 ### RegisterView
 
 Styled page wrapper for a [RegisterForm](#registerform).
+
+#### Parameters
+
+* `translator?: Translator`: A function which maps keys to user facing strings.
 
 #### Example
 
@@ -511,6 +531,10 @@ const App: React.FC = () => (
 input fields (username, email and password) and a submit button.
 There is also a link to the login page.
 
+#### Parameters
+
+* `translator?: Translator`: A function which maps keys to user facing strings.
+
 
 ### ActivateEmailAddress
 
@@ -522,6 +546,10 @@ a loading indicator is shown.
 This component needs to be placed within a `Route` with parameters `ident` and `token`,
 and also needs a `UserStore` as parent somewhere in the tree, so that it can find the
 `activateEmailAddress` function.
+
+#### Parameters
+
+* `translator?: Translator`: A function which maps keys to user facing strings.
 
 #### Example
 
@@ -544,6 +572,10 @@ and also needs a `UserStore` as parent somewhere in the tree, so that it can fin
 
 Styled page wrapper for a [ForgotPasswordForm](#forgotpasswordform).
 
+#### Parameters
+
+* `translator?: Translator`: A function which maps keys to user facing strings.
+
 #### Example
 
 ```typescript jsx
@@ -565,9 +597,17 @@ const App: React.FC = () => (
 input field (email) and a submit button. Upon submit the `requestPasswordReset()` method of the [AuthFunctionContext](#authfunctioncontext) is called.
 There is also a link to the login page.
 
+#### Parameters
+
+* `translator?: Translator`: A function which maps keys to user facing strings.
+
 ### ResetPasswordView
 
 Styled page wrapper for a [ResetPasswordForm](#resetpasswordform).
+
+#### Parameters
+
+* `translator?: Translator`: A function which maps keys to user facing strings.
 
 #### Example
 
@@ -588,3 +628,8 @@ const App: React.FC = () => (
 `ResetPasswordForm` is a react component that provides a
 [Material UI Paper](https://material-ui.com/components/paper/) wrapper and contains two
 input fields (password and password-repeat) and a submit button. Upon submit the `resetPassword()` method of the [AuthFunctionContext](#authfunctioncontext) is called.
+
+#### Parameters
+
+* `translator?: Translator`: A function which maps keys to user facing strings.
+

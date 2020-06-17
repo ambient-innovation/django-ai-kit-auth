@@ -9,6 +9,7 @@ import Link from '@material-ui/core/Link';
 import { FullConfig } from '../Configuration';
 import { AuthView } from './AuthView';
 import { MailSvg } from '../assets/MailSvg';
+import { TranslatorProps } from '../internationalization';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   PaperCard: {
@@ -47,8 +48,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 export const makeEmailSentCard: (config: FullConfig) => {
-  EmailSentCard: FC;
-  EmailSentView: FC;
+  EmailSentCard: FC<TranslatorProps>;
+  EmailSentView: FC<TranslatorProps>;
 } = ({
   components: { backgroundImage },
   paths: {
@@ -56,9 +57,11 @@ export const makeEmailSentCard: (config: FullConfig) => {
     login,
     forgotPassword,
   },
-  translator: t,
+  defaultTranslator,
 }) => {
-  const EmailSentCard: FC = () => {
+  const EmailSentCard: FC<TranslatorProps> = ({
+    translator: t = defaultTranslator,
+  }) => {
     const classes = useStyles();
     const history = useHistory();
 
@@ -105,7 +108,7 @@ export const makeEmailSentCard: (config: FullConfig) => {
     );
   };
 
-  const EmailSentView: FC = (props) => (
+  const EmailSentView: FC<TranslatorProps> = (props) => (
     <AuthView backgroundImage={backgroundImage}>
       <EmailSentCard {...props} />
     </AuthView>
