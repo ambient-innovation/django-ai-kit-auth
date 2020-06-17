@@ -5,7 +5,7 @@ import { renderWithRouterAndUser } from './Util';
 import { defaultConfig, ForgotPasswordForm } from '../..';
 import { makeForgotPasswordForm } from '../ForgotPassword';
 import { mergeConfig } from '../../Configuration';
-import {en} from "../../internationalization";
+import { en } from '../../internationalization';
 
 const mockEmail = 'mock@example.com';
 

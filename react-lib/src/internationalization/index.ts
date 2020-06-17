@@ -25,6 +25,7 @@ export const tFactory: (strings: Strings) => Translator = (strings) => (key) => 
     }
   });
   if (typeof result !== 'string') {
+    // eslint-disable-next-line no-console
     console.warn('Unknown key for translation:', key);
 
     return key;

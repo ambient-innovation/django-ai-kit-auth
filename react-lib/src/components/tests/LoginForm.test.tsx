@@ -7,7 +7,7 @@ import { User } from '../../api/types';
 import { renderWithRouterAndUser } from './Util';
 import { LogoutReason } from '../../store/types';
 import { mergeConfig } from '../../Configuration';
-import {en} from "../../internationalization";
+import { en } from '../../internationalization';
 
 const mockUser: User = ({
   id: 42, username: 'Donald', email: 'donald@example.com',
