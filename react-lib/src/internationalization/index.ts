@@ -10,6 +10,10 @@ interface StringTree {
 
 export type Translator = (key: string) => string;
 
+export interface TranslatorProps {
+  translator?: Translator;
+}
+
 export const tFactory: (strings: Strings) => Translator = (strings) => (key) => {
   let result: StringTree|string|undefined = strings;
   const [, path] = key.split(':', 2);

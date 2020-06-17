@@ -17,6 +17,7 @@ import { ErrorMessage } from '../api/types';
 import { FullConfig } from '../Configuration';
 import { PasswordField } from './common/PasswordField';
 import { MailSvg } from '../assets/MailSvg';
+import { TranslatorProps } from '../internationalization';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
@@ -68,14 +69,16 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 export const makeRegisterForm: (config: FullConfig) => {
-  RegisterForm: FC;
-  RegisterView: FC;
+  RegisterForm: FC<TranslatorProps>;
+  RegisterView: FC<TranslatorProps>;
 } = ({
   components: { backgroundImage },
   paths: { login },
-  translator: t,
+  defaultTranslator,
 }) => {
-  const RegisterForm: FC = () => {
+  const RegisterForm: FC<TranslatorProps> = ({
+    translator: t = defaultTranslator,
+  }) => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -244,7 +247,7 @@ export const makeRegisterForm: (config: FullConfig) => {
     );
   };
 
-  const RegisterView: FC = (props) => (
+  const RegisterView: FC<TranslatorProps> = (props) => (
     <AuthView backgroundImage={backgroundImage}>
       <RegisterForm {...props} />
     </AuthView>

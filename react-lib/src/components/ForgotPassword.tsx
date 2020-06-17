@@ -10,6 +10,7 @@ import { useHistory, Link as RouterLink } from 'react-router-dom';
 import { AuthFunctionContext } from '../store/UserStore';
 import { FullConfig } from '../Configuration';
 import { AuthView } from './AuthView';
+import { TranslatorProps } from '../internationalization';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   form: {
@@ -46,14 +47,16 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 export const makeForgotPasswordForm: (config: FullConfig) => {
-  ForgotPasswordForm: FC;
-  ForgotPasswordView: FC;
+  ForgotPasswordForm: FC<TranslatorProps>;
+  ForgotPasswordView: FC<TranslatorProps>;
 } = ({
   components: { backgroundImage },
   paths: { login, emailSent },
-  translator: t,
+  defaultTranslator,
 }) => {
-  const ForgotPasswordForm: FC = () => {
+  const ForgotPasswordForm: FC<TranslatorProps> = ({
+    translator: t = defaultTranslator,
+  }) => {
     const classes = useStyles();
     const [email, setEmail] = useState('');
     const { requestPasswordReset } = useContext(AuthFunctionContext);
@@ -126,7 +129,7 @@ export const makeForgotPasswordForm: (config: FullConfig) => {
     );
   };
 
-  const ForgotPasswordView: FC = (props) => (
+  const ForgotPasswordView: FC<TranslatorProps> = (props) => (
     <AuthView backgroundImage={backgroundImage}>
       <ForgotPasswordForm {...props} />
     </AuthView>

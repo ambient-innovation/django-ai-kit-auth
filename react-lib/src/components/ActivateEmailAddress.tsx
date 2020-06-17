@@ -7,21 +7,24 @@ import { AuthFunctionContext } from '../store/UserStore';
 import { ErrorView } from './AuthView';
 import { FullConfig } from '../Configuration';
 import { makeActivationCard } from './Activation';
+import { TranslatorProps } from '../internationalization';
 
 export const makeActivateEmailAddress: (
   config: FullConfig,
 ) => {
-  ActivateEmailAddress: FC;
-  ActivationView: FC;
-  ActivationCard: FC;
+  ActivateEmailAddress: FC<TranslatorProps>;
+  ActivationView: FC<TranslatorProps>;
+  ActivationCard: FC<TranslatorProps>;
 } = (config) => {
   const { ActivationView, ActivationCard } = makeActivationCard(config);
   const {
-    translator: t,
+    defaultTranslator,
     components,
   } = config;
 
-  const ActivateEmailAddress: FC = () => {
+  const ActivateEmailAddress: FC<TranslatorProps> = ({
+    translator: t = defaultTranslator,
+  }) => {
     const { ident, token } = useParams();
     const { activateEmailAddress, csrf } = useContext(AuthFunctionContext);
     const [error, setError] = useState<string|undefined>(undefined);

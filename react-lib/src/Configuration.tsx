@@ -14,7 +14,7 @@ import { User } from './api/types';
 import { makeResetPasswordForm } from './components/ResetPassword';
 import { makeRegisterForm } from './components/Register';
 import { DefaultBackgroundImage } from './assets/DefaultBackgroundImage';
-import { en } from './internationalization';
+import { en, Translator } from './internationalization';
 
 export enum Identifier {
   Username = 1,
@@ -33,7 +33,7 @@ export const defaultConfig = {
     resetPassword: '/reset-password', // actual page to reset the password. Only accessible via link, which is sent by email.
     emailSent: '/email-sent', // success feedback after email was sent from the forgot password page
   },
-  translator: en,
+  defaultTranslator: en,
   userIdentifier: Identifier.UsernameOrEmail, // what should the user type in the login screen?
   disableUserRegistration: false, // setting this to true will remove the register path completely
   components: {
@@ -106,43 +106,45 @@ export const configureAuth = <UserType extends unknown = User>(config: Configura
   const LoginRoute = makeLoginRoute(fullConfig);
   const emailSent = makeEmailSentCard(fullConfig);
 
-  const makeAuthRoutes: () => JSX.Element[] = () => [
+  const makeAuthRoutes: (translator?: Translator) => JSX.Element[] = (
+    translator = fullConfig.defaultTranslator,
+  ) => [
     <Route
       exact
       path={fullConfig.paths.activation}
-      component={activate.ActivateEmailAddress}
+      render={() => <activate.ActivateEmailAddress translator={translator} />}
       key="activation"
     />,
     <LoginRoute
       exact
       path={fullConfig.paths.login}
-      component={login.LoginView}
+      render={() => <login.LoginView translator={translator} />}
       key="login"
     />,
     ...fullConfig.disableUserRegistration ? [] : [
       <Route
         exact
         path={fullConfig.paths.register}
-        component={register.RegisterView}
+        render={() => <register.RegisterView translator={translator} />}
         key="register"
       />,
     ],
     <LoginRoute
       exact
       path={fullConfig.paths.forgotPassword}
-      component={forgot.ForgotPasswordView}
+      render={() => <forgot.ForgotPasswordView translator={translator} />}
       key="forgot-password"
     />,
     <Route
       exact
       path={fullConfig.paths.emailSent}
-      component={emailSent.EmailSentView}
+      render={() => <emailSent.EmailSentView translator={translator} />}
       key="email-sent"
     />,
     <Route
       exact
       path={fullConfig.paths.resetPassword}
-      component={reset.ResetPasswordView}
+      render={() => <reset.ResetPasswordView translator={translator} />}
       key="reset-password"
     />,
   ];
