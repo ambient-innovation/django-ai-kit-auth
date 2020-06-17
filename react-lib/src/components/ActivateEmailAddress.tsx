@@ -5,27 +5,26 @@ import { AxiosError } from 'axios';
 import { useParams } from 'react-router-dom';
 import { AuthFunctionContext } from '../store/UserStore';
 import { ErrorView } from './AuthView';
-import allStrings, { StringsProps, Strings } from '../internationalization';
 import { FullConfig } from '../Configuration';
 import { makeActivationCard } from './Activation';
-
-type Errortype = keyof Strings['EmailActivation']['Errors'];
 
 export const makeActivateEmailAddress: (
   config: FullConfig,
 ) => {
-  ActivateEmailAddress: FC<StringsProps>;
-  ActivationView: FC<StringsProps>;
-  ActivationCard: FC<StringsProps>;
+  ActivateEmailAddress: FC;
+  ActivationView: FC;
+  ActivationCard: FC;
 } = (config) => {
   const { ActivationView, ActivationCard } = makeActivationCard(config);
+  const {
+    translator: t,
+    components,
+  } = config;
 
-  const ActivateEmailAddress: FC<StringsProps> = ({
-    strings = allStrings[config.defaultLanguage],
-  }) => {
+  const ActivateEmailAddress: FC = () => {
     const { ident, token } = useParams();
     const { activateEmailAddress, csrf } = useContext(AuthFunctionContext);
-    const [error, setError] = useState<Errortype|undefined>(undefined);
+    const [error, setError] = useState<string|undefined>(undefined);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -39,20 +38,23 @@ export const makeActivateEmailAddress: (
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ident, token, csrf]);
 
-    if (loading) return config.components.loadingIndicator();
+    if (loading) return components.loadingIndicator();
 
     if (error) {
+      const errorKey = `auth:EmailActivation.Errors.${error}`;
+      const message = t(errorKey);
+
       return (
         <ErrorView
-          title={strings.EmailActivation.ErrorTitle}
-          message={strings.EmailActivation.Errors[error]
-            || strings.EmailActivation.Errors.general}
-          backgroundImage={config.components.backgroundImage}
+          title={t('auth:EmailActivation.ErrorTitle')}
+          message={message === errorKey
+            ? t('auth:EmailActivation.Errors.general') : message}
+          backgroundImage={components.backgroundImage}
         />
       );
     }
 
-    return <ActivationView strings={strings} />;
+    return <ActivationView />;
   };
 
   return { ActivateEmailAddress, ActivationCard, ActivationView };

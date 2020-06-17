@@ -31,4 +31,6 @@ export const {
 
 export { configureAuth, defaultConfig, Identifier } from './Configuration';
 
+export { en, de } from './internationalization';
+
 export type Configuration = ConfigType;

@@ -13,8 +13,7 @@ import { AxiosError } from 'axios';
 import { useDebouncedCallback } from 'use-debounce';
 import { AuthFunctionContext } from '../store/UserStore';
 import { AuthView } from './AuthView';
-import allStrings, { StringsProps } from '../internationalization';
-import { ErrorMessage, ObjectOfStrings } from '../api/types';
+import { ErrorMessage } from '../api/types';
 import { FullConfig } from '../Configuration';
 import { PasswordField } from './common/PasswordField';
 import { MailSvg } from '../assets/MailSvg';
@@ -69,16 +68,14 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 export const makeRegisterForm: (config: FullConfig) => {
-  RegisterForm: FC<StringsProps>;
-  RegisterView: FC<StringsProps>;
+  RegisterForm: FC;
+  RegisterView: FC;
 } = ({
   components: { backgroundImage },
   paths: { login },
-  defaultLanguage,
+  translator: t,
 }) => {
-  const RegisterForm: FC<StringsProps> = ({
-    strings = allStrings[defaultLanguage],
-  }) => {
+  const RegisterForm: FC = () => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -88,8 +85,16 @@ export const makeRegisterForm: (config: FullConfig) => {
 
     const { validatePassword, register } = useContext(AuthFunctionContext);
 
-    const fieldErrors: ObjectOfStrings = strings.Common.FieldErrors;
-    const nonFieldErrors: ObjectOfStrings = strings.RegisterForm.NonFieldErrors;
+    const fieldErrorMap = (error: string) => t(`auth:Common.FieldErrors.${error}`);
+    const nonFieldErrorMap = (error: string) => {
+      const key = `auth:RegisterForm.NonFieldErrors.${error}`;
+      const message = t(key);
+      if (message === undefined || message === key) {
+        return t('auth:RegisterForm.NonFieldErrors.general');
+      }
+
+      return message;
+    };
 
     const classes = useStyles();
 
@@ -125,15 +130,15 @@ export const makeRegisterForm: (config: FullConfig) => {
             className={classes.title}
             variant="h3"
           >
-            {success ? strings.RegisterForm.SuccessTitle
-              : strings.RegisterForm.Title}
+            {success ? t('auth:RegisterForm.SuccessTitle')
+              : t('auth:RegisterForm.Title')}
           </Typography>
 
           <Typography
             className={classes.inputField}
           >
-            {success ? strings.RegisterForm.SuccessText
-              : strings.RegisterForm.Description}
+            {success ? t('auth:RegisterForm.SuccessText')
+              : t('auth:RegisterForm.Description')}
           </Typography>
 
           { !success && (
@@ -159,12 +164,11 @@ export const makeRegisterForm: (config: FullConfig) => {
               autoFocus
               fullWidth
               id="register_username"
-              label={strings.RegisterForm.Username}
+              label={t('auth:RegisterForm.Username')}
               variant="outlined"
               type="text"
               value={username}
-              helperText={errors.username ? errors.username.map((message: string) => (
-                fieldErrors[message])) : ''}
+              helperText={errors.username ? errors.username.map(fieldErrorMap).join(' - ') : ''}
               error={!!errors.username}
               onChange={(event) => {
                 setUsername(event.target.value);
@@ -176,12 +180,11 @@ export const makeRegisterForm: (config: FullConfig) => {
               className={classes.inputField}
               fullWidth
               id="register_email"
-              label={strings.RegisterForm.Email}
+              label={t('auth:RegisterForm.Email')}
               variant="outlined"
               type="email"
               value={email}
-              helperText={errors.email ? errors.email.map((message: string) => (
-                fieldErrors[message])) : ''}
+              helperText={errors.email ? errors.email.map(fieldErrorMap).join(' - ') : ''}
               error={!!errors.email}
               onChange={(event) => {
                 setEmail(event.target.value);
@@ -193,18 +196,16 @@ export const makeRegisterForm: (config: FullConfig) => {
               className={classes.inputField}
               id="register_password"
               password={password}
-              label={strings.RegisterForm.Password}
+              label={t('auth:RegisterForm.Password')}
               errorMessage={errors}
               onChange={setAndValidatePassword}
-              strings={strings}
+              translator={t}
             />
             {
               errors.non_field_errors && (
                 errors.non_field_errors.map((message) => (
                   <Typography className={classes.formHelperText} key={message}>
-                    {
-                      nonFieldErrors[message] || nonFieldErrors.general
-                    }
+                    {nonFieldErrorMap(message)}
                   </Typography>
                 ))
               )
@@ -214,12 +215,12 @@ export const makeRegisterForm: (config: FullConfig) => {
               <Button
                 id="register_submit"
                 type="submit"
-                title={strings.RegisterForm.Register}
+                title={t('auth:RegisterForm.Register')}
                 variant="contained"
                 color="primary"
                 disabled={loading}
               >
-                {strings.RegisterForm.Register}
+                {t('auth:RegisterForm.Register')}
                 {loading && <CircularProgress size={15} />}
               </Button>
             </Grid>
@@ -237,13 +238,13 @@ export const makeRegisterForm: (config: FullConfig) => {
           component={RouterLink}
           to={login}
         >
-          {strings.RegisterForm.BackToLogin}
+          {t('auth:RegisterForm.BackToLogin')}
         </Link>
       </div>
     );
   };
 
-  const RegisterView: FC<StringsProps> = (props) => (
+  const RegisterView: FC = (props) => (
     <AuthView backgroundImage={backgroundImage}>
       <RegisterForm {...props} />
     </AuthView>

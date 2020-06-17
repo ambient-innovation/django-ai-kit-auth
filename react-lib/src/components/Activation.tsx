@@ -6,7 +6,6 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import CheckIcon from '@material-ui/icons/Check';
-import allStrings, { StringsProps } from '../internationalization';
 import { FullConfig } from '../Configuration';
 import { AuthView } from './AuthView';
 
@@ -41,18 +40,16 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 export const makeActivationCard: (config: FullConfig) => {
-  ActivationCard: FC<StringsProps>; ActivationView: FC<StringsProps>;
+  ActivationCard: FC; ActivationView: FC;
 } = ({
   components: { backgroundImage },
   paths: {
     login,
     mainPage,
   },
-  defaultLanguage,
+  translator: t,
 }) => {
-  const ActivationCard: FC<StringsProps> = ({
-    strings = allStrings[defaultLanguage],
-  }) => {
+  const ActivationCard: FC = () => {
     const classes = useStyles();
     const history = useHistory();
 
@@ -66,11 +63,11 @@ export const makeActivationCard: (config: FullConfig) => {
     return (
       <Paper className={classes.PaperCard}>
         <Typography variant="h4" className={classes.SuccessTitle}>
-          <span>{strings.EmailActivation.SuccessTitle}</span>
+          <span>{t('auth:EmailActivation.SuccessTitle')}</span>
           <CheckIcon color="primary" fontSize="inherit" className={classes.CheckIcon} />
         </Typography>
         <Typography variant="body1" className={classes.SuccessText}>
-          {strings.EmailActivation.SuccessText}
+          {t('auth:EmailActivation.SuccessText')}
         </Typography>
         <Grid item container justify="center">
           <Button
@@ -78,14 +75,14 @@ export const makeActivationCard: (config: FullConfig) => {
             color="primary"
             onClick={() => handleRedirect()}
           >
-            {strings.EmailActivation.ButtonText}
+            {t('auth:EmailActivation.ButtonText')}
           </Button>
         </Grid>
       </Paper>
     );
   };
 
-  const ActivationView: FC<StringsProps> = (props) => (
+  const ActivationView: FC = (props) => (
     <AuthView backgroundImage={backgroundImage}>
       <ActivationCard {...props} />
     </AuthView>

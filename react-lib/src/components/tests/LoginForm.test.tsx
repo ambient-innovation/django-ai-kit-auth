@@ -3,13 +3,11 @@ import * as React from 'react';
 import { fireEvent, waitForElement } from '@testing-library/react';
 import { defaultConfig, Identifier, LoginForm } from '../..';
 import { makeLoginForm } from '../LoginForm';
-import allStrings from '../../internationalization';
 import { User } from '../../api/types';
 import { renderWithRouterAndUser } from './Util';
 import { LogoutReason } from '../../store/types';
 import { mergeConfig } from '../../Configuration';
-
-const strings = allStrings.en;
+import { en } from '../../internationalization';
 
 const mockUser: User = ({
   id: 42, username: 'Donald', email: 'donald@example.com',
@@ -19,7 +17,7 @@ const mockPassword = '1324qwer';
 const login = jest.fn();
 
 const renderFunction = (
-  element: JSX.Element = <LoginForm strings={strings} />,
+  element: JSX.Element = <LoginForm />,
 ) => renderWithRouterAndUser(element, { login });
 
 beforeEach(() => {
@@ -29,7 +27,7 @@ beforeEach(() => {
 test('submit calls login', () => {
   const renderObject = renderFunction();
   fireEvent.change(
-    renderObject.getByLabelText(strings.LoginForm.UsernameOrEmail),
+    renderObject.getByLabelText(en('auth:LoginForm.UsernameOrEmail')),
     {
       target: {
         value: mockUser.username,
@@ -37,7 +35,7 @@ test('submit calls login', () => {
     },
   );
   fireEvent.change(
-    renderObject.getByLabelText(strings.Common.Password),
+    renderObject.getByLabelText(en('auth:Common.Password')),
     {
       target: {
         value: mockPassword,
@@ -66,7 +64,7 @@ test('error in identifier field', async () => {
   const renderObject = renderFunction();
   fireEvent.submit(renderObject.getByRole('form'));
   await waitForElement(
-    () => renderObject.getByText(strings.Common.FieldErrors.blank),
+    () => renderObject.getByText(en('auth:Common.FieldErrors.blank')),
   );
 });
 
@@ -85,7 +83,7 @@ test('error in password field', async () => {
   const renderObject = renderFunction();
   fireEvent.submit(renderObject.getByRole('form'));
   await waitForElement(
-    () => renderObject.getByText(strings.Common.FieldErrors.blank),
+    () => renderObject.getByText(en('auth:Common.FieldErrors.blank')),
   );
 });
 
@@ -106,7 +104,7 @@ test('show general error', async () => {
   fireEvent.submit(renderObject.getByRole('form'));
   await waitForElement(
     () => renderObject.getByText(
-      strings.Common.NonFieldErrors.invalid_credentials.UsernameOrEmail,
+      en('auth:Common.NonFieldErrors.invalid_credentials.UsernameOrEmail'),
     ),
   );
 });
@@ -115,25 +113,25 @@ test('Email type in ident input field', () => {
   const EmailLoginForm = makeLoginForm(mergeConfig(defaultConfig, {
     userIdentifier: Identifier.Email,
   })).LoginForm;
-  const renderOptions = renderFunction(<EmailLoginForm strings={strings} />);
-  expect(renderOptions.getByLabelText(strings.LoginForm.Email))
+  const renderOptions = renderFunction(<EmailLoginForm />);
+  expect(renderOptions.getByLabelText(en('auth:LoginForm.Email')))
     .toHaveProperty('type', 'email');
 });
 
 test('user logout success text', () => {
   const renderObject = renderWithRouterAndUser(
-    <LoginForm strings={strings} />,
+    <LoginForm />,
     { justLoggedOut: LogoutReason.USER },
   );
-  expect(renderObject.getByText(strings.LoginForm.LogoutSuccess)).toBeInTheDocument();
+  expect(renderObject.getByText(en('auth:LoginForm.LogoutSuccess'))).toBeInTheDocument();
 });
 
 test('auth logout notification', () => {
   const renderObject = renderWithRouterAndUser(
-    <LoginForm strings={strings} />,
+    <LoginForm />,
     { justLoggedOut: LogoutReason.AUTH },
   );
-  expect(renderObject.getByText(strings.LoginForm.AuthLogoutNotification)).toBeInTheDocument();
+  expect(renderObject.getByText(en('auth:LoginForm.AuthLogoutNotification'))).toBeInTheDocument();
 });
 
 test('reset link leads to correct url', () => {
@@ -141,8 +139,8 @@ test('reset link leads to correct url', () => {
   const ForgotLoginForm = makeLoginForm(mergeConfig(defaultConfig, {
     paths: { forgotPassword: pathToForgotPassword },
   })).LoginForm;
-  const renderObject = renderFunction(<ForgotLoginForm strings={strings} />);
-  fireEvent.click(renderObject.getByText(strings.LoginForm.ForgotPassword));
+  const renderObject = renderFunction(<ForgotLoginForm />);
+  fireEvent.click(renderObject.getByText(en('auth:LoginForm.ForgotPassword')));
   const { entries } = renderObject.history;
   expect(entries[entries.length - 1].pathname).toEqual(pathToForgotPassword);
 });
@@ -152,8 +150,8 @@ test('register link leads to correct url', () => {
   const RegisterLoginForm = makeLoginForm(mergeConfig(defaultConfig, {
     paths: { register: pathToRegister },
   })).LoginForm;
-  const renderObject = renderFunction(<RegisterLoginForm strings={strings} />);
-  fireEvent.click(renderObject.getByText(strings.LoginForm.SignUp));
+  const renderObject = renderFunction(<RegisterLoginForm />);
+  fireEvent.click(renderObject.getByText(en('auth:LoginForm.SignUp')));
   const { entries } = renderObject.history;
   expect(entries[entries.length - 1].pathname).toEqual(pathToRegister);
 });
@@ -162,13 +160,13 @@ test('register link is not shown if disabledUserRegistration', () => {
   const PureLoginForm = makeLoginForm(mergeConfig(defaultConfig, {
     disableUserRegistration: true,
   })).LoginForm;
-  const renderObject = renderFunction(<PureLoginForm strings={strings} />);
-  expect(() => renderObject.getByText(strings.LoginForm.SignUp)).toThrowError();
+  const renderObject = renderFunction(<PureLoginForm />);
+  expect(() => renderObject.getByText(en('auth:LoginForm.SignUp'))).toThrowError();
 });
 
 test('submit button disabled when loading', () => {
   const renderObject = renderWithRouterAndUser(
-    <LoginForm strings={strings} />,
+    <LoginForm />,
     { loading: true },
   );
   expect(renderObject.getAllByRole('button').find(

@@ -10,7 +10,6 @@ import { useDebouncedCallback } from 'use-debounce';
 import { AuthFunctionContext } from '../store/UserStore';
 import { FullConfig } from '../Configuration';
 import { AuthView } from './AuthView';
-import allStrings, { StringsProps } from '../internationalization';
 import { PasswordField } from './common/PasswordField';
 import { ErrorMessage } from '../api/types';
 
@@ -58,16 +57,14 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 export const makeResetPasswordForm: (config: FullConfig) => {
-  ResetPasswordForm: FC<StringsProps>;
-  ResetPasswordView: FC<StringsProps>;
+  ResetPasswordForm: FC;
+  ResetPasswordView: FC;
 } = ({
   components: { loadingIndicator, backgroundImage },
   paths: { login, forgotPassword },
-  defaultLanguage,
+  translator: t,
 }) => {
-  const ResetPasswordForm: FC<StringsProps> = ({
-    strings = allStrings[defaultLanguage],
-  }) => {
+  const ResetPasswordForm: FC = () => {
     const classes = useStyles();
     const [password, setPassword] = useState('');
     const [password2, setPassword2] = useState('');
@@ -105,7 +102,7 @@ export const makeResetPasswordForm: (config: FullConfig) => {
           className={classes.title}
           variant="h3"
         >
-          {strings.ResetPassword.ResetPassword}
+          {t('auth:ResetPassword.ResetPassword')}
         </Typography>
         {
           successState === SuccessState.INITIAL && (
@@ -132,10 +129,10 @@ export const makeResetPasswordForm: (config: FullConfig) => {
                 className={classes.inputField}
                 password={password}
                 errorMessage={passwordErrors || {}}
-                label={strings.ResetPassword.NewPassword}
+                label={t('auth:ResetPassword.NewPassword')}
                 id="reset_password"
                 onChange={setAndValidatePassword}
-                strings={strings}
+                translator={t}
               />
 
               <PasswordField
@@ -145,21 +142,21 @@ export const makeResetPasswordForm: (config: FullConfig) => {
                 errorMessage={password !== password2 && password2.length > 0 ? {
                   password: ['passwords_not_identical'],
                 } : {}}
-                label={strings.ResetPassword.RepeatNewPassword}
+                label={t('auth:ResetPassword.RepeatNewPassword')}
                 id="reset_password2"
-                strings={strings}
+                translator={t}
               />
 
               <Grid container item xs={12} justify="center">
                 <Button
                   id="reset_submit"
                   type="submit"
-                  title={strings.ResetPassword.ButtonText}
+                  title={t('auth:ResetPassword.ButtonText')}
                   variant="contained"
                   color="primary"
                   disabled={password !== password2 || passwordErrors !== undefined}
                 >
-                  {strings.ResetPassword.ButtonText}
+                  {t('auth:ResetPassword.ButtonText')}
                 </Button>
               </Grid>
             </form>
@@ -167,12 +164,12 @@ export const makeResetPasswordForm: (config: FullConfig) => {
         }
         {
           successState === SuccessState.SUCCESS && (
-            <SuccessView strings={strings} />
+            <SuccessView />
           )
         }
         {
           successState === SuccessState.INVALID_LINK && (
-            <InvalidLinkView strings={strings} />
+            <InvalidLinkView />
           )
         }
         {
@@ -186,9 +183,7 @@ export const makeResetPasswordForm: (config: FullConfig) => {
     );
   };
 
-  const SuccessView: FC<StringsProps> = ({
-    strings = allStrings[defaultLanguage],
-  }) => {
+  const SuccessView: FC = () => {
     const classes = useStyles();
 
     return (
@@ -197,27 +192,25 @@ export const makeResetPasswordForm: (config: FullConfig) => {
           className={classes.successText}
           variant="body1"
         >
-          {strings.ResetPassword.SuccessText}
+          {t('auth:ResetPassword.SuccessText')}
         </Typography>
 
         <Grid container item xs={12} justify="center">
           <Button
             type="button"
-            title={strings.ResetPassword.SuccessButtonText}
+            title={t('auth:ResetPassword.SuccessButtonText')}
             variant="contained"
             color="primary"
             href={login}
           >
-            {strings.ResetPassword.SuccessButtonText}
+            {t('auth:ResetPassword.SuccessButtonText')}
           </Button>
         </Grid>
       </>
     );
   };
 
-  const InvalidLinkView: FC<StringsProps> = ({
-    strings = allStrings[defaultLanguage],
-  }) => {
+  const InvalidLinkView: FC = () => {
     const classes = useStyles();
 
     return (
@@ -226,25 +219,25 @@ export const makeResetPasswordForm: (config: FullConfig) => {
           className={classes.successText}
           variant="body1"
         >
-          {strings.ResetPassword.InvalidLink}
+          {t('auth:ResetPassword.InvalidLink')}
         </Typography>
 
         <Grid container item xs={12} justify="center">
           <Button
             type="button"
-            title={strings.ResetPassword.InvalidLinkButtonText}
+            title={t('auth:ResetPassword.InvalidLinkButtonText')}
             variant="contained"
             color="primary"
             href={forgotPassword}
           >
-            {strings.ResetPassword.InvalidLinkButtonText}
+            {t('auth:ResetPassword.InvalidLinkButtonText')}
           </Button>
         </Grid>
       </>
     );
   };
 
-  const ResetPasswordView: FC<StringsProps> = (props) => (
+  const ResetPasswordView: FC = (props) => (
     <AuthView backgroundImage={backgroundImage}>
       <ResetPasswordForm {...props} />
     </AuthView>

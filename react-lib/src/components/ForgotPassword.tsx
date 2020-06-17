@@ -7,7 +7,6 @@ import Link from '@material-ui/core/Link';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { FC, useContext, useState } from 'react';
 import { useHistory, Link as RouterLink } from 'react-router-dom';
-import allStrings, { StringsProps } from '../internationalization';
 import { AuthFunctionContext } from '../store/UserStore';
 import { FullConfig } from '../Configuration';
 import { AuthView } from './AuthView';
@@ -47,16 +46,14 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 export const makeForgotPasswordForm: (config: FullConfig) => {
-  ForgotPasswordForm: FC<StringsProps>;
-  ForgotPasswordView: FC<StringsProps>;
+  ForgotPasswordForm: FC;
+  ForgotPasswordView: FC;
 } = ({
   components: { backgroundImage },
   paths: { login, emailSent },
-  defaultLanguage,
+  translator: t,
 }) => {
-  const ForgotPasswordForm: FC<StringsProps> = ({
-    strings = allStrings[defaultLanguage],
-  }) => {
+  const ForgotPasswordForm: FC = () => {
     const classes = useStyles();
     const [email, setEmail] = useState('');
     const { requestPasswordReset } = useContext(AuthFunctionContext);
@@ -70,13 +67,13 @@ export const makeForgotPasswordForm: (config: FullConfig) => {
           className={classes.title}
           variant="h3"
         >
-          {strings.ForgotPassword.ForgotPassword}
+          {t('auth:ForgotPassword.ForgotPassword')}
         </Typography>
 
         <Typography
           variant="body2"
         >
-          {strings.ForgotPassword.Description}
+          {t('auth:ForgotPassword.Description')}
         </Typography>
 
         <form
@@ -92,7 +89,7 @@ export const makeForgotPasswordForm: (config: FullConfig) => {
             fullWidth
             required
             id="forgot_email"
-            label={strings.ForgotPassword.InputLabel}
+            label={t('auth:ForgotPassword.InputLabel')}
             variant="outlined"
             type="email"
             value={email}
@@ -105,11 +102,11 @@ export const makeForgotPasswordForm: (config: FullConfig) => {
             <Button
               id="forgot_submit"
               type="submit"
-              title={strings.ForgotPassword.ButtonText}
+              title={t('auth:ForgotPassword.ButtonText')}
               variant="contained"
               color="primary"
             >
-              {strings.ForgotPassword.ButtonText}
+              {t('auth:ForgotPassword.ButtonText')}
             </Button>
           </Grid>
 
@@ -121,7 +118,7 @@ export const makeForgotPasswordForm: (config: FullConfig) => {
               component={RouterLink}
               to={login}
             >
-              {strings.ForgotPassword.BackToLogin}
+              {t('auth:ForgotPassword.BackToLogin')}
             </Link>
           </Grid>
         </form>
@@ -129,7 +126,7 @@ export const makeForgotPasswordForm: (config: FullConfig) => {
     );
   };
 
-  const ForgotPasswordView: FC<StringsProps> = (props) => (
+  const ForgotPasswordView: FC = (props) => (
     <AuthView backgroundImage={backgroundImage}>
       <ForgotPasswordForm {...props} />
     </AuthView>

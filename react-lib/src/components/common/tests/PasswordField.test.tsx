@@ -3,28 +3,26 @@ import * as React from 'react';
 import { fireEvent } from '@testing-library/dom';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { render } from '@testing-library/react';
-import allStrings from '../../../internationalization';
 import { PasswordField } from '../PasswordField';
-
-const strings = allStrings.en;
+import { en } from '../../../internationalization';
 
 const renderFunction = (
-  element: JSX.Element = <PasswordField strings={strings} password="" errorMessage={{ password: ['blank'] }} />,
+  element: JSX.Element = <PasswordField translator={en} password="" errorMessage={{ password: ['blank'] }} />,
 ) => render(element);
 
 test('password visibility', () => {
   const renderObject = renderFunction();
-  expect(renderObject.getByLabelText(strings.Common.Password))
+  expect(renderObject.getByLabelText(en('auth:Common.Password')))
     .toHaveProperty('type', 'password');
   fireEvent.click(renderObject.getByLabelText('toggle password visibility'));
-  expect(renderObject.getByLabelText(strings.Common.Password))
+  expect(renderObject.getByLabelText(en('auth:Common.Password')))
     .toHaveProperty('type', 'text');
   fireEvent.click(renderObject.getByLabelText('toggle password visibility'));
-  expect(renderObject.getByLabelText(strings.Common.Password))
+  expect(renderObject.getByLabelText(en('auth:Common.Password')))
     .toHaveProperty('type', 'password');
 });
 
 test('password error messages', () => {
   const renderObject = renderFunction();
-  expect(renderObject.getByText(strings.Common.FieldErrors.blank)).toBeInTheDocument();
+  expect(renderObject.getByText(en('auth:Common.FieldErrors.blank'))).toBeInTheDocument();
 });

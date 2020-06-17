@@ -4,9 +4,7 @@ import { Route } from 'react-router-dom';
 import { fireEvent, waitForElement } from '@testing-library/dom';
 import { dontResolvePromise, renderWithRouterAndUser } from './Util';
 import { ResetPasswordForm } from '../..';
-import allStrings from '../../internationalization';
-
-const strings = allStrings.en;
+import { en } from '../../internationalization';
 
 const mockData = {
   password: '12345678',
@@ -20,12 +18,12 @@ const sleep = async () => new Promise((r) => setTimeout(r, 400));
 test('renders the password form when ident and token are provided', async () => {
   const renderObject = renderWithRouterAndUser(
     <Route path="/reset-password/:ident/:token">
-      <ResetPasswordForm strings={strings} />
+      <ResetPasswordForm />
     </Route>,
     { resetPassword: () => Promise.resolve() },
     ['/reset-password/1234/1234-1234'],
   );
-  await waitForElement(() => renderObject.getByText(strings.ResetPassword.ResetPassword));
+  await waitForElement(() => renderObject.getByText(en('auth:ResetPassword.ResetPassword')));
 });
 
 test('password is validated once, when typing is finished', async () => {
@@ -33,17 +31,17 @@ test('password is validated once, when typing is finished', async () => {
   validatePassword.mockReturnValue(dontResolvePromise());
   const renderObject = renderWithRouterAndUser(
     <Route path="/reset-password/:ident/:token">
-      <ResetPasswordForm strings={strings} />
+      <ResetPasswordForm />
     </Route>,
     { validatePassword },
     [`/reset-password/${mockData.ident}/1234-1234`],
   );
   fireEvent.change(
-    renderObject.getByLabelText(strings.ResetPassword.NewPassword),
+    renderObject.getByLabelText(en('auth:ResetPassword.NewPassword')),
     { target: { value: 'placeholder' } },
   );
   fireEvent.change(
-    renderObject.getByLabelText(strings.ResetPassword.NewPassword),
+    renderObject.getByLabelText(en('auth:ResetPassword.NewPassword')),
     { target: { value: mockData.password } },
   );
 
@@ -61,7 +59,7 @@ test('password is validated once, when typing is finished', async () => {
 test('error state', async () => {
   const renderObject = renderWithRouterAndUser(
     <Route path="/reset-password/:ident/:token">
-      <ResetPasswordForm strings={strings} />
+      <ResetPasswordForm />
     </Route>,
     {
       // eslint-disable-next-line prefer-promise-reject-errors
@@ -70,7 +68,7 @@ test('error state', async () => {
     [`/reset-password/${mockData.ident}/${mockData.token}`],
   );
   fireEvent.change(
-    renderObject.getByLabelText(strings.ResetPassword.NewPassword),
+    renderObject.getByLabelText(en('auth:ResetPassword.NewPassword')),
     {
       target: {
         value: mockData.password,
@@ -78,7 +76,7 @@ test('error state', async () => {
     },
   );
   fireEvent.change(
-    renderObject.getByLabelText(strings.ResetPassword.RepeatNewPassword),
+    renderObject.getByLabelText(en('auth:ResetPassword.RepeatNewPassword')),
     {
       target: {
         value: mockData.password,
@@ -87,14 +85,14 @@ test('error state', async () => {
   );
   fireEvent.submit(renderObject.getByRole('form'));
 
-  await waitForElement(() => renderObject.getByText(strings.ResetPassword.InvalidLink));
+  await waitForElement(() => renderObject.getByText(en('auth:ResetPassword.InvalidLink')));
 });
 
 // eslint-disable-next-line jest/expect-expect
 test('success state', async () => {
   const renderObject = renderWithRouterAndUser(
     <Route path="/reset-password/:ident/:token">
-      <ResetPasswordForm strings={strings} />
+      <ResetPasswordForm />
     </Route>,
     {
       resetPassword: () => Promise.resolve(),
@@ -102,7 +100,7 @@ test('success state', async () => {
     [`/reset-password/${mockData.ident}/${mockData.token}`],
   );
   fireEvent.change(
-    renderObject.getByLabelText(strings.ResetPassword.NewPassword),
+    renderObject.getByLabelText(en('auth:ResetPassword.NewPassword')),
     {
       target: {
         value: mockData.password,
@@ -110,7 +108,7 @@ test('success state', async () => {
     },
   );
   fireEvent.change(
-    renderObject.getByLabelText(strings.ResetPassword.RepeatNewPassword),
+    renderObject.getByLabelText(en('auth:ResetPassword.RepeatNewPassword')),
     {
       target: {
         value: mockData.password,
@@ -119,5 +117,5 @@ test('success state', async () => {
   );
   fireEvent.submit(renderObject.getByRole('form'));
 
-  await waitForElement(() => renderObject.getByText(strings.ResetPassword.SuccessText));
+  await waitForElement(() => renderObject.getByText(en('auth:ResetPassword.SuccessText')));
 });
