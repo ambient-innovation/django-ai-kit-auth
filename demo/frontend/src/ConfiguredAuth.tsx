@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { configureAuth } from 'ai-kit-auth';
+import { configureAuth, de } from 'ai-kit-auth';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 
@@ -25,6 +25,7 @@ export const {
   ProtectedRoute,
   makeAuthRoutes,
 } = configureAuth({
+  translator: de,
   components: {
     backgroundImage: () => <BackgroundImage />,
   },

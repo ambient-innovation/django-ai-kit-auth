@@ -7,7 +7,6 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import Link from '@material-ui/core/Link';
 import { FullConfig } from '../Configuration';
-import allStrings, { StringsProps } from '../internationalization';
 import { AuthView } from './AuthView';
 import { MailSvg } from '../assets/MailSvg';
 
@@ -48,8 +47,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 export const makeEmailSentCard: (config: FullConfig) => {
-  EmailSentCard: FC<StringsProps>;
-  EmailSentView: FC<StringsProps>;
+  EmailSentCard: FC;
+  EmailSentView: FC;
 } = ({
   components: { backgroundImage },
   paths: {
@@ -57,11 +56,9 @@ export const makeEmailSentCard: (config: FullConfig) => {
     login,
     forgotPassword,
   },
-  defaultLanguage,
+  translator: t,
 }) => {
-  const EmailSentCard: FC<StringsProps> = ({
-    strings = allStrings[defaultLanguage],
-  }) => {
+  const EmailSentCard: FC = () => {
     const classes = useStyles();
     const history = useHistory();
 
@@ -75,11 +72,11 @@ export const makeEmailSentCard: (config: FullConfig) => {
     return (
       <Paper className={classes.PaperCard}>
         <Typography variant="h4" className={classes.SuccessTitle}>
-          <span>{strings.EmailSent.EmailSent}</span>
+          <span>{t('auth:EmailSent.EmailSent')}</span>
         </Typography>
 
         <Typography variant="body1" className={classes.SuccessText}>
-          {strings.EmailSent.Description}
+          {t('auth:EmailSent.Description')}
         </Typography>
 
         <Grid item container justify="center">
@@ -88,7 +85,7 @@ export const makeEmailSentCard: (config: FullConfig) => {
             color="primary"
             onClick={() => handleRedirect()}
           >
-            {strings.EmailSent.ContinueToLogin}
+            {t('auth:EmailSent.ContinueToLogin')}
           </Button>
         </Grid>
 
@@ -100,7 +97,7 @@ export const makeEmailSentCard: (config: FullConfig) => {
             component={RouterLink}
             to={forgotPassword}
           >
-            {strings.EmailSent.RequestAgain}
+            {t('auth:EmailSent.RequestAgain')}
           </Link>
         </Grid>
         <MailSvg className={classes.MailSvg} />
@@ -108,7 +105,7 @@ export const makeEmailSentCard: (config: FullConfig) => {
     );
   };
 
-  const EmailSentView: FC<StringsProps> = (props) => (
+  const EmailSentView: FC = (props) => (
     <AuthView backgroundImage={backgroundImage}>
       <EmailSentCard {...props} />
     </AuthView>

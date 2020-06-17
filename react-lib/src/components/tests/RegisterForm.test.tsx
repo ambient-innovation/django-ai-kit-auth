@@ -3,11 +3,9 @@ import * as React from 'react';
 import { fireEvent, waitForElement } from '@testing-library/react';
 import { defaultConfig, RegisterForm } from '../..';
 import { makeRegisterForm } from '../Register';
-import allStrings from '../../internationalization';
 import { dontResolvePromise, renderWithRouterAndUser } from './Util';
 import { mergeConfig } from '../../Configuration';
-
-const strings = allStrings.en;
+import { en } from '../../internationalization';
 
 const mockUser = ({
   username: 'Donald', email: 'donald@example.com', password: 'longpass',
@@ -18,7 +16,7 @@ const sleep = async () => new Promise((r) => setTimeout(r, 400));
 const register = jest.fn();
 
 const renderFunction = (
-  element: JSX.Element = <RegisterForm strings={strings} />,
+  element: JSX.Element = <RegisterForm />,
 ) => renderWithRouterAndUser(element, {
   register,
 });
@@ -30,15 +28,15 @@ beforeEach(() => {
 test('submit calls register', () => {
   const renderObject = renderFunction();
   fireEvent.change(
-    renderObject.getByLabelText(strings.RegisterForm.Username),
+    renderObject.getByLabelText(en('auth:RegisterForm.Username')),
     { target: { value: mockUser.username } },
   );
   fireEvent.change(
-    renderObject.getByLabelText(strings.RegisterForm.Email),
+    renderObject.getByLabelText(en('auth:RegisterForm.Email')),
     { target: { value: mockUser.email } },
   );
   fireEvent.change(
-    renderObject.getByLabelText(strings.RegisterForm.Password),
+    renderObject.getByLabelText(en('auth:RegisterForm.Password')),
     { target: { value: mockUser.password } },
   );
   fireEvent.submit(renderObject.getByRole('form'));
@@ -53,23 +51,23 @@ test('password is validated once, when typing is finished', async () => {
   const validatePassword = jest.fn();
   validatePassword.mockReturnValue(dontResolvePromise());
   const renderObject = renderWithRouterAndUser(
-    <RegisterForm strings={strings} />,
+    <RegisterForm />,
     { validatePassword },
   );
   fireEvent.change(
-    renderObject.getByLabelText(strings.RegisterForm.Username),
+    renderObject.getByLabelText(en('auth:RegisterForm.Username')),
     { target: { value: mockUser.username } },
   );
   fireEvent.change(
-    renderObject.getByLabelText(strings.RegisterForm.Email),
+    renderObject.getByLabelText(en('auth:RegisterForm.Email')),
     { target: { value: mockUser.email } },
   );
   fireEvent.change(
-    renderObject.getByLabelText(strings.RegisterForm.Password),
+    renderObject.getByLabelText(en('auth:RegisterForm.Password')),
     { target: { value: 'placeholder' } },
   );
   fireEvent.change(
-    renderObject.getByLabelText(strings.RegisterForm.Password),
+    renderObject.getByLabelText(en('auth:RegisterForm.Password')),
     { target: { value: mockUser.password } },
   );
 
@@ -84,15 +82,15 @@ test('cannot submit while loading', () => {
   register.mockReturnValue(dontResolvePromise());
   const renderObject = renderFunction();
   fireEvent.submit(renderObject.getByRole('form'));
-  expect(renderObject.getByTitle(strings.RegisterForm.Register)).toBeDisabled();
+  expect(renderObject.getByTitle(en('auth:RegisterForm.Register'))).toBeDisabled();
 });
 
 test('on success, text is shown and form vanishes', async () => {
   register.mockReturnValue(Promise.resolve());
   const renderObject = renderFunction();
   fireEvent.submit(renderObject.getByRole('form'));
-  await waitForElement(() => renderObject.getByText(strings.RegisterForm.SuccessText));
-  expect(renderObject.getByText(strings.RegisterForm.SuccessTitle)).toBeInTheDocument();
+  await waitForElement(() => renderObject.getByText(en('auth:RegisterForm.SuccessText')));
+  expect(renderObject.getByText(en('auth:RegisterForm.SuccessTitle'))).toBeInTheDocument();
   expect(() => renderObject.getByRole('form')).toThrowError();
 });
 
@@ -110,13 +108,13 @@ test('error in username field', async () => {
   const renderObject = renderFunction();
   fireEvent.submit(renderObject.getByRole('form'));
   await waitForElement(
-    () => renderObject.getByText(strings.Common.FieldErrors.blank),
+    () => renderObject.getByText(en('auth:Common.FieldErrors.blank')),
   );
   fireEvent.change(
-    renderObject.getByLabelText(strings.RegisterForm.Username),
+    renderObject.getByLabelText(en('auth:RegisterForm.Username')),
     { target: { value: 'a' } },
   );
-  expect(() => renderObject.getByText(strings.Common.FieldErrors.blank)).toThrowError();
+  expect(() => renderObject.getByText(en('auth:Common.FieldErrors.blank'))).toThrowError();
 });
 
 test('error in email field', async () => {
@@ -133,13 +131,13 @@ test('error in email field', async () => {
   const renderObject = renderFunction();
   fireEvent.submit(renderObject.getByRole('form'));
   await waitForElement(
-    () => renderObject.getByText(strings.Common.FieldErrors.blank),
+    () => renderObject.getByText(en('auth:Common.FieldErrors.blank')),
   );
   fireEvent.change(
-    renderObject.getByLabelText(strings.RegisterForm.Email),
+    renderObject.getByLabelText(en('auth:RegisterForm.Email')),
     { target: { value: 'a' } },
   );
-  expect(() => renderObject.getByText(strings.Common.FieldErrors.blank)).toThrowError();
+  expect(() => renderObject.getByText(en('auth:Common.FieldErrors.blank'))).toThrowError();
 });
 
 // eslint-disable-next-line jest/expect-expect
@@ -157,7 +155,7 @@ test('error in password field', async () => {
   const renderObject = renderFunction();
   fireEvent.submit(renderObject.getByRole('form'));
   await waitForElement(
-    () => renderObject.getByText(strings.Common.FieldErrors.blank),
+    () => renderObject.getByText(en('auth:Common.FieldErrors.blank')),
   );
 });
 
@@ -175,14 +173,14 @@ test('error in password while typing', async () => {
     });
   });
   const renderObject = renderWithRouterAndUser(
-    <RegisterForm strings={strings} />,
+    <RegisterForm />,
     { validatePassword },
   );
   fireEvent.change(
-    renderObject.getByLabelText(strings.RegisterForm.Password),
+    renderObject.getByLabelText(en('auth:RegisterForm.Password')),
     { target: { value: '123' } },
   );
-  await waitForElement(() => renderObject.getByText(strings.Common.FieldErrors.password_too_short));
+  await waitForElement(() => renderObject.getByText(en('auth:Common.FieldErrors.password_too_short')));
 });
 
 // eslint-disable-next-line jest/expect-expect
@@ -202,7 +200,7 @@ test('show general error', async () => {
   fireEvent.submit(renderObject.getByRole('form'));
   await waitForElement(
     () => renderObject.getByText(
-      strings.RegisterForm.NonFieldErrors.general,
+      en('auth:RegisterForm.NonFieldErrors.general'),
     ),
   );
 });
@@ -212,8 +210,8 @@ test('sign in link leads to correct url', () => {
   const LoginRegisterForm = makeRegisterForm(mergeConfig(defaultConfig, {
     paths: { login: pathToLogin },
   })).RegisterForm;
-  const renderObject = renderFunction(<LoginRegisterForm strings={strings} />);
-  fireEvent.click(renderObject.getByText(strings.RegisterForm.BackToLogin));
+  const renderObject = renderFunction(<LoginRegisterForm />);
+  fireEvent.click(renderObject.getByText(en('auth:RegisterForm.BackToLogin')));
   const { entries } = renderObject.history;
   expect(entries[entries.length - 1].pathname).toEqual(pathToLogin);
 });
