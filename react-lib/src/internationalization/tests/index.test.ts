@@ -9,15 +9,15 @@ test('tFactory returns function', () => {
 });
 
 test('t returns correct strings', () => {
-  const e = tFactory(en);
-  const customKey = 'auth:Common.ok';
-  const customValue = `habibi`;
-  const t = (key: string) => {
-    if (key === customKey) return customValue;
-
-    return e(key);
+  const mockStrings: Strings = {
+    ...en,
+    Common: {
+      ...en.Common,
+      ok: 'MockOK',
+    },
   };
-  expect(t('auth:Common.ok')).toEqual(customValue);
+  const t = tFactory(mockStrings);
+  expect(t('auth:Common.ok')).toEqual(mockStrings.Common.ok);
 });
 
 test.each([
