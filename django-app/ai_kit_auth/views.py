@@ -62,7 +62,7 @@ class LogoutView(views.APIView):
     permission_classes = (IsAuthenticated,)
 
     def post(self, request, *args, **kwargs):
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             user_pre_logout.send(sender=LogoutView, user=request.user)
             logout(request)
             user_post_logout.send(sender=LogoutView, user=request.user)
@@ -199,7 +199,7 @@ class ResetPassword(views.APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        user_pre_reset_password(sender=ResetPassword, user=user)
+        user_pre_reset_password.send(sender=ResetPassword, user=user)
         # reuse the password validation
         serializer = serializers.ValidatePasswordSerializer(
             data={"ident": ident, "password": password,}
