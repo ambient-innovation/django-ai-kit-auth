@@ -11,6 +11,7 @@ from django.db.utils import IntegrityError
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from .settings import api_settings
+from .signals import user_post_registered
 from . import services
 
 UserModel = get_user_model()
@@ -142,6 +143,7 @@ class RegistrationSerializer(serializers.Serializer):
             user = UserModel(username=username, email=email, is_active=False)
             user.set_password(password)
             user.save()
+            user_post_registered.send(sender=RegistrationSerializer, user=user)
         except IntegrityError as e:
             raise ValidationError({"username": ["username_unique"]})
         services.send_user_activation_mail(user)
