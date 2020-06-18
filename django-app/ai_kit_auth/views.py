@@ -7,6 +7,20 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
 from django.middleware import csrf
 
+from .signals import (
+    user_pre_login,
+    user_post_login,
+    user_pre_logout,
+    user_post_logout,
+    user_pre_registered,
+    user_pre_activated,
+    user_post_activated,
+    user_pre_forgot_password,
+    user_post_forgot_password,
+    user_pre_reset_password,
+    user_post_reset_password,
+)
+
 UserModel = get_user_model()
 
 
@@ -24,6 +38,8 @@ class LoginView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data["user"]
 
+        user_pre_login.send(sender=LoginView, user=user)
+
         login(request, user)
 
         user_serializer = self.user_serializer(
@@ -33,6 +49,8 @@ class LoginView(generics.GenericAPIView):
         # the position of this statement is important since the csrf token
         # is rotated on login
         csrf_token = csrf.get_token(request)
+
+        user_post_login.send(sender=LoginView, user=user)
 
         return Response(
             {"user": user_serializer.data, "csrf": csrf_token,},
@@ -44,7 +62,10 @@ class LogoutView(views.APIView):
     permission_classes = (IsAuthenticated,)
 
     def post(self, request, *args, **kwargs):
-        logout(request)
+        if request.user.is_authenticated:
+            user_pre_logout.send(sender=LogoutView, user=request.user)
+            logout(request)
+            user_post_logout.send(sender=LogoutView, user=request.user)
         csrf_token = csrf.get_token(request)
         return Response({"csrf": csrf_token}, status=status.HTTP_200_OK)
 
@@ -79,6 +100,7 @@ class RegistrationView(generics.GenericAPIView):
     serializer_class = serializers.RegistrationSerializer
 
     def post(self, request, *args, **kwargs):
+        user_pre_registered.send(sender=RegistrationView, user_data=request.data)
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         return Response({}, status=status.HTTP_201_CREATED)
@@ -123,8 +145,10 @@ class ActivateUser(views.APIView):
             return Response(
                 {"error": "activation_link_invalid"}, status=status.HTTP_400_BAD_REQUEST
             )
+        user_pre_activated.send(sender=ActivateUser, user=user)
         user.is_active = True
         user.save()
+        user_post_activated.send(sender=ActivateUser, user=user)
         return Response(status=status.HTTP_200_OK)
 
 
@@ -134,7 +158,9 @@ class InitiatePasswordResetView(views.APIView):
     def post(self, request, *args, **kwargs):
         try:
             user = UserModel.objects.get(email__iexact=request.data["email"])
+            user_pre_forgot_password.send(sender=InitiatePasswordResetView, user=user)
             services.send_reset_pw_mail(user)
+            user_post_forgot_password.send(sender=InitiatePasswordResetView, user=user)
         except UserModel.DoesNotExist:
             pass
         # always return OK
@@ -173,6 +199,7 @@ class ResetPassword(views.APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        user_pre_reset_password.send(sender=ResetPassword, user=user)
         # reuse the password validation
         serializer = serializers.ValidatePasswordSerializer(
             data={"ident": ident, "password": password,}
@@ -183,4 +210,5 @@ class ResetPassword(views.APIView):
         user.is_active = True
         user.set_password(password)
         user.save()
+        user_post_reset_password.send(sender=ResetPassword, user=user)
         return Response({}, status=status.HTTP_200_OK)
