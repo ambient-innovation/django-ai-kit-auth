@@ -150,6 +150,11 @@ class MeViewTests(AuthTestCase):
         self.assertTrue("csrf" in response.data)
         self.assertEqual(response.data["user"], None)
 
+    def test_custom_user_serializer(self):
+        self.client.login(username=self.user.username, password=PASSWORD)
+        response = self.client.get(me_url)
+        self.assertTrue("is_active" in response.data["user"])
+
 
 class LogoutTests(AuthTestCase):
     def test_logout(self):
