@@ -16,6 +16,7 @@ configured settings or falls back on defaults
 from django.conf import settings
 from django.test.signals import setting_changed
 from django.dispatch import receiver
+from django.utils.translation import gettext_lazy as _
 from importlib import import_module
 
 DEFAULTS = {
@@ -36,6 +37,32 @@ DEFAULTS = {
             "BODY_HTML": "ai_kit_auth/reset_password_body.html",
         },
     },
+    "ADMIN_FIELDSETS": (
+        (None, {"fields": ("username", "email", "password")}),
+        (_("Personal info"), {"fields": ("first_name", "last_name")}),
+        (
+            _("Permissions"),
+            {
+                "fields": (
+                    "is_active",
+                    "is_staff",
+                    "is_superuser",
+                    "groups",
+                    "user_permissions",
+                ),
+            },
+        ),
+        (_("Important dates"), {"fields": ("last_login", "date_joined")}),
+    ),
+    "ADMIN_ADD_FIELDSETS": (
+        (
+            None,
+            {
+                "classes": ("wide",),
+                "fields": ("username", "email", "password1", "password2"),
+            },
+        ),
+    ),
     "USERNAME_REQUIRED": False,
     "USER_SERIALIZER": "ai_kit_auth.serializers.UserSerializer",
     "FRONTEND": {

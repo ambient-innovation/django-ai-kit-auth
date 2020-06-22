@@ -115,6 +115,35 @@ default. Default configurations are:
             "ACTIVATION_ROUTE": "/auth/activation/",
             "RESET_PW_ROUTE": "/auth/reset_password/",
         },
+        # If you want to configure the layout of the admin form or you use a
+        # use model doesn't have all the fields you need, you can supply your
+        # own fieldsets
+        "ADMIN_FIELDSETS": (
+                (None, {"fields": ("username", "email", "password")}),
+                (_("Personal info"), {"fields": ("first_name", "last_name")}),
+                (
+                    _("Permissions"),
+                    {
+                        "fields": (
+                            "is_active",
+                            "is_staff",
+                            "is_superuser",
+                            "groups",
+                            "user_permissions",
+                        ),
+                    },
+                ),
+                (_("Important dates"), {"fields": ("last_login", "date_joined")}),
+            ),
+            "ADMIN_ADD_FIELDSETS": (
+                (
+                    None,
+                    {
+                        "classes": ("wide",),
+                        "fields": ("username", "email", "password1", "password2"),
+                    },
+                ),
+            ),
     }
 
 In addition to that some general configuration is required:
