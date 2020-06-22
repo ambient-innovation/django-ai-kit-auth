@@ -16,6 +16,7 @@ configured settings or falls back on defaults
 from django.conf import settings
 from django.test.signals import setting_changed
 from django.dispatch import receiver
+from importlib import import_module
 
 DEFAULTS = {
     "EMAIL_TEMPLATES": {
@@ -36,6 +37,7 @@ DEFAULTS = {
         },
     },
     "USERNAME_REQUIRED": False,
+    "USER_SERIALIZER": "ai_kit_auth.serializers.UserSerializer",
     "FRONTEND": {
         "URL": "",
         "ACTIVATION_ROUTE": "/auth/activation/",
@@ -81,6 +83,9 @@ class APISettings:
         }
 
     def __getattr__(self, attr):
+        if attr == "USER_SERIALIZER" and type(self._settings[attr]) == str:
+            module, name = self._settings[attr].rsplit(".", 1)
+            self._settings[attr] = getattr(import_module(module), name)
         return self._settings[attr]
 
     @classmethod

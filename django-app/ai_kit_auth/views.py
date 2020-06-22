@@ -7,6 +7,8 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
 from django.middleware import csrf
 
+from .settings import api_settings
+
 from .signals import (
     user_pre_login,
     user_post_login,
@@ -28,7 +30,7 @@ class LoginView(generics.GenericAPIView):
     # uses standard user model
     serializer_class = serializers.LoginSerializer
     permission_classes = (AllowAny,)
-    user_serializer = serializers.UserSerializer
+    user_serializer = api_settings.USER_SERIALIZER
 
     @method_decorator(csrf_protect)
     def post(self, request, *args, **kwargs):
@@ -76,7 +78,7 @@ class MeView(generics.GenericAPIView):
     """
 
     permission_classes = (AllowAny,)
-    user_serializer = serializers.UserSerializer
+    user_serializer = api_settings.USER_SERIALIZER
 
     def get(self, request, *args, **kwargs):
         csrf_token = csrf.get_token(request)
