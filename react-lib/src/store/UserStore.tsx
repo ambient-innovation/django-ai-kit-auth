@@ -34,6 +34,7 @@ export const AuthFunctionContext = createContext<AuthFunctionContextValue>({
   login: errorPromise,
   loggedIn: false,
   logout: errorPromise,
+  updateUserInfo: errorPromise,
   justLoggedOut: LogoutReason.NONE,
   activateEmailAddress: errorPromise,
   validatePassword: errorPromise,
@@ -97,6 +98,24 @@ export function makeGenericUserStore<U extends unknown = User>() {
         });
     };
 
+    const updateUserInfo: () => Promise<void> = () => {
+      setLoading(true);
+
+      return meAPI<U>(
+        apiAuthPath, axiosRequestConfig,
+      )
+        .then((data) => {
+          setUser(data.user);
+          setCsrf(data.csrf);
+        })
+        .catch((error: AxiosError) => {
+          if (!error.response) {
+            throw new Error('Host unreachable');
+          }
+        })
+        .finally(() => setLoading(false));
+    };
+
     const activateEmailAddress: (
       userIdentifier: string, token: string,
     ) => Promise<void> = (
@@ -129,17 +148,7 @@ export function makeGenericUserStore<U extends unknown = User>() {
     useEffect(() => {
       // If we don't have a user, we need to obtain it via  the me endpoint
       if (!user) {
-        meAPI<U>(apiAuthPath, axiosRequestConfig)
-          .then((data) => {
-            setUser(data.user);
-            setCsrf(data.csrf);
-          })
-          .catch((error: AxiosError) => {
-            if (!error.response) {
-              throw new Error('Host unreachable');
-            }
-          })
-          .finally(() => setLoading(false));
+        updateUserInfo();
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -159,6 +168,7 @@ export function makeGenericUserStore<U extends unknown = User>() {
             login,
             loggedIn: !!user,
             logout,
+            updateUserInfo,
             justLoggedOut: loggedOut,
             activateEmailAddress,
             validatePassword,

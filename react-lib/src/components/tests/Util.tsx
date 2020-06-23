@@ -36,6 +36,7 @@ export const renderWithRouterAndUser = (
             login: dontResolvePromise,
             loggedIn: !!user,
             logout: dontResolvePromise,
+            updateUserInfo: dontResolvePromise,
             justLoggedOut: LogoutReason.NONE,
             activateEmailAddress: dontResolvePromise,
             validatePassword: dontResolvePromise,
