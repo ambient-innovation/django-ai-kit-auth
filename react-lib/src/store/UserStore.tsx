@@ -98,23 +98,19 @@ export function makeGenericUserStore<U extends unknown = User>() {
         });
     };
 
-    const updateUserInfo: () => Promise<void> = () => {
-      setLoading(true);
-
-      return meAPI<U>(
-        apiAuthPath, axiosRequestConfig,
-      )
-        .then((data) => {
-          setUser(data.user);
-          setCsrf(data.csrf);
-        })
-        .catch((error: AxiosError) => {
-          if (!error.response) {
-            throw new Error('Host unreachable');
-          }
-        })
-        .finally(() => setLoading(false));
-    };
+    const updateUserInfo: () => Promise<void> = () => meAPI<U>(
+      apiAuthPath, axiosRequestConfig,
+    )
+      .then((data) => {
+        setUser(data.user);
+        setCsrf(data.csrf);
+      })
+      .catch((error: AxiosError) => {
+        if (!error.response) {
+          throw new Error('Host unreachable');
+        }
+      })
+      .finally(() => setLoading(false));
 
     const activateEmailAddress: (
       userIdentifier: string, token: string,
