@@ -23,7 +23,7 @@ beforeEach(() => {
 
 const StoreDisplay: FC = () => {
   const {
-    user, csrf, loading, login, logout,
+    user, csrf, loading, login, logout, updateUserInfo,
   } = useUserStore();
 
   if (loading) return <div>loading</div>;
@@ -55,6 +55,9 @@ const StoreDisplay: FC = () => {
           </button>
         </div>
       )}
+      <button type="button" onClick={() => updateUserInfo()}>
+        Update
+      </button>
       <div>{csrf}</div>
       { loading && <div>loading</div> }
     </div>
@@ -154,4 +157,16 @@ test('UserStore shows loading while logging out', async () => {
   await waitForElement(() => renderObject.getByText('Logout'));
   fireEvent.click(renderObject.getByText('Logout'));
   expect(renderObject.getByText('loading')).toBeInTheDocument();
+});
+
+test('updateUserInfo calls the me api', async () => {
+  const csrf = 'jasdkfskjdf';
+  maxios.onGet('/me/').replyOnce(200, { user: null, csrf: '' });
+  const renderObject = renderStoreValue();
+  await waitForElement(() => renderObject.getByText('no user'));
+  await waitForElement(() => renderObject.getByText('Update'));
+  maxios.onGet('/me/').replyOnce(200, { user: mockUser, csrf });
+  fireEvent.click(renderObject.getByText('Update'));
+  await waitForElement(() => renderObject.getByText(mockUser.username));
+  expect(renderObject.getByText(csrf)).toBeInTheDocument();
 });
