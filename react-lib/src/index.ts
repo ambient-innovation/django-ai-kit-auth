@@ -26,6 +26,7 @@ export const {
   ResetPasswordView,
   UserContext,
   UserStore,
+  MockUserStore,
   useUserStore,
 } = configureAuth<User>(defaultConfig);
 

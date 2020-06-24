@@ -2,9 +2,10 @@ import * as React from 'react';
 import { Route } from 'react-router-dom';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fireEvent, waitForElement } from '@testing-library/dom';
-import { dontResolvePromise, renderWithRouterAndUser } from './Util';
+import { renderWithRouterAndUser } from './Util';
 import { ResetPasswordForm } from '../..';
 import { en } from '../../internationalization';
+import { dontResolvePromise } from '../../store/UserStore';
 
 const mockData = {
   password: '12345678',
