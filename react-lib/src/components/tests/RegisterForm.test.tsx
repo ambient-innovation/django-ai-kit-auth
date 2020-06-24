@@ -3,9 +3,10 @@ import * as React from 'react';
 import { fireEvent, waitForElement } from '@testing-library/react';
 import { defaultConfig, RegisterForm } from '../..';
 import { makeRegisterForm } from '../Register';
-import { dontResolvePromise, renderWithRouterAndUser } from './Util';
+import { renderWithRouterAndUser } from './Util';
 import { mergeConfig } from '../../Configuration';
 import { en } from '../../internationalization';
+import { dontResolvePromise } from '../../store/UserStore';
 
 const mockUser = ({
   username: 'Donald', email: 'donald@example.com', password: 'longpass',
