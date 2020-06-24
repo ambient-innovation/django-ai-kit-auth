@@ -8,10 +8,10 @@ import {
   loginAPI,
   logoutAPI,
   meAPI,
+  registerAPI,
   resetPasswordAPI,
   sendPWResetEmail,
   validatePasswordAPI,
-  registerAPI,
 } from '../api/api';
 import { AuthFunctionContextValue, LogoutReason, UserStoreValue } from './types';
 
@@ -19,10 +19,13 @@ export interface UserStoreProps {
   apiUrl: string;
   apiAuthPath: string;
 }
+export type MockUserStoreProps<U extends unknown> =
+  Partial<UserStoreValue<U> & AuthFunctionContextValue>;
 
-const noop: () => void = () => null;
 
-const errorPromise = () => new Promise<void>(() => {
+export const noop: () => void = () => null;
+export const dontResolvePromise = () => new Promise<void>(() => null);
+export const errorPromise = () => new Promise<void>(() => {
   throw new Error('No User Store provided!');
 });
 
@@ -179,10 +182,48 @@ export function makeGenericUserStore<U extends unknown = User>() {
     );
   };
 
+  const MockUserStore: FC<MockUserStoreProps<U>> = ({
+    children, ...testContext
+  }) => {
+    const { user, ...context } = testContext || { user: null };
+
+    return (
+      <UserContext.Provider value={{ user: user || null }}>
+        <AuthFunctionContext.Provider
+          value={{
+            apiUrl: 'https://example.com/api/v1',
+            csrf: '1234',
+            axiosRequestConfig: {
+              headers: {
+                common: { 'X-CSRFToken': context?.csrf ?? '1234' },
+              },
+            },
+            loading: false,
+            login: dontResolvePromise,
+            loggedIn: !!user,
+            logout: dontResolvePromise,
+            updateUserInfo: dontResolvePromise,
+            justLoggedOut: LogoutReason.NONE,
+            activateEmailAddress: dontResolvePromise,
+            validatePassword: dontResolvePromise,
+            requestPasswordReset: dontResolvePromise,
+            resetPassword: dontResolvePromise,
+            register: dontResolvePromise,
+            ...context,
+          }}
+        >
+          {children}
+        </AuthFunctionContext.Provider>
+      </UserContext.Provider>
+    );
+  };
+
   const useUserStore: () => UserStoreValue<U>&AuthFunctionContextValue = () => ({
     ...useContext(UserContext),
     ...useContext(AuthFunctionContext),
   });
 
-  return { UserStore, useUserStore, UserContext };
+  return {
+    UserStore, MockUserStore, useUserStore, UserContext,
+  };
 }
