@@ -6,7 +6,7 @@ import { makeRegisterForm } from '../Register';
 import { renderWithRouterAndUser } from './Util';
 import { mergeConfig } from '../../Configuration';
 import { en } from '../../internationalization';
-import {dontResolvePromise} from "../../store/UserStore";
+import { dontResolvePromise } from '../../store/UserStore';
 
 const mockUser = ({
   username: 'Donald', email: 'donald@example.com', password: 'longpass',

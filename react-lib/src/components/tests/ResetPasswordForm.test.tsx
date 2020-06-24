@@ -5,7 +5,7 @@ import { fireEvent, waitForElement } from '@testing-library/dom';
 import { renderWithRouterAndUser } from './Util';
 import { ResetPasswordForm } from '../..';
 import { en } from '../../internationalization';
-import {dontResolvePromise} from "../../store/UserStore";
+import { dontResolvePromise } from '../../store/UserStore';
 
 const mockData = {
   password: '12345678',
