@@ -9,7 +9,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db.utils import IntegrityError
 from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError, ErrorDetail
 from .settings import api_settings
 from .signals import user_post_registered
 from . import services
@@ -92,7 +92,14 @@ class ValidatePasswordSerializer(serializers.Serializer):
         except DjangoValidationError as e:
             # convert to error codes since translations are implemented in the
             # frontend
-            raise ValidationError({"password": [error.code for error in e.error_list]})
+            raise ValidationError(
+                {
+                    "password": [
+                        ErrorDetail(error.code, code=error.code)
+                        for error in e.error_list
+                    ]
+                }
+            )
         return attrs
 
 
