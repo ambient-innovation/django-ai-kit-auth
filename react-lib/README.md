@@ -632,4 +632,3 @@ input fields (password and password-repeat) and a submit button. Upon submit the
 #### Parameters
 
 * `translator?: Translator`: A function which maps keys to user facing strings.
-
