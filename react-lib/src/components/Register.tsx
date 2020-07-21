@@ -16,7 +16,6 @@ import { AuthView } from './AuthView';
 import { ErrorMessage } from '../api/types';
 import { FullConfig } from '../Configuration';
 import { PasswordField } from './common/PasswordField';
-import { MailSvg } from '../assets/MailSvg';
 import { TranslatorProps } from '../internationalization';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
@@ -57,11 +56,6 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     marginBottom: 41,
     fontSize: '1rem',
     color: theme.palette.primary.main,
-  },
-  MailSvg: {
-    position: 'absolute',
-    top: 30,
-    right: 40,
   },
   linkUnderPaper: {
     marginTop: 20,
@@ -171,7 +165,9 @@ export const makeRegisterForm: (config: FullConfig) => {
               variant="outlined"
               type="text"
               value={username}
-              helperText={errors.username ? errors.username.map(fieldErrorMap).join(' - ') : ''}
+              helperText={errors.username
+                ? errors.username.map(fieldErrorMap).join(' - ')
+                : t('auth:RegisterForm.UsernameHelperText')}
               error={!!errors.username}
               onChange={(event) => {
                 setUsername(event.target.value);
@@ -203,6 +199,7 @@ export const makeRegisterForm: (config: FullConfig) => {
               errorMessage={errors}
               onChange={setAndValidatePassword}
               translator={t}
+              helperText={t('auth:RegisterForm.PasswordHelperText')}
             />
             {
               errors.non_field_errors && (
@@ -229,7 +226,6 @@ export const makeRegisterForm: (config: FullConfig) => {
             </Grid>
           </form>
           )}
-          <MailSvg className={classes.MailSvg} />
         </Paper>
         <Link
           classes={{
