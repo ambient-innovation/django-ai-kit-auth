@@ -15,6 +15,7 @@ export interface PasswordFieldProps {
   id?: string;
   onChange?: (value: string) => void;
   translator: Translator;
+  helperText?: string;
 }
 
 export const PasswordField: FC<PasswordFieldProps> = (
@@ -26,6 +27,7 @@ export const PasswordField: FC<PasswordFieldProps> = (
     id,
     onChange,
     translator,
+    helperText,
   },
 ) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -41,7 +43,7 @@ export const PasswordField: FC<PasswordFieldProps> = (
       variant="outlined"
       value={password}
       type={showPassword ? 'text' : 'password'}
-      helperText={errorMessage.password ? errorMessage.password.map(errorMap).join(' - ') : ''}
+      helperText={errorMessage.password && errorMessage.password.length > 0 ? errorMessage.password.map(errorMap).join(' - ') : (helperText ?? '')}
       error={errorMessage.password && errorMessage.password.length > 0}
       onChange={(event) => {
         if (onChange) {

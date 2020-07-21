@@ -5,6 +5,7 @@
     "**/tests/*"
   ],
   "compilerOptions": {
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "isolatedModules": false
   }
 }
