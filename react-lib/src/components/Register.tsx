@@ -5,7 +5,7 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Link from '@material-ui/core/Link';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { createStyles, makeStyles } from '@material-ui/core/styles';
 import React, { FC, useContext, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -17,46 +17,9 @@ import { ErrorMessage } from '../api/types';
 import { FullConfig } from '../Configuration';
 import { PasswordField } from './common/PasswordField';
 import { TranslatorProps } from '../internationalization';
+import { useFormStyles } from './common/styles';
 
-const useStyles = makeStyles((theme: Theme) => createStyles({
-  root: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'flex-end',
-    width: '100%',
-  },
-  paper: {
-    paddingTop: 35,
-    paddingLeft: 47,
-    paddingRight: 30,
-    paddingBottom: 36,
-    boxShadow: '0 1px 36px 0 rgba(211, 211, 211, 0.5)',
-    width: '100%',
-    position: 'relative',
-    [theme.breakpoints.down('md')]: {
-      paddingLeft: 30,
-    },
-    [theme.breakpoints.down('xs')]: {
-      paddingLeft: 17,
-      paddingRight: 17,
-    },
-  },
-  title: {
-    marginBottom: 35,
-    [theme.breakpoints.down('xs')]: {
-      fontSize: 30,
-      letterSpacing: 0.18,
-    },
-  },
-  inputField: {
-    marginBottom: 30,
-  },
-  formHelperText: {
-    marginBottom: 41,
-    fontSize: '1rem',
-    color: theme.palette.primary.main,
-  },
+const useStyles = makeStyles(createStyles({
   linkUnderPaper: {
     marginTop: 20,
   },
@@ -94,6 +57,7 @@ export const makeRegisterForm: (config: FullConfig) => {
     };
 
     const classes = useStyles();
+    const formClasses = useFormStyles();
 
     const [debouncedPasswordValidation] = useDebouncedCallback(
       (pw) => {
@@ -121,10 +85,10 @@ export const makeRegisterForm: (config: FullConfig) => {
     };
 
     return (
-      <div className={classes.root}>
-        <Paper className={classes.paper}>
+      <div className={formClasses.root}>
+        <Paper className={formClasses.paper}>
           <Typography
-            className={classes.title}
+            className={formClasses.title}
             variant="h3"
           >
             {success ? t('auth:RegisterForm.SuccessTitle')
@@ -132,7 +96,7 @@ export const makeRegisterForm: (config: FullConfig) => {
           </Typography>
 
           <Typography
-            className={classes.inputField}
+            className={formClasses.inputField}
           >
             {success ? t('auth:RegisterForm.SuccessText')
               : t('auth:RegisterForm.Description')}
@@ -157,7 +121,7 @@ export const makeRegisterForm: (config: FullConfig) => {
             }}
           >
             <TextField
-              className={classes.inputField}
+              className={formClasses.inputField}
               autoFocus
               fullWidth
               id="register_username"
@@ -176,7 +140,7 @@ export const makeRegisterForm: (config: FullConfig) => {
               }}
             />
             <TextField
-              className={classes.inputField}
+              className={formClasses.inputField}
               fullWidth
               id="register_email"
               label={t('auth:RegisterForm.Email')}
@@ -192,7 +156,7 @@ export const makeRegisterForm: (config: FullConfig) => {
               }}
             />
             <PasswordField
-              className={classes.inputField}
+              className={formClasses.inputField}
               id="register_password"
               password={password}
               label={t('auth:RegisterForm.Password')}
@@ -204,7 +168,7 @@ export const makeRegisterForm: (config: FullConfig) => {
             {
               errors.non_field_errors && (
                 errors.non_field_errors.map((message) => (
-                  <Typography className={classes.formHelperText} key={message}>
+                  <Typography className={formClasses.formHelperText} key={message}>
                     {nonFieldErrorMap(message)}
                   </Typography>
                 ))
