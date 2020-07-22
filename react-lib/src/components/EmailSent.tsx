@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { Link as RouterLink, useHistory } from 'react-router-dom';
 import {
   Button,
-  createStyles, Grid, Paper, Theme, Typography,
+  createStyles, Grid, Paper, Typography,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Link from '@material-ui/core/Link';
@@ -10,24 +10,9 @@ import { FullConfig } from '../Configuration';
 import { AuthView } from './AuthView';
 import { MailSvg } from '../assets/MailSvg';
 import { TranslatorProps } from '../internationalization';
+import { useFormStyles } from './common/styles';
 
-const useStyles = makeStyles((theme: Theme) => createStyles({
-  PaperCard: {
-    paddingTop: 35,
-    paddingLeft: 47,
-    paddingRight: 30,
-    paddingBottom: 36,
-    boxShadow: '0 1px 36px 0 rgba(211, 211, 211, 0.5)',
-    width: '100%',
-    position: 'relative',
-    [theme.breakpoints.down('md')]: {
-      paddingLeft: 30,
-    },
-    [theme.breakpoints.down('xs')]: {
-      paddingLeft: 17,
-      paddingRight: 17,
-    },
-  },
+const useStyles = makeStyles(createStyles({
   CheckIcon: {
     verticalAlign: 'sub',
   },
@@ -63,6 +48,7 @@ export const makeEmailSentCard: (config: FullConfig) => {
     translator: t = defaultTranslator,
   }) => {
     const classes = useStyles();
+    const formClasses = useFormStyles();
     const history = useHistory();
 
     const handleRedirect = () => {
@@ -73,7 +59,7 @@ export const makeEmailSentCard: (config: FullConfig) => {
     };
 
     return (
-      <Paper className={classes.PaperCard}>
+      <Paper className={formClasses.paper}>
         <Typography variant="h4" className={classes.SuccessTitle}>
           <span>{t('auth:EmailSent.EmailSent')}</span>
         </Typography>
