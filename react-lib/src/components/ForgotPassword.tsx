@@ -11,38 +11,12 @@ import { AuthFunctionContext } from '../store/UserStore';
 import { FullConfig } from '../Configuration';
 import { AuthView } from './AuthView';
 import { TranslatorProps } from '../internationalization';
+import { useFormStyles } from './common/styles';
 
-const useStyles = makeStyles((theme: Theme) => createStyles({
-  form: {
-    paddingTop: 35,
-    paddingLeft: 47,
-    paddingRight: 30,
-    paddingBottom: 40,
-    boxShadow: '0 1px 36px 0 rgba(211, 211, 211, 0.5)',
-    width: '100%',
-    [theme.breakpoints.down('md')]: {
-      paddingLeft: 30,
-    },
-    [theme.breakpoints.down('xs')]: {
-      paddingLeft: 17,
-      paddingRight: 17,
-    },
-  },
-  title: {
-    marginBottom: 35,
-    [theme.breakpoints.down('xs')]: {
-      fontSize: 30,
-      letterSpacing: 0.18,
-    },
-  },
+const useStyles = makeStyles(createStyles({
   inputField: {
     marginTop: 47,
     marginBottom: 30,
-  },
-  formHelperText: {
-    marginBottom: 41,
-    fontSize: '1rem',
-    color: theme.palette.primary.main,
   },
 }));
 
@@ -58,16 +32,15 @@ export const makeForgotPasswordForm: (config: FullConfig) => {
     translator: t = defaultTranslator,
   }) => {
     const classes = useStyles();
+    const formClasses = useFormStyles();
     const [email, setEmail] = useState('');
     const { requestPasswordReset } = useContext(AuthFunctionContext);
     const history = useHistory();
 
     return (
-      <Paper
-        className={classes.form}
-      >
+      <Paper className={formClasses.paper}>
         <Typography
-          className={classes.title}
+          className={formClasses.title}
           variant="h3"
         >
           {t('auth:ForgotPassword.ForgotPassword')}

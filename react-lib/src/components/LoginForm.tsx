@@ -17,44 +17,9 @@ import { FullConfig, Identifier } from '../Configuration';
 import { AuthView } from './AuthView';
 import { PasswordField } from './common/PasswordField';
 import { TranslatorProps } from '../internationalization';
+import {useFormStyles} from "./common/styles";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
-  root: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'flex-end',
-  },
-  form: {
-    paddingTop: 35,
-    paddingLeft: 47,
-    paddingRight: 30,
-    paddingBottom: 40,
-    boxShadow: '0 1px 36px 0 rgba(211, 211, 211, 0.5)',
-    width: '100%',
-    [theme.breakpoints.down('md')]: {
-      paddingLeft: 30,
-    },
-    [theme.breakpoints.down('xs')]: {
-      paddingLeft: 17,
-      paddingRight: 17,
-    },
-  },
-  title: {
-    marginBottom: 35,
-    [theme.breakpoints.down('xs')]: {
-      fontSize: 30,
-      letterSpacing: 0.18,
-    },
-  },
-  inputField: {
-    marginBottom: 30,
-  },
-  formHelperText: {
-    marginBottom: 41,
-    fontSize: '1rem',
-    color: theme.palette.primary.main,
-  },
   loggedOutText: {
     color: theme.palette.primary.main,
     marginBottom: 35,
@@ -79,6 +44,7 @@ export const makeLoginForm: (config: FullConfig) => {
     translator: t = defaultTranslator,
   }) => {
     const classes = useStyles();
+    const formClasses = useFormStyles();
     const { loading, login, justLoggedOut } = useContext(AuthFunctionContext);
     const [ident, setIdent] = useState('');
     const [password, setPassword] = useState('');
@@ -90,12 +56,10 @@ export const makeLoginForm: (config: FullConfig) => {
     );
 
     return (
-      <div className={classes.root}>
-        <Paper
-          className={classes.form}
-        >
+      <div className={formClasses.root}>
+        <Paper className={formClasses.paper}>
           <Typography
-            className={classes.title}
+            className={formClasses.title}
             variant="h3"
           >
             {t('auth:LoginForm.Login')}
@@ -126,7 +90,7 @@ export const makeLoginForm: (config: FullConfig) => {
             }}
           >
             <TextField
-              className={classes.inputField}
+              className={formClasses.inputField}
               autoFocus
               fullWidth
               id="login_userIdentifier"
@@ -142,7 +106,7 @@ export const makeLoginForm: (config: FullConfig) => {
             />
 
             <PasswordField
-              className={classes.inputField}
+              className={formClasses.inputField}
               password={password}
               onChange={setPassword}
               errorMessage={errorMessage}
@@ -152,7 +116,7 @@ export const makeLoginForm: (config: FullConfig) => {
             {
            errorMessage.non_field_errors && (
              errorMessage.non_field_errors.map((message) => (
-               <Typography className={classes.formHelperText} key={message}>
+               <Typography className={formClasses.formHelperText} key={message}>
                  {nonFieldErrorMap(message)}
                </Typography>
              ))

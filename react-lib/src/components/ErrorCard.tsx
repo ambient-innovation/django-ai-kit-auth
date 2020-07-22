@@ -4,23 +4,9 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
+import {useFormStyles} from "./common/styles";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
-  PaperCard: {
-    paddingTop: 35,
-    paddingLeft: 47,
-    paddingRight: 30,
-    paddingBottom: 36,
-    boxShadow: '0 1px 36px 0 rgba(211, 211, 211, 0.5)',
-    width: '100%',
-    [theme.breakpoints.down('md')]: {
-      paddingLeft: 30,
-    },
-    [theme.breakpoints.down('xs')]: {
-      paddingLeft: 17,
-      paddingRight: 17,
-    },
-  },
   ErrorOutlineIcon: {
     verticalAlign: 'sub',
     color: theme.palette.error.main,
@@ -46,9 +32,10 @@ export const ErrorCard: FC<ErrorCardProps> = ({
   message,
 }) => {
   const classes = useStyles();
+  const formClasses = useFormStyles();
 
   return (
-    <Paper className={classes.PaperCard}>
+    <Paper className={formClasses.paper}>
       <Typography variant="h4" className={classes.Title}>
         <span>{title}</span>
         <ErrorOutlineIcon color="primary" fontSize="inherit" className={classes.ErrorOutlineIcon} />
