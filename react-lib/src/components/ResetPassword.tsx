@@ -1,4 +1,4 @@
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { createStyles, makeStyles } from '@material-ui/core/styles';
 import React, { FC, useContext, useState } from 'react';
 import { AxiosError } from 'axios';
 import Paper from '@material-ui/core/Paper';
@@ -13,6 +13,7 @@ import { AuthView } from './AuthView';
 import { PasswordField } from './common/PasswordField';
 import { ErrorMessage } from '../api/types';
 import { TranslatorProps } from '../internationalization';
+import { useFormStyles } from './common/styles';
 
 enum SuccessState {
   INITIAL,
@@ -21,37 +22,7 @@ enum SuccessState {
   INVALID_LINK,
 }
 
-const useStyles = makeStyles((theme: Theme) => createStyles({
-  form: {
-    paddingTop: 35,
-    paddingLeft: 47,
-    paddingRight: 30,
-    paddingBottom: 40,
-    boxShadow: '0 1px 36px 0 rgba(211, 211, 211, 0.5)',
-    width: '100%',
-    [theme.breakpoints.down('md')]: {
-      paddingLeft: 30,
-    },
-    [theme.breakpoints.down('xs')]: {
-      paddingLeft: 17,
-      paddingRight: 17,
-    },
-  },
-  title: {
-    marginBottom: 47,
-    [theme.breakpoints.down('xs')]: {
-      fontSize: 30,
-      letterSpacing: 0.18,
-    },
-  },
-  inputField: {
-    marginBottom: 30,
-  },
-  formHelperText: {
-    marginBottom: 41,
-    fontSize: '1rem',
-    color: theme.palette.primary.main,
-  },
+const useStyles = makeStyles(createStyles({
   successText: {
     marginBottom: 30,
   },
@@ -68,7 +39,7 @@ export const makeResetPasswordForm: (config: FullConfig) => {
   const ResetPasswordForm: FC<TranslatorProps> = ({
     translator: t = defaultTranslator,
   }) => {
-    const classes = useStyles();
+    const formClasses = useFormStyles();
     const [password, setPassword] = useState('');
     const [password2, setPassword2] = useState('');
     const [passwordErrors, setPasswordErrors] = useState<ErrorMessage|undefined>();
@@ -99,10 +70,10 @@ export const makeResetPasswordForm: (config: FullConfig) => {
 
     return (
       <Paper
-        className={classes.form}
+        className={formClasses.paper}
       >
         <Typography
-          className={classes.title}
+          className={formClasses.title}
           variant="h3"
         >
           {t('auth:ResetPassword.ResetPassword')}
@@ -129,7 +100,7 @@ export const makeResetPasswordForm: (config: FullConfig) => {
               }}
             >
               <PasswordField
-                className={classes.inputField}
+                className={formClasses.inputField}
                 password={password}
                 errorMessage={passwordErrors || {}}
                 label={t('auth:ResetPassword.NewPassword')}
@@ -139,7 +110,7 @@ export const makeResetPasswordForm: (config: FullConfig) => {
               />
 
               <PasswordField
-                className={classes.inputField}
+                className={formClasses.inputField}
                 password={password2}
                 onChange={setPassword2}
                 errorMessage={password !== password2 && password2.length > 0 ? {
