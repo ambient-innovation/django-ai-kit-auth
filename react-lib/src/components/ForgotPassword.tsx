@@ -4,7 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { createStyles, makeStyles } from '@material-ui/core/styles';
 import React, { FC, useContext, useState } from 'react';
 import { useHistory, Link as RouterLink } from 'react-router-dom';
 import { AuthFunctionContext } from '../store/UserStore';

@@ -4,7 +4,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
-import {useFormStyles} from "./common/styles";
+import { useFormStyles } from './common/styles';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   ErrorOutlineIcon: {

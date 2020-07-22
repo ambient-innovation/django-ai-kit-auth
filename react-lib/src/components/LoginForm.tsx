@@ -17,7 +17,7 @@ import { FullConfig, Identifier } from '../Configuration';
 import { AuthView } from './AuthView';
 import { PasswordField } from './common/PasswordField';
 import { TranslatorProps } from '../internationalization';
-import {useFormStyles} from "./common/styles";
+import { useFormStyles } from './common/styles';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   loggedOutText: {
