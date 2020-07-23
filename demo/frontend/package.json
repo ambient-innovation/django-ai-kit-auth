@@ -11,7 +11,7 @@
     "ai-kit-auth": "file:../../react-lib",
     "ai-kit-common": "^1.0.1",
     "axios": "^0.19.2",
-    "node-sass": "^4.13.0",
+    "node-sass": "^4.14.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-router-dom": "^5.1.2",
