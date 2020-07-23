@@ -140,12 +140,19 @@ class RegistrationSerializer(serializers.Serializer):
         except DjangoValidationError as e:
             # convert to error codes since translations are implemented in the
             # frontend
-            raise ValidationError({"password": [error.code for error in e.error_list]})
+            raise ValidationError(
+                {
+                    "password": [
+                        ErrorDetail(error.code, code=error.code)
+                        for error in e.error_list
+                    ]
+                }
+            )
 
         # make sure email is unique
         if UserModel.objects.filter(email=email).exists():
-            raise ValidationError({"email": ["email_unique"]})
-
+            code = "email_unique"
+            raise ValidationError({"email": [ErrorDetail(code, code=code)]})
         try:
             user = UserModel(username=username, email=email, is_active=False)
             user.set_password(password)
