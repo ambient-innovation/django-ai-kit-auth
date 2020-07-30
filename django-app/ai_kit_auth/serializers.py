@@ -23,6 +23,10 @@ FIELD_ARGS = {
 }
 
 
+def raise_validation(error_code):
+    raise ValidationError(error_code, code=error_code)
+
+
 class LoginSerializer(serializers.Serializer):
     ident = serializers.CharField(**FIELD_ARGS)
     password = serializers.CharField(style={"input_type": "password"}, **FIELD_ARGS,)
@@ -39,7 +43,7 @@ class LoginSerializer(serializers.Serializer):
         user = authenticate(self.context["request"], username=ident, password=password)
 
         if not user:
-            raise ValidationError("invalid_credentials")
+            raise_validation("invalid_credentials")
 
         attrs["user"] = user
         return attrs
@@ -75,7 +79,7 @@ class ValidatePasswordSerializer(serializers.Serializer):
                 user = UserModel.objects.get(pk=pk)
             except UserModel.DoesNotExist:
                 # if anything goes wrong, we error out
-                raise ValidationError("unknown_user")
+                raise_validation("unknown_user")
         else:
             # usermodel does not already exist, we create a one off only for the
             # validation
