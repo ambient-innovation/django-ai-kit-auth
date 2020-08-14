@@ -8,9 +8,9 @@ It targets the following tech stack:
 * Django in the back
 * React in the front
 * Material UI is used for the standard theme, but its not tightly coupled and
-not a necessary dependency
+there are efforts to make it a not necessary dependency
 * REST Api
-* Sessions authentification. Support for JWT is planned, but not as the main
+* Sessions authentification. Support for JWT is planned --- not as the main
 auth method, but to enable access to external services for a short amount of
 time.
 
@@ -23,9 +23,12 @@ Links to the hosted packages:
 * React: https://www.npmjs.com/package/ai-kit-auth
 * Django: https://pypi.org/project/django-ai-kit-auth/
 
-## Integration into your project
+## Usage
 
-See the READMEs in [django-app](django-app/README.rst) and [react-lib](react-lib/README.md) for detailed instructions.
+You can find detailed instructions on how to use the frontend and backend libraries
+in the READMEs of the respective folders:
+* Backend: [django-app](django-app/README.rst)
+* Frontend: [react-lib](react-lib/README.md)
 
 ## Contributing
 
@@ -80,12 +83,12 @@ Python code should be formatted by black, typescript code by eslint.
 Ai-Kit-Auth makes use of the standard django session managment and
 the build in CSRF protection measures. The frontend has to set a `X-CSRFToken`
 http header to the current CSRF token value. This token is returned by the
-`me/` and the `login` endpoints (the token is rotated by django after login, 
-so the frontend needs the new value at this point). 
+`me/` and the `login` endpoints (the token is rotated by django after login,
+so the frontend needs the new value at this point).
 
 Django defaults to save the CSRF token in a cookie, but also gives the option
-to save it in the current session. Both schemes work with Ai-Kit-Auth, but 
-session storage can prevent problems with double logins (for example, if a 
+to save it in the current session. Both schemes work with Ai-Kit-Auth, but
+session storage can prevent problems with double logins (for example, if a
 user is logged in the backend and the frontend).
 
 If you want to implement your own frontend, you have to set the `X-CSRFToken`
