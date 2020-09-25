@@ -55,7 +55,10 @@ class LoginView(generics.GenericAPIView):
         user_post_login.send(sender=LoginView, user=user)
 
         return Response(
-            {"user": user_serializer.data, "csrf": csrf_token,},
+            {
+                "user": user_serializer.data,
+                "csrf": csrf_token,
+            },
             status=status.HTTP_200_OK,
         )
 
@@ -91,7 +94,11 @@ class MeView(generics.GenericAPIView):
             )
             user_data = user_serializer.data
         return Response(
-            {"user": user_data, "csrf": csrf_token,}, status=status.HTTP_200_OK
+            {
+                "user": user_data,
+                "csrf": csrf_token,
+            },
+            status=status.HTTP_200_OK,
         )
 
 
@@ -204,7 +211,10 @@ class ResetPassword(views.APIView):
         user_pre_reset_password.send(sender=ResetPassword, user=user)
         # reuse the password validation
         serializer = serializers.ValidatePasswordSerializer(
-            data={"ident": ident, "password": password,}
+            data={
+                "ident": ident,
+                "password": password,
+            }
         )
         serializer.is_valid(raise_exception=True)
 

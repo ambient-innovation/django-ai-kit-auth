@@ -29,7 +29,10 @@ def raise_validation(error_code):
 
 class LoginSerializer(serializers.Serializer):
     ident = serializers.CharField(**FIELD_ARGS)
-    password = serializers.CharField(style={"input_type": "password"}, **FIELD_ARGS,)
+    password = serializers.CharField(
+        style={"input_type": "password"},
+        **FIELD_ARGS,
+    )
 
     def validate(self, attrs):
         ident = attrs.get("ident")
@@ -62,7 +65,8 @@ class ValidatePasswordSerializer(serializers.Serializer):
     username = serializers.CharField(required=False, allow_blank=True)
     email = serializers.EmailField(required=False, allow_blank=True)
     password = serializers.CharField(
-        required=True, error_messages={"required": "required", "blank": "blank"},
+        required=True,
+        error_messages={"required": "required", "blank": "blank"},
     )
 
     def validate(self, attrs):
@@ -83,7 +87,10 @@ class ValidatePasswordSerializer(serializers.Serializer):
         else:
             # usermodel does not already exist, we create a one off only for the
             # validation
-            user = UserModel(username=username, email=email,)
+            user = UserModel(
+                username=username,
+                email=email,
+            )
 
         try:
             validators = get_password_validators(settings.AUTH_PASSWORD_VALIDATORS)
@@ -91,7 +98,9 @@ class ValidatePasswordSerializer(serializers.Serializer):
             return attrs
         try:
             validate_password(
-                password=password, user=user, password_validators=validators,
+                password=password,
+                user=user,
+                password_validators=validators,
             )
         except DjangoValidationError as e:
             # convert to error codes since translations are implemented in the
