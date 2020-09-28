@@ -89,7 +89,7 @@ The components were designed with the [AI KIT DefaultTheme](https://gitlab.ambie
 To use it, add [`ai-kit-common`](https://www.npmjs.com/package/ai-kit-common) to your project,
 wrap your application in `<ThemeProvider>` tags and add the [required fonts](https://gitlab.ambient-innovation.com/ai/ai.kit/common/-/tree/master/react-lib#fonts) to your application.
 You are also advised to add a [`<CssBaseline />`](https://material-ui.com/components/css-baseline/) component to your application's root to 'normalize' the browser styles.
-Ofcourse, you are also free to use whatever custom Material Theme you wish.
+Of course, you are also free to use whatever custom Material Theme you wish.
 
 ## API Reference
 

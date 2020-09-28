@@ -21,6 +21,7 @@ from importlib import import_module
 
 DEFAULTS = {
     "EMAIL_TEMPLATES": {
+        "CUSTOM_DATA_FUNCTION": "ai_kit_auth.services.custom_email_data",
         "USER_CREATED": {
             "TITLE": "ai_kit_auth/user_created_title.txt",
             "BODY_PLAINTEXT": "ai_kit_auth/user_created_body.txt",

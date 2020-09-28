@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
+from django.utils.module_loading import import_string
 
 from .settings import api_settings
 
@@ -47,6 +48,13 @@ def scramble_id(seq_id):
     return ((r1 & 0xFFFF) << 16) + l1
 
 
+def custom_email_data():
+    """
+    function that can be set via settings var to add additional variables to the template
+    """
+    return {}
+
+
 def send_email(subject, text, html, to_address):
     from_address = settings.DEFAULT_FROM_EMAIL
     msg = EmailMultiAlternatives(subject, text, from_address, [to_address])
@@ -81,6 +89,10 @@ def send_user_activation_mail(user):
         "url": url,
     }
 
+    # Add custom variables
+    custom_function = import_string(api_settings.EMAIL_TEMPLATES.CUSTOM_DATA_FUNCTION)
+    context.update(custom_function())
+
     send_email(
         subject.replace("\n", " "),
         template_plain.render(context),
@@ -113,6 +125,10 @@ def send_activation_by_admin_mail(user):
         "url": url,
     }
 
+    # Add custom variables
+    custom_function = import_string(api_settings.EMAIL_TEMPLATES.CUSTOM_DATA_FUNCTION)
+    context.update(custom_function())
+
     send_email(
         subject.replace("\n", " "),
         template_plain.render(context),
@@ -144,6 +160,10 @@ def send_reset_pw_mail(user):
         "user": user,
         "url": url,
     }
+
+    # Add custom variables
+    custom_function = import_string(api_settings.EMAIL_TEMPLATES.CUSTOM_DATA_FUNCTION)
+    context.update(custom_function())
 
     send_email(
         subject.replace("\n", " "),

@@ -1,6 +1,8 @@
 # base image
 FROM node:12.14
 
+ENV CI true
+
 # set working directory
 WORKDIR /demo/frontend
 
