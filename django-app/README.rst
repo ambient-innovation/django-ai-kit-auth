@@ -90,7 +90,7 @@ default. Default configurations are:
         "EMAIL_TEMPLATES": {
             # Here you can supply a function taking no arguments and returning
             # a dictionary with entries, that you would like to pass to the
-            # email template, in case you want to provide your own.
+            # email template in case you want to provide your own.
             # By default it points to a function that returns an empty dictionary.
             "CUSTOM_DATA_FUNCTION": "ai_kit_auth.services.custom_email_data",
             # is send when the user is created by registration
