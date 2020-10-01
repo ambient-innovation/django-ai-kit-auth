@@ -191,7 +191,6 @@ test('show general error', async () => {
     throw ({
       response: {
         data: {
-          // eslint-disable-next-line @typescript-eslint/camelcase
           nonFieldErrors: ['something really is wrong'],
         },
       },
