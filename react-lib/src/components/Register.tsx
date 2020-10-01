@@ -114,7 +114,7 @@ export const makeRegisterForm: (config: FullConfig) => {
                     setErrors(error.response.data);
                   } else {
                     // eslint-disable-next-line @typescript-eslint/camelcase
-                    setErrors({ non_field_errors: ['general'] });
+                    setErrors({ nonFieldErrors: ['general'] });
                   }
                 })
                 .finally(() => setLoading(false));
@@ -166,8 +166,8 @@ export const makeRegisterForm: (config: FullConfig) => {
               helperText={t('auth:RegisterForm.PasswordHelperText')}
             />
             {
-              errors.non_field_errors && (
-                errors.non_field_errors.map((message) => (
+              errors.nonFieldErrors && (
+                errors.nonFieldErrors.map((message) => (
                   <Typography className={formClasses.formHelperText} key={message}>
                     {nonFieldErrorMap(message)}
                   </Typography>

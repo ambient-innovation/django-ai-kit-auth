@@ -113,15 +113,13 @@ export const makeLoginForm: (config: FullConfig) => {
               translator={t}
             />
 
-            {
-           errorMessage.non_field_errors && (
-             errorMessage.non_field_errors.map((message) => (
-               <Typography className={formClasses.formHelperText} key={message}>
-                 {nonFieldErrorMap(message)}
-               </Typography>
-             ))
-           )
-         }
+            {errorMessage.nonFieldErrors && (
+              errorMessage.nonFieldErrors.map((message) => (
+                <Typography className={formClasses.formHelperText} key={message}>
+                  {nonFieldErrorMap(message)}
+                </Typography>
+              ))
+            )}
 
             <Grid container item xs={12} justify="center">
               <Button
