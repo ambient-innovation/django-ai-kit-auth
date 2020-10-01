@@ -94,8 +94,7 @@ test('show general error', async () => {
     throw ({
       response: {
         data: {
-          // eslint-disable-next-line @typescript-eslint/camelcase
-          non_field_errors: ['invalid_credentials'],
+          nonFieldErrors: ['invalid_credentials'],
         },
       },
     });
