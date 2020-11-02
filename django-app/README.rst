@@ -176,6 +176,9 @@ Ai-Kit-Auth, but in prevents problems with double logins, for example
 if a user is logged into the Admin interface and also logged in the
 frontend. Django saves CSRF tokens in cookies by default.
 
+Please note that ``CORS_ORIGIN_WHITELIST`` takes the whole URL including the scheme (e.g. 'http://'), whereas ``CSRF_TRUSTED_ORIGINS`` takes
+**only** the domain, for example: "example.org".
+
 
 3.) Include the routes in your ``urls.py``:
 
