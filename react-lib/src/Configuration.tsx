@@ -80,7 +80,7 @@ export const configureAuth = <UserType extends unknown = User>(config: Configura
     switch (key) {
       case 'activation':
       case 'resetPassword':
-        fullConfig.paths[key] = `${base}${fullConfig.paths[key]}/:ident/:token([0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})`;
+        fullConfig.paths[key] = `${base}${fullConfig.paths[key]}/:ident/:token([0-9A-Za-z]+-[0-9A-Za-z]+)`;
         break;
       case 'login':
       case 'register':
