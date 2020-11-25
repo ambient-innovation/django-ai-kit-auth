@@ -86,6 +86,25 @@ default. Default configurations are:
 ::
 
     DEFAULTS = {
+        # You can disable any or all of the endpoints created by ai-kit-auth
+        # by setting the respective entry in this section to False.
+        "ENABLE_ENDPOINTS": {
+            "LOGIN": True,
+            # Route to activate an email address after registration
+            "ACTIVATE_EMAIL": True,
+            "LOGOUT": True,
+            # Endpoint which checks whether the client making the request is
+            # logged in, and if so returns user information
+            "ME": True,
+            # endpoint to check whether the backend will accept a certain password
+            "VALIDATE_PASSWORD": True,
+            # Calling this endpoint triggers an email for password recovery to be sent
+            "SEND_PW_RESET_MAIL": True,
+            # endpoint for actually changing the password
+            "RESET_PASSWORD": True,
+            # registers a new user
+            "REGISTER": True,
+        },
         # Templates for all the email notifications to the user
         "EMAIL_TEMPLATES": {
             # Here you can supply a function taking no arguments and returning
@@ -106,25 +125,6 @@ default. Default configurations are:
                 "BODY_PLAINTEXT": "ai_kit_auth/reset_password_body.txt",
                 "BODY_HTML": "ai_kit_auth/reset_password_body.html",
             },
-        },
-        # If true, the user has to specify a username in addition to the
-        # mail address
-        "USERNAME_REQUIRED": False,
-        # A Serializer which is used by the ai-kit-auth endpoints for
-        # sending user information to the frontend. Override it, if you need
-        # additional information about a user in the frontend, like e.g. avatar
-        # image, user role etc.
-        # The default USER_SERIALIZER contains id, email and username.
-        "USER_SERIALIZER": "ai_kit_auth.serializers.UserSerializer",
-        # information about the frontend, mostly the used routes. In most cases
-        # the defaults are fine, but can be changed for localisation of the
-        # urls.
-        # Only the actual frontend url is unset and you will get an
-        # configuration error if you don't specify it.
-        "FRONTEND": {
-            "URL": "",
-            "ACTIVATION_ROUTE": "/auth/activation/",
-            "RESET_PW_ROUTE": "/auth/reset_password/",
         },
         # Set this to False to prevent ai-kit-auth to register its own admin forms
         # with django admin. It will then use the default admin forms from
@@ -159,6 +159,26 @@ default. Default configurations are:
                     },
                 ),
             ),
+        },
+        # If true, the user has to specify a username in addition to the
+        # mail address
+        "USERNAME_REQUIRED": False,
+        # A Serializer which is used by the ai-kit-auth endpoints for
+        # sending user information to the frontend. Override it, if you need
+        # additional information about a user in the frontend, like e.g. avatar
+        # image, user role etc.
+        # The default USER_SERIALIZER contains id, email and username.
+        "USER_SERIALIZER": "ai_kit_auth.serializers.UserSerializer",
+        # information about the frontend, mostly the used routes. In most cases
+        # the defaults are fine, but can be changed for localisation of the
+        # urls.
+        # Only the actual frontend url is unset and you will get an
+        # configuration error if you don't specify it.
+        "FRONTEND": {
+            "URL": "",
+            "ACTIVATION_ROUTE": "/auth/activation/",
+            "RESET_PW_ROUTE": "/auth/reset_password/",
+        },
     }
 
 In addition to that some general configuration is required:

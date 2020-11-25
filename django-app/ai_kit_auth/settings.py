@@ -20,6 +20,16 @@ from django.utils.translation import gettext_lazy as _
 from importlib import import_module
 
 DEFAULTS = {
+    "ENABLE_ENDPOINTS": {
+        "LOGIN": True,
+        "ACTIVATE_EMAIL": True,
+        "LOGOUT": True,
+        "ME": True,
+        "VALIDATE_PASSWORD": True,
+        "SEND_PW_RESET_MAIL": True,
+        "RESET_PASSWORD": True,
+        "REGISTER": True,
+    },
     "EMAIL_TEMPLATES": {
         "CUSTOM_DATA_FUNCTION": "ai_kit_auth.services.custom_email_data",
         "USER_CREATED": {
