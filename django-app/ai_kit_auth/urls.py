@@ -32,8 +32,11 @@ endpoints: Dict[str, Any] = {
 }
 
 auth_patterns = (
-    [endpoints[key] for key in endpoints
-     if getattr(api_settings.ENABLE_ENDPOINTS, key)],
+    [
+        endpoints[key]
+        for key in endpoints
+        if getattr(api_settings.ENABLE_ENDPOINTS, key)
+    ],
     "ai_kit_auth",
 )
 
