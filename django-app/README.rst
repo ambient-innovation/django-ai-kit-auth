@@ -126,6 +126,10 @@ default. Default configurations are:
             "ACTIVATION_ROUTE": "/auth/activation/",
             "RESET_PW_ROUTE": "/auth/reset_password/",
         },
+        # Set this to False to prevent ai-kit-auth to register its own admin forms
+        # with django admin. It will then use the default admin forms from
+        # django.contrib.auth.admin or your own forms.
+        "USE_AI_KIT_AUTH_ADMIN": True,
         # If you want to configure the layout of the admin form or you use a
         # use model doesn't have all the fields you need, you can supply your
         # own fieldsets

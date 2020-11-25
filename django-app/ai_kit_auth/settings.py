@@ -38,6 +38,7 @@ DEFAULTS = {
             "BODY_HTML": "ai_kit_auth/reset_password_body.html",
         },
     },
+    "USE_AI_KIT_AUTH_ADMIN": True,
     "ADMIN_FIELDSETS": (
         (None, {"fields": ("username", "email", "password")}),
         (_("Personal info"), {"fields": ("first_name", "last_name")}),
