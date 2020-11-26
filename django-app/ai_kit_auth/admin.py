@@ -89,6 +89,7 @@ class AIUserAdmin(UserAdmin):
     add_fieldsets = api_settings.ADMIN_ADD_FIELDSETS
 
 
-if admin.site.is_registered(User):
-    admin.site.unregister(User)
-admin.site.register(User, AIUserAdmin)
+if api_settings.USE_AI_KIT_AUTH_ADMIN:
+    if admin.site.is_registered(User):
+        admin.site.unregister(User)
+    admin.site.register(User, AIUserAdmin)

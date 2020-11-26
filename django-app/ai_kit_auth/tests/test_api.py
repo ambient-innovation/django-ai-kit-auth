@@ -69,7 +69,9 @@ class LoginTests(AuthTestCase):
     def test_login_with_email(self):
         self.assertFalse(self.isLoggedIn())
         response = self.client.post(
-            login_url, {"ident": self.user.email, "password": PASSWORD}, format="json",
+            login_url,
+            {"ident": self.user.email, "password": PASSWORD},
+            format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue("csrf" in response.data)
@@ -211,7 +213,10 @@ class ValidatePasswordTests(AuthTestCase):
         ident = str(services.scramble_id(self.user.pk))
         response = self.client.post(
             validate_password_url,
-            {"password": PASSWORD, "ident": ident,},
+            {
+                "password": PASSWORD,
+                "ident": ident,
+            },
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -228,7 +233,7 @@ class ValidatePasswordTests(AuthTestCase):
 class ActivateEmailTests(AuthTestCase):
     def test_activate_user(self):
         user = baker.make(UserModel, is_active=False, email="to@example.com")
-        ident, token = services.send_user_activation_mail(user)
+        ident, token = services.get_activation_url(user).split("/")[-2:]
         response = self.client.post(
             activate_url, {"ident": ident, "token": token}, format="json"
         )
@@ -251,10 +256,8 @@ class ActivateEmailTests(AuthTestCase):
         user_post_activated.connect(receiver_post)
 
         user = baker.make(UserModel, is_active=False, email="to@example.com")
-        ident, token = services.send_user_activation_mail(user)
-        response = self.client.post(
-            activate_url, {"ident": ident, "token": token}, format="json"
-        )
+        ident, token = services.get_activation_url(user).split("/")[-2:]
+        self.client.post(activate_url, {"ident": ident, "token": token}, format="json")
 
         user_pre_activated.disconnect(receiver_pre)
         user_post_activated.disconnect(receiver_post)
@@ -426,7 +429,11 @@ class RegisterTests(AuthTestCase):
     def test_register_user_same_email_fail(self):
         response = self.client.post(
             register_url,
-            {"username": "testuser", "email": self.user.email, "password": PASSWORD,},
+            {
+                "username": "testuser",
+                "email": self.user.email,
+                "password": PASSWORD,
+            },
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
