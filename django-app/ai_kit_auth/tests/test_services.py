@@ -75,7 +75,7 @@ class ActivationTest(TestCase):
         user = baker.make(UserModel, is_active=False, email="to@example.com")
         send_user_activation_mail(user)
         mock_settings.SEND_USER_ACTIVATION_MAIL.assert_called()
-        url = mock_settings.SEND_USER_ACTIVATION_MAIL.call_args.args[1]
+        url = mock_settings.SEND_USER_ACTIVATION_MAIL.call_args[0][1]
         ident = url.split("/")[-2]
         self.assertEqual(ident, str(scramble_id(user.pk)))
 
@@ -99,7 +99,7 @@ class InitResetPasswordTest(TestCase):
         user = baker.make(UserModel, is_active=False, email="to@example.com")
         send_reset_pw_mail(user)
         mock_settings.SEND_RESET_PW_MAIL.assert_called()
-        url = mock_settings.SEND_RESET_PW_MAIL.call_args.args[1]
+        url = mock_settings.SEND_RESET_PW_MAIL.call_args[0][1]
         ident = url.split("/")[-2]
         self.assertEqual(ident, str(scramble_id(user.pk)))
 

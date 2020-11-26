@@ -179,7 +179,7 @@ default. Default configurations are:
         # mail address
         "USERNAME_REQUIRED": False,
         # A Serializer which is used by the ai-kit-auth endpoints for
-        # sending user information to the frontend. Override it, if you need
+        # sending user information to the frontend. Override it if you need
         # additional information about a user in the frontend, like e.g. avatar
         # image, user role etc.
         # The default USER_SERIALIZER contains id, email and username.
