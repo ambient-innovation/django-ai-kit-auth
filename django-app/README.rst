@@ -126,6 +126,21 @@ default. Default configurations are:
                 "BODY_HTML": "ai_kit_auth/reset_password_body.html",
             },
         },
+        # If you need complete control over how the activation email is sent,
+        # override this setting with your own function. Ai-kit-auth will pass
+        # two arguments: a user object and url as a string, which points to the
+        # frontend page which needs to be visited in order to activate the account
+        "SEND_USER_ACTIVATION_MAIL": "ai_kit_auth.services.default_send_user_activation_mail",
+        # If you need complete control over how the activation email is sent,
+        # override this setting with your own function. Ai-kit-auth will pass
+        # two arguments: a user object and url as a string, which points to the
+        # frontend page which needs to be visited in order to activate the account
+        "SEND_ACTIVATION_BY_ADMIN_MAIL": "ai_kit_auth.services.default_send_activation_by_admin_mail",
+        # If you need complete control over how the password reset email is sent,
+        # override this setting with your own function. Ai-kit-auth will pass
+        # two arguments: a user object and url as a string, which points to the
+        # frontend page which needs to be visited in order to reset the password
+        "SEND_RESET_PW_MAIL": "ai_kit_auth.services.default_send_reset_pw_mail",
         # Set this to False to prevent ai-kit-auth to register its own admin forms
         # with django admin. It will then use the default admin forms from
         # django.contrib.auth.admin or your own forms.
