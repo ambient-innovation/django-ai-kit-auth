@@ -3,7 +3,6 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
-from django.utils.module_loading import import_string
 
 from .settings import api_settings
 
@@ -63,10 +62,25 @@ def send_email(subject, text, html, to_address):
 
 
 def make_url(*args):
-    return "/".join(s.strip("/") for s in args)
+    return "/".join(str(s).strip("/") for s in args)
+
+
+def get_activation_url(user):
+    ident = str(scramble_id(user.pk))
+    token_gen = PasswordResetTokenGenerator()
+    token = token_gen.make_token(user)
+
+    return make_url(
+        api_settings.FRONTEND.URL, api_settings.FRONTEND.ACTIVATION_ROUTE, ident, token
+    )
 
 
 def send_user_activation_mail(user):
+    sender_func = api_settings.SEND_USER_ACTIVATION_MAIL
+    sender_func(user, get_activation_url(user))
+
+
+def default_send_user_activation_mail(user, url):
     """
     Sends the initial mail for a nonactive user.
     """
@@ -76,21 +90,13 @@ def send_user_activation_mail(user):
     template_html = get_template(api_settings.EMAIL_TEMPLATES.USER_CREATED.BODY_HTML)
     subject = get_template(api_settings.EMAIL_TEMPLATES.USER_CREATED.TITLE).render()
 
-    ident = str(scramble_id(user.pk))
-    token_gen = PasswordResetTokenGenerator()
-    token = token_gen.make_token(user)
-
-    url = make_url(
-        api_settings.FRONTEND.URL, api_settings.FRONTEND.ACTIVATION_ROUTE, ident, token
-    )
-
     context = {
         "user": user,
         "url": url,
     }
 
     # Add custom variables
-    custom_function = import_string(api_settings.EMAIL_TEMPLATES.CUSTOM_DATA_FUNCTION)
+    custom_function = api_settings.EMAIL_TEMPLATES.CUSTOM_DATA_FUNCTION
     context.update(custom_function())
 
     send_email(
@@ -99,10 +105,14 @@ def send_user_activation_mail(user):
         template_html.render(context),
         getattr(user, User.EMAIL_FIELD),
     )
-    return ident, token
 
 
 def send_activation_by_admin_mail(user):
+    sender_func = api_settings.SEND_ACTIVATION_BY_ADMIN_MAIL
+    sender_func(user, get_activation_url(user))
+
+
+def default_send_activation_by_admin_mail(user, url):
     """
     send mail for the password reset
     """
@@ -112,21 +122,13 @@ def send_activation_by_admin_mail(user):
     template_html = get_template(api_settings.EMAIL_TEMPLATES.SET_PASSWORD.BODY_HTML)
     subject = get_template(api_settings.EMAIL_TEMPLATES.SET_PASSWORD.TITLE).render()
 
-    ident = str(scramble_id(user.pk))
-    token_gen = PasswordResetTokenGenerator()
-    token = token_gen.make_token(user)
-
-    url = make_url(
-        api_settings.FRONTEND.URL, api_settings.FRONTEND.RESET_PW_ROUTE, ident, token
-    )
-
     context = {
         "user": user,
         "url": url,
     }
 
     # Add custom variables
-    custom_function = import_string(api_settings.EMAIL_TEMPLATES.CUSTOM_DATA_FUNCTION)
+    custom_function = api_settings.EMAIL_TEMPLATES.CUSTOM_DATA_FUNCTION
     context.update(custom_function())
 
     send_email(
@@ -135,10 +137,24 @@ def send_activation_by_admin_mail(user):
         template_html.render(context),
         getattr(user, User.EMAIL_FIELD),
     )
-    return ident, token
+
+
+def get_password_reset_url(user):
+    ident = str(scramble_id(user.pk))
+    token_gen = PasswordResetTokenGenerator()
+    token = token_gen.make_token(user)
+
+    return make_url(
+        api_settings.FRONTEND.URL, api_settings.FRONTEND.RESET_PW_ROUTE, ident, token
+    )
 
 
 def send_reset_pw_mail(user):
+    sender_func = api_settings.SEND_RESET_PW_MAIL
+    sender_func(user, get_password_reset_url(user))
+
+
+def default_send_reset_pw_mail(user, url):
     """
     send mail for the password reset
     """
@@ -148,21 +164,13 @@ def send_reset_pw_mail(user):
     template_html = get_template(api_settings.EMAIL_TEMPLATES.RESET_PASSWORD.BODY_HTML)
     subject = get_template(api_settings.EMAIL_TEMPLATES.RESET_PASSWORD.TITLE).render()
 
-    ident = str(scramble_id(user.pk))
-    token_gen = PasswordResetTokenGenerator()
-    token = token_gen.make_token(user)
-
-    url = make_url(
-        api_settings.FRONTEND.URL, api_settings.FRONTEND.RESET_PW_ROUTE, ident, token
-    )
-
     context = {
         "user": user,
         "url": url,
     }
 
     # Add custom variables
-    custom_function = import_string(api_settings.EMAIL_TEMPLATES.CUSTOM_DATA_FUNCTION)
+    custom_function = api_settings.EMAIL_TEMPLATES.CUSTOM_DATA_FUNCTION
     context.update(custom_function())
 
     send_email(
@@ -171,4 +179,3 @@ def send_reset_pw_mail(user):
         template_html.render(context),
         getattr(user, User.EMAIL_FIELD),
     )
-    return ident, token

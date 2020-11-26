@@ -17,9 +17,19 @@ from django.conf import settings
 from django.test.signals import setting_changed
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
-from importlib import import_module
+from django.utils.module_loading import import_string
 
 DEFAULTS = {
+    "ENABLE_ENDPOINTS": {
+        "LOGIN": True,
+        "ACTIVATE_EMAIL": True,
+        "LOGOUT": True,
+        "ME": True,
+        "VALIDATE_PASSWORD": True,
+        "SEND_PW_RESET_MAIL": True,
+        "RESET_PASSWORD": True,
+        "REGISTER": True,
+    },
     "EMAIL_TEMPLATES": {
         "CUSTOM_DATA_FUNCTION": "ai_kit_auth.services.custom_email_data",
         "USER_CREATED": {
@@ -38,6 +48,10 @@ DEFAULTS = {
             "BODY_HTML": "ai_kit_auth/reset_password_body.html",
         },
     },
+    "SEND_USER_ACTIVATION_MAIL": "ai_kit_auth.services.default_send_user_activation_mail",
+    "SEND_ACTIVATION_BY_ADMIN_MAIL": "ai_kit_auth.services.default_send_activation_by_admin_mail",
+    "SEND_RESET_PW_MAIL": "ai_kit_auth.services.default_send_reset_pw_mail",
+    "USE_AI_KIT_AUTH_ADMIN": True,
     "ADMIN_FIELDSETS": (
         (None, {"fields": ("username", "email", "password")}),
         (_("Personal info"), {"fields": ("first_name", "last_name")}),
@@ -111,9 +125,20 @@ class APISettings:
         }
 
     def __getattr__(self, attr):
-        if attr == "USER_SERIALIZER" and type(self._settings[attr]) == str:
-            module, name = self._settings[attr].rsplit(".", 1)
-            self._settings[attr] = getattr(import_module(module), name)
+        if attr.startswith("_"):
+            return self.__getattribute__(attr)
+        if (
+            attr
+            in [
+                "USER_SERIALIZER",
+                "CUSTOM_DATA_FUNCTION",
+                "SEND_USER_ACTIVATION_MAIL",
+                "SEND_ACTIVATION_BY_ADMIN_MAIL",
+                "SEND_RESET_PW_MAIL",
+            ]
+            and type(self._settings[attr]) == str
+        ):
+            self._settings[attr] = import_string(self._settings[attr])
         return self._settings[attr]
 
     @classmethod
