@@ -1,6 +1,6 @@
 import unicodedata
 import uuid
-from django.contrib.auth import authenticate, get_user_model
+from django.contrib.auth import authenticate, get_user_model, tokens
 from django.contrib.auth.password_validation import (
     get_password_validators,
     validate_password,
@@ -28,10 +28,11 @@ def raise_validation(error_code):
 
 
 class LoginSerializer(serializers.Serializer):
-    ident = serializers.CharField(**FIELD_ARGS)
+    ident = serializers.CharField(**FIELD_ARGS, write_only=True)
     password = serializers.CharField(
         style={"input_type": "password"},
         **FIELD_ARGS,
+        write_only=True,
     )
 
     def validate(self, attrs):
@@ -65,12 +66,13 @@ class UserSerializer(serializers.ModelSerializer):
 class ValidatePasswordSerializer(serializers.Serializer):
     # either ident or email and username (only if configured) is required,
     # but we test that manually
-    ident = serializers.CharField(required=False)
-    username = serializers.CharField(required=False, allow_blank=True)
-    email = serializers.EmailField(required=False, allow_blank=True)
+    ident = serializers.CharField(required=False, write_only=True)
+    username = serializers.CharField(required=False, allow_blank=True, write_only=True)
+    email = serializers.EmailField(required=False, allow_blank=True, write_only=True)
     password = serializers.CharField(
         required=True,
         error_messages={"required": "required", "blank": "blank"},
+        write_only=True,
     )
 
     def validate(self, attrs):
@@ -122,14 +124,19 @@ class ValidatePasswordSerializer(serializers.Serializer):
         return attrs
 
 
+class ActivateUserSerializer(serializers.Serializer):
+    ident = serializers.CharField(**FIELD_ARGS, write_only=True)
+    token = serializers.CharField(**FIELD_ARGS, write_only=True)
+
+
 class InitiatePasswordResetSerializer(serializers.Serializer):
-    email = serializers.EmailField(**FIELD_ARGS)
+    email = serializers.EmailField(**FIELD_ARGS, write_only=True)
 
 
 class PasswordResetSerializer(serializers.Serializer):
-    ident = serializers.CharField(**FIELD_ARGS)
-    token = serializers.CharField(**FIELD_ARGS)
-    password = serializers.CharField(**FIELD_ARGS)
+    ident = serializers.CharField(**FIELD_ARGS, write_only=True)
+    token = serializers.CharField(**FIELD_ARGS, write_only=True)
+    password = serializers.CharField(**FIELD_ARGS, write_only=True)
 
 
 class RegistrationSerializer(serializers.Serializer):
