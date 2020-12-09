@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     "rest_framework.authtoken",
     "ai_kit_auth",
     "corsheaders",
+    "demo",
 )
 
 
@@ -135,10 +136,17 @@ CSRF_TRUSTED_ORIGINS = [
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
+AUTH_USER_MODEL = "demo.EmailUser"
+
 AI_KIT_AUTH = {
     "FRONTEND": {"URL": "http://localhost:3000",},
     "EMAIL_TEMPLATES": {
         "RESET_PASSWORD": {"BODY_HTML": "my_custom_reset_password_body.html",},
     },
     "USERNAME_REQUIRED": False,
+    "USER_SERIALIZER": "demo.serializers.EmailUserSerializer",
+    "ADMIN_FIELDSETS": (
+        (None, {"fields": ("email", "password")}),
+        ("Permissions", {"fields": ("is_active", "is_staff", "is_superuser")}),
+    ),
 }
