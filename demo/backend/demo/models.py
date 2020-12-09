@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.contrib.auth.base_user import BaseUserManager
 from django.utils.translation import gettext_lazy as _
 
+
 class EmailUserManager(BaseUserManager):
     use_in_migrations = True
 
@@ -38,6 +39,7 @@ class EmailUser(AbstractBaseUser, PermissionsMixin):
     Standard email user
     E-Mail is login name instead of username
     """
+
     email = models.EmailField(_("E-Mail-Adresse"), unique=True)
     is_active = models.BooleanField(_("aktiv"), default=True)
     is_staff = models.BooleanField(_("Mitarbeiter"), default=False)
@@ -56,10 +58,10 @@ class EmailUser(AbstractBaseUser, PermissionsMixin):
         return self.email
 
     def get_full_name(self) -> str:
-        return ''
+        return ""
 
     def get_short_name(self) -> str:
-        return ''
+        return ""
 
     # required by the admin
     def has_perm(self, perm, obj=None) -> bool:

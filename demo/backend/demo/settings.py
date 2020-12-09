@@ -95,9 +95,15 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",},
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",},
-    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",},
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+    },
 ]
 
 
@@ -139,9 +145,13 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 AUTH_USER_MODEL = "demo.EmailUser"
 
 AI_KIT_AUTH = {
-    "FRONTEND": {"URL": "http://localhost:3000",},
+    "FRONTEND": {
+        "URL": "http://localhost:3000",
+    },
     "EMAIL_TEMPLATES": {
-        "RESET_PASSWORD": {"BODY_HTML": "my_custom_reset_password_body.html",},
+        "RESET_PASSWORD": {
+            "BODY_HTML": "my_custom_reset_password_body.html",
+        },
     },
     "USERNAME_REQUIRED": False,
     "USER_SERIALIZER": "demo.serializers.EmailUserSerializer",
