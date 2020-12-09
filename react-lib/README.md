@@ -268,7 +268,7 @@ Using this enum you can control with which information the user can login.
 Its values are:
 
 * `Identifier.Username`: login only with username
-* `Identifier.Email`: login only with email address
+* `Identifier.Email`: login only with email address and remove username field from register form
 * `Identifier.UsernameOrEmail`: login with either username or email address (default)
 
 ### UserStore

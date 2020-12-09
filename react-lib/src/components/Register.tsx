@@ -8,13 +8,13 @@ import Link from '@material-ui/core/Link';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import React, { FC, useContext, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-
 import { AxiosError } from 'axios';
 import { useDebouncedCallback } from 'use-debounce';
+
 import { AuthFunctionContext } from '../store/UserStore';
 import { AuthView } from './AuthView';
 import { ErrorMessage } from '../api/types';
-import { FullConfig } from '../Configuration';
+import { FullConfig, Identifier } from '../Configuration';
 import { PasswordField } from './common/PasswordField';
 import { TranslatorProps } from '../internationalization';
 import { useFormStyles } from './common/styles';
@@ -32,6 +32,7 @@ export const makeRegisterForm: (config: FullConfig) => {
   components: { backgroundImage },
   paths: { login },
   defaultTranslator,
+  userIdentifier,
 }) => {
   const RegisterForm: FC<TranslatorProps> = ({
     translator: t = defaultTranslator,
@@ -120,25 +121,28 @@ export const makeRegisterForm: (config: FullConfig) => {
                 .finally(() => setLoading(false));
             }}
           >
-            <TextField
-              className={formClasses.inputField}
-              autoFocus
-              fullWidth
-              id="register_username"
-              label={t('auth:RegisterForm.Username')}
-              variant="outlined"
-              type="text"
-              value={username}
-              helperText={errors.username
-                ? errors.username.map(fieldErrorMap).join(' - ')
-                : t('auth:RegisterForm.UsernameHelperText')}
-              error={!!errors.username}
-              onChange={(event) => {
-                setUsername(event.target.value);
-                // always reset errors after typing
-                setErrors((prev) => ({ ...prev, username: undefined }));
-              }}
-            />
+            {userIdentifier !== Identifier.Email && (
+              <TextField
+                className={formClasses.inputField}
+                autoFocus
+                fullWidth
+                id="register_username"
+                data-testid="register_username"
+                label={t('auth:RegisterForm.Username')}
+                variant="outlined"
+                type="text"
+                value={username}
+                helperText={errors.username
+                  ? errors.username.map(fieldErrorMap).join(' - ')
+                  : t('auth:RegisterForm.UsernameHelperText')}
+                error={!!errors.username}
+                onChange={(event) => {
+                  setUsername(event.target.value);
+                  // always reset errors after typing
+                  setErrors((prev) => ({ ...prev, username: undefined }));
+                }}
+              />
+            )}
             <TextField
               className={formClasses.inputField}
               fullWidth
