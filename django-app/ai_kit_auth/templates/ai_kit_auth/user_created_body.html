@@ -3,7 +3,7 @@
 {% block title %}Aktivierung des Accounts{% endblock %}
 
 {% block text %}
-    <p>Guten Tag {{ user.username }},</p>
+    <p>Guten Tag {{ user.get_username }},</p>
     <p>Sie sind nur noch einen Klick davon entfernt, Ihren Account zu benutzen.</p>
 {% endblock %}
 

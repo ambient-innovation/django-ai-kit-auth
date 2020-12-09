@@ -39,7 +39,11 @@ class LoginSerializer(serializers.Serializer):
         password = attrs.get("password")
         # if the ident is an email, we have to map it to a username
         try:
-            ident = UserModel.objects.get(email__iexact=ident).get_username()
+            ident = UserModel.objects.get(
+                **{
+                    f"{UserModel.get_email_field_name()}__iexact": ident,
+                }
+            ).get_username()
         except UserModel.DoesNotExist:
             pass
 
@@ -55,7 +59,7 @@ class LoginSerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserModel
-        fields = ["id", "email", "username"]
+        fields = ["id", UserModel.get_email_field_name(), UserModel.USERNAME_FIELD]
 
 
 class ValidatePasswordSerializer(serializers.Serializer):
@@ -88,8 +92,10 @@ class ValidatePasswordSerializer(serializers.Serializer):
             # usermodel does not already exist, we create a one off only for the
             # validation
             user = UserModel(
-                username=username,
-                email=email,
+                **{
+                    UserModel.USERNAME_FIELD: username,
+                    UserModel.get_email_field_name(): email,
+                }
             )
 
         try:
@@ -163,15 +169,23 @@ class RegistrationSerializer(serializers.Serializer):
             )
 
         # make sure email is unique
-        if UserModel.objects.filter(email=email).exists():
+        if UserModel.objects.filter(
+            **{UserModel.get_email_field_name(): email}
+        ).exists():
             code = "email_unique"
             raise ValidationError({"email": [ErrorDetail(code, code=code)]})
+
+        user_data = {
+            UserModel.USERNAME_FIELD: username,
+            UserModel.get_email_field_name(): email,
+            "is_active": False,
+        }
         try:
-            user = UserModel(username=username, email=email, is_active=False)
+            user = UserModel(**user_data)
             user.set_password(password)
             user.save()
             user_post_registered.send(sender=RegistrationSerializer, user=user)
-        except IntegrityError as e:
+        except IntegrityError:
             code = "username_unique"
             raise ValidationError({"username": [ErrorDetail(code, code=code)]})
         services.send_user_activation_mail(user)

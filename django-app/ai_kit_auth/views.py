@@ -166,7 +166,13 @@ class InitiatePasswordResetView(views.APIView):
 
     def post(self, request, *args, **kwargs):
         try:
-            user = UserModel.objects.get(email__iexact=request.data["email"])
+            user = UserModel.objects.get(
+                **{
+                    f"{UserModel.get_email_field_name()}__iexact": request.data[
+                        "email"
+                    ],
+                }
+            )
             user_pre_forgot_password.send(sender=InitiatePasswordResetView, user=user)
             services.send_reset_pw_mail(user)
             user_post_forgot_password.send(sender=InitiatePasswordResetView, user=user)
