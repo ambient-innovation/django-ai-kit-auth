@@ -103,7 +103,7 @@ def default_send_user_activation_mail(user, url):
         subject.replace("\n", " "),
         template_plain.render(context),
         template_html.render(context),
-        getattr(user, User.EMAIL_FIELD),
+        getattr(user, User.get_email_field_name()),
     )
 
 
@@ -135,7 +135,7 @@ def default_send_activation_by_admin_mail(user, url):
         subject.replace("\n", " "),
         template_plain.render(context),
         template_html.render(context),
-        getattr(user, User.EMAIL_FIELD),
+        getattr(user, User.get_email_field_name()),
     )
 
 
@@ -177,5 +177,5 @@ def default_send_reset_pw_mail(user, url):
         subject.replace("\n", " "),
         template_plain.render(context),
         template_html.render(context),
-        getattr(user, User.EMAIL_FIELD),
+        getattr(user, User.get_email_field_name()),
     )

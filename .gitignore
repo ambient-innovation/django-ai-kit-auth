@@ -16,6 +16,7 @@
 /.mypy_cache/
 *.tar.gz
 *.sqlite3
+django-app/build
 
 # Local env
 .env

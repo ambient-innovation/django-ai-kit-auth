@@ -1,7 +1,7 @@
 import * as React from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fireEvent, waitForElement } from '@testing-library/react';
-import { defaultConfig, RegisterForm } from '../..';
+import { defaultConfig, Identifier, RegisterForm } from '../..';
 import { makeRegisterForm } from '../Register';
 import { renderWithRouterAndUser } from './Util';
 import { mergeConfig } from '../../Configuration';
@@ -24,6 +24,26 @@ const renderFunction = (
 
 beforeEach(() => {
   register.mockReturnValue(dontResolvePromise());
+});
+
+test.each(
+  [Identifier.Username, Identifier.UsernameOrEmail],
+)('with identifier %s, the username textbox is rendered', (userIdentifier) => {
+  const { RegisterForm: CustomForm } = makeRegisterForm(mergeConfig(defaultConfig, {
+    userIdentifier,
+  }));
+  const { getByTestId } = renderFunction(<CustomForm />);
+
+  expect(getByTestId('register_username')).toBeVisible();
+});
+
+test('with email identifier, username textbox is not rendered', () => {
+  const { RegisterForm: CustomForm } = makeRegisterForm(mergeConfig(defaultConfig, {
+    userIdentifier: Identifier.Email,
+  }));
+  const { queryByTestId } = renderFunction(<CustomForm />);
+
+  expect(queryByTestId('register_username')).toBeFalsy();
 });
 
 test('submit calls register', () => {

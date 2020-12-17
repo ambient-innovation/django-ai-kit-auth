@@ -147,34 +147,33 @@ default. Default configurations are:
         "USE_AI_KIT_AUTH_ADMIN": True,
         # If you want to configure the layout of the admin form or you use a
         # use model doesn't have all the fields you need, you can supply your
-        # own fieldsets
+        # own fieldsets.
         "ADMIN_FIELDSETS": (
-                (None, {"fields": ("username", "email", "password")}),
-                (_("Personal info"), {"fields": ("first_name", "last_name")}),
-                (
-                    _("Permissions"),
-                    {
-                        "fields": (
-                            "is_active",
-                            "is_staff",
-                            "is_superuser",
-                            "groups",
-                            "user_permissions",
-                        ),
-                    },
-                ),
-                (_("Important dates"), {"fields": ("last_login", "date_joined")}),
+            (None, {"fields": ("username", "email", "password")}),
+            (_("Personal info"), {"fields": ("first_name", "last_name")}),
+            (
+                _("Permissions"),
+                {
+                    "fields": (
+                        "is_active",
+                        "is_staff",
+                        "is_superuser",
+                        "groups",
+                        "user_permissions",
+                    ),
+                },
             ),
-            "ADMIN_ADD_FIELDSETS": (
-                (
-                    None,
-                    {
-                        "classes": ("wide",),
-                        "fields": ("username", "email", "password1", "password2"),
-                    },
-                ),
+            (_("Important dates"), {"fields": ("last_login", "date_joined")}),
+        ),
+        "ADMIN_ADD_FIELDSETS": (
+            (
+                None,
+                {
+                    "classes": ("wide",),
+                    "fields": ("username", "email", "password1", "password2"),
+                },
             ),
-        },
+        ),
         # If true, the user has to specify a username in addition to the
         # mail address
         "USERNAME_REQUIRED": False,
