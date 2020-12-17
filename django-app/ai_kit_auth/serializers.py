@@ -1,6 +1,6 @@
 import unicodedata
 import uuid
-from django.contrib.auth import authenticate, get_user_model
+from django.contrib.auth import authenticate, get_user_model, tokens
 from django.contrib.auth.password_validation import (
     get_password_validators,
     validate_password,
@@ -28,10 +28,11 @@ def raise_validation(error_code):
 
 
 class LoginSerializer(serializers.Serializer):
-    ident = serializers.CharField(**FIELD_ARGS)
+    ident = serializers.CharField(**FIELD_ARGS, write_only=True)
     password = serializers.CharField(
         style={"input_type": "password"},
         **FIELD_ARGS,
+        write_only=True,
     )
 
     def validate(self, attrs):
@@ -39,7 +40,11 @@ class LoginSerializer(serializers.Serializer):
         password = attrs.get("password")
         # if the ident is an email, we have to map it to a username
         try:
-            ident = UserModel.objects.get(email__iexact=ident).get_username()
+            ident = UserModel.objects.get(
+                **{
+                    f"{UserModel.get_email_field_name()}__iexact": ident,
+                }
+            ).get_username()
         except UserModel.DoesNotExist:
             pass
 
@@ -55,18 +60,19 @@ class LoginSerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserModel
-        fields = ["id", "email", "username"]
+        fields = ["id", UserModel.get_email_field_name(), UserModel.USERNAME_FIELD]
 
 
 class ValidatePasswordSerializer(serializers.Serializer):
     # either ident or email and username (only if configured) is required,
     # but we test that manually
-    ident = serializers.CharField(required=False)
-    username = serializers.CharField(required=False, allow_blank=True)
-    email = serializers.EmailField(required=False, allow_blank=True)
+    ident = serializers.CharField(required=False, write_only=True)
+    username = serializers.CharField(required=False, allow_blank=True, write_only=True)
+    email = serializers.EmailField(required=False, allow_blank=True, write_only=True)
     password = serializers.CharField(
         required=True,
         error_messages={"required": "required", "blank": "blank"},
+        write_only=True,
     )
 
     def validate(self, attrs):
@@ -88,8 +94,10 @@ class ValidatePasswordSerializer(serializers.Serializer):
             # usermodel does not already exist, we create a one off only for the
             # validation
             user = UserModel(
-                username=username,
-                email=email,
+                **{
+                    UserModel.USERNAME_FIELD: username,
+                    UserModel.get_email_field_name(): email,
+                }
             )
 
         try:
@@ -116,14 +124,19 @@ class ValidatePasswordSerializer(serializers.Serializer):
         return attrs
 
 
+class ActivateUserSerializer(serializers.Serializer):
+    ident = serializers.CharField(**FIELD_ARGS, write_only=True)
+    token = serializers.CharField(**FIELD_ARGS, write_only=True)
+
+
 class InitiatePasswordResetSerializer(serializers.Serializer):
-    email = serializers.EmailField(**FIELD_ARGS)
+    email = serializers.EmailField(**FIELD_ARGS, write_only=True)
 
 
 class PasswordResetSerializer(serializers.Serializer):
-    ident = serializers.CharField(**FIELD_ARGS)
-    token = serializers.CharField(**FIELD_ARGS)
-    password = serializers.CharField(**FIELD_ARGS)
+    ident = serializers.CharField(**FIELD_ARGS, write_only=True)
+    token = serializers.CharField(**FIELD_ARGS, write_only=True)
+    password = serializers.CharField(**FIELD_ARGS, write_only=True)
 
 
 class RegistrationSerializer(serializers.Serializer):
@@ -163,15 +176,23 @@ class RegistrationSerializer(serializers.Serializer):
             )
 
         # make sure email is unique
-        if UserModel.objects.filter(email=email).exists():
+        if UserModel.objects.filter(
+            **{UserModel.get_email_field_name(): email}
+        ).exists():
             code = "email_unique"
             raise ValidationError({"email": [ErrorDetail(code, code=code)]})
+
+        user_data = {
+            UserModel.USERNAME_FIELD: username,
+            UserModel.get_email_field_name(): email,
+            "is_active": False,
+        }
         try:
-            user = UserModel(username=username, email=email, is_active=False)
+            user = UserModel(**user_data)
             user.set_password(password)
             user.save()
             user_post_registered.send(sender=RegistrationSerializer, user=user)
-        except IntegrityError as e:
+        except IntegrityError:
             code = "username_unique"
             raise ValidationError({"username": [ErrorDetail(code, code=code)]})
         services.send_user_activation_mail(user)

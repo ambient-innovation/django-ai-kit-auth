@@ -135,6 +135,7 @@ class ActivateUser(views.APIView):
     Endpoint for double opt in user activation
     """
 
+    serializer_class = serializers.ActivateUserSerializer
     permission_classes = (AllowAny,)
 
     def post(self, request, *args, **kwargs):
@@ -145,6 +146,7 @@ class ActivateUser(views.APIView):
             user = UserModel.objects.get(pk=pk)
             assert tokens.PasswordResetTokenGenerator().check_token(user, token)
         except (
+            KeyError,
             TypeError,
             ValueError,
             OverflowError,
@@ -162,15 +164,22 @@ class ActivateUser(views.APIView):
 
 
 class InitiatePasswordResetView(views.APIView):
+    serializer_class = serializers.InitiatePasswordResetSerializer
     permission_classes = (AllowAny,)
 
     def post(self, request, *args, **kwargs):
         try:
-            user = UserModel.objects.get(email__iexact=request.data["email"])
+            user = UserModel.objects.get(
+                **{
+                    f"{UserModel.get_email_field_name()}__iexact": request.data[
+                        "email"
+                    ],
+                }
+            )
             user_pre_forgot_password.send(sender=InitiatePasswordResetView, user=user)
             services.send_reset_pw_mail(user)
             user_post_forgot_password.send(sender=InitiatePasswordResetView, user=user)
-        except UserModel.DoesNotExist:
+        except (KeyError, UserModel.DoesNotExist):
             pass
         # always return OK
         return Response(status=status.HTTP_200_OK)
@@ -196,6 +205,7 @@ class ResetPassword(views.APIView):
             user = UserModel.objects.get(pk=pk)
             assert tokens.PasswordResetTokenGenerator().check_token(user, token)
         except (
+            KeyError,
             TypeError,
             ValueError,
             OverflowError,

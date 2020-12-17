@@ -1,4 +1,4 @@
-Guten Tag {{ user.username }},
+Guten Tag {{ user.get_username }},
 
 Bitte folgen Sie folgendem Link, um Ihr Konto zu aktivieren:
 

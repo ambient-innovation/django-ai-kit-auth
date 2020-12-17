@@ -25,7 +25,7 @@ class UsernameField(CharField):
         return {
             **super().widget_attrs(widget),
             "autocapitalize": "none",
-            "autocomplete": "username",
+            "autocomplete": User.USERNAME_FIELD,
         }
 
 
@@ -69,13 +69,17 @@ class AIUserCreationForm(UserCreationForm):
 class AIUserChangeForm(UserChangeForm):
     class Meta:
         model = User
-        fields = ("email",)
+        fields = (User.get_email_field_name(),)
 
     email = EmailField(label=_("Email address"), required=True)
 
     def clean_email(self):
         email = self.cleaned_data["email"]
-        if User.objects.exclude(pk=self.instance.pk).filter(email=email).exists():
+        if (
+            User.objects.exclude(pk=self.instance.pk)
+            .filter(**{User.get_email_field_name(): email})
+            .exists()
+        ):
             raise ValidationError(
                 _("Another user with this email already exists!"), code="unique_email"
             )
@@ -87,6 +91,17 @@ class AIUserAdmin(UserAdmin):
     add_form = AIUserCreationForm
     fieldsets = api_settings.ADMIN_FIELDSETS
     add_fieldsets = api_settings.ADMIN_ADD_FIELDSETS
+
+    ordering = (User.USERNAME_FIELD,)
+    list_display = (
+        User.USERNAME_FIELD,
+        User.get_email_field_name(),
+        "is_staff",
+    )
+    search_fields = (
+        User.USERNAME_FIELD,
+        User.get_email_field_name(),
+    )
 
 
 if api_settings.USE_AI_KIT_AUTH_ADMIN:
