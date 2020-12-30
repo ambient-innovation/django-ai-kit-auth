@@ -19,8 +19,12 @@ user_post_reset_password = Signal()  # args: "user"
 @receiver(post_save, sender=get_user_model())
 def invalidate_tokens_on_user_deactivation(sender, instance, **kwargs):
     if not instance.is_active:
-        post_save.disconnect(invalidate_tokens_on_user_deactivation, sender=get_user_model())
+        post_save.disconnect(
+            invalidate_tokens_on_user_deactivation, sender=get_user_model()
+        )
         # this will automatically invalidate all tokens
         instance.set_unusable_password()
         instance.save()
-        post_save.connect(invalidate_tokens_on_user_deactivation, sender=get_user_model())
+        post_save.connect(
+            invalidate_tokens_on_user_deactivation, sender=get_user_model()
+        )
