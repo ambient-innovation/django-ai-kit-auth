@@ -61,7 +61,7 @@ export const makeRegisterForm: (config: FullConfig) => {
     const formClasses = useFormStyles();
 
     const [debouncedPasswordValidation] = useDebouncedCallback(
-      (pw) => {
+      (pw: string) => {
         validatePassword({ username, email, password: pw })
           .then(() => {
             setErrors((current: ErrorMessage) => ({
