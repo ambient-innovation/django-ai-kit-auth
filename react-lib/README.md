@@ -307,7 +307,9 @@ const App: React.FC = () => (
 
 export default App;
 ```
+### MockUserStore
 
+This component provides a mocked [`UserStore`](#UserStore) for testing purposes. It works the same way [`UserStore`](#UserStore) does, but does not privide fully functioning authentication helper function to its children, but rather empty ones.
 
 ### AuthFunctionContext
 
