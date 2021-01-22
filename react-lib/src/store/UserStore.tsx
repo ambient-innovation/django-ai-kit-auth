@@ -182,8 +182,6 @@ export function makeGenericUserStore<U extends unknown = User>() {
     );
   };
 
-  // creates a fake UserStore, which does not throw errors but also does not need any context values.
-  // User is null and the promises stay unresolved. If any context values are given, they are used instead.
   const MockUserStore: FC<MockUserStoreProps<U>> = ({
     children, ...testContext
   }) => {
