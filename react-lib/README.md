@@ -183,7 +183,7 @@ export const defaultConfig = {
     emailSent: '/email-sent', // success feedback after email was sent from the
                               // forgot password page
   },
-  defailtTranslator: en, // A 'Translator' function, responsible for mapping keys
+  defaultTranslator: en, // A 'Translator' function, responsible for mapping keys
                          // to user facing strings.
   userIdentifier: Identifier.UsernameOrEmail, // what should the user type in the
                                               // login screen?
