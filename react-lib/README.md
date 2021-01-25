@@ -632,3 +632,20 @@ input fields (password and password-repeat) and a submit button. Upon submit the
 #### Parameters
 
 * `translator?: Translator`: A function which maps keys to user facing strings.
+
+## Signals
+
+You can use the Signals AI-Kit Authentication emitts when states are changed. The following Signals are available:
+
+* `user_pre_login` is emitted before a login  request is handeled
+* `user_post_login` is emitted after a login  request is handeled
+* `user_pre_logout` is emitted before a logout request is handeled
+* `user_post_logout` is emitted after a logout request is handeled
+* `user_pre_registered` is emitted before a request to register is handeled
+* `user_post_registered` is emitted after a request to register is handeled
+* `user_pre_activated` is emitted before a request to activate a user is handeled
+* `user_post_activated` is emitted after a request to activate a user is handeled
+* `user_pre_forgot_password` is emitted before a forgot_password request is handeled
+* `user_post_forgot_password` is emitted after a forgot_password request is handeled
+* `user_pre_reset_password` is emitted before a reset_password request is handeled
+* `user_post_reset_password` is emitted after a reset_password request is handeled
