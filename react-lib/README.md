@@ -335,7 +335,7 @@ and sets the `user` in [`UserContext`](#usercontext) to `null`.
 * `justLoggedOut: boolean`: Is set to true after a successful `logout`. However, it is not
 persistent, so after the next page refresh, it will be set to `false` again. It is used to
 display a non-persistent notification that the logout was successful on the login page.
-* `updateUserInfo: () => Promise<void>`: triggers a request to update the user info. 
+* `updateUserInfo: () => Promise<void>`: triggers a request to update both the user object and the CSRF-token. 
 It can be used to obtain the the user itself. 
 * `register: (username: string, email: string, password: string) => Promise<void>`:
 triggers a request to register a new user. If successful, the server will have sent an email
