@@ -635,7 +635,7 @@ input fields (password and password-repeat) and a submit button. Upon submit the
 
 ## Signals
 
-You can use the Signals AI-Kit Authentication emitts when states are changed. The following Signals are available:
+You can use the Signals AI-Kit Authentication emits when states are changed. The following Signals are available:
 
 * `user_pre_login` is emitted before a login  request is handeled
 * `user_post_login` is emitted after a login  request is handeled
