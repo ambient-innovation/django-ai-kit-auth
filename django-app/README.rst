@@ -32,6 +32,8 @@ Index
 
 * `Error Codes`_
 
+* `Signals`_
+
 
 Quick Start
 -----------
@@ -523,3 +525,21 @@ Internationalisation happens in the frontend.
 |                           | This may be due to a typo, or because it has     |
 |                           | been used already.                               |
 +---------------------------+--------------------------------------------------+
+
+Signals
+-------
+
+You can use the Signals AI-Kit Authentication emits when states are changed. The following Signals are available:
+
+* `user_pre_login` is emitted before a login  request is handled
+* `user_post_login` is emitted after a login  request is handled
+* `user_pre_logout` is emitted before a logout request is handled
+* `user_post_logout` is emitted after a logout request is handled
+* `user_pre_registered` is emitted before a request to register is handled
+* `user_post_registered` is emitted after a request to register is handled
+* `user_pre_activated` is emitted before a request to activate a user is handled
+* `user_post_activated` is emitted after a request to activate a user is handled
+* `user_pre_forgot_password` is emitted before a forgot_password request is handled
+* `user_post_forgot_password` is emitted after a forgot_password request is handled
+* `user_pre_reset_password` is emitted before a reset_password request is handled
+* `user_post_reset_password` is emitted after a reset_password request is handled
