@@ -102,6 +102,7 @@ AI-KIT: Authentication provides the following components and functions:
 * UserStore
     * [UserStore](#userstore)
     * [UserContext](#usercontext)
+    * [mockUserStore](#mockuserstore)
     * [AuthFunctionContext](#authfunctioncontext)
     * [useUserStore](#useuserstore)
 * Routes
@@ -307,9 +308,12 @@ const App: React.FC = () => (
 
 export default App;
 ```
+
 ### MockUserStore
 
-This component provides a mocked [`UserStore`](#UserStore) for testing purposes. It works the same way [`UserStore`](#UserStore) does, but does not privide fully functioning authentication helper function to its children, but rather empty ones.
+This component provides a mocked [`UserStore`](#UserStore) for testing purposes.
+It works the same way [`UserStore`](#UserStore) does.
+It does not provide fully functioning authentication helper functions to its children, but rather empty ones.
 
 ### AuthFunctionContext
 
@@ -337,8 +341,8 @@ and sets the `user` in [`UserContext`](#usercontext) to `null`.
 * `justLoggedOut: boolean`: Is set to true after a successful `logout`. However, it is not
 persistent, so after the next page refresh, it will be set to `false` again. It is used to
 display a non-persistent notification that the logout was successful on the login page.
-* `updateUserInfo: () => Promise<void>`: triggers a request to update both the user object and the CSRF-token. 
-It can be used to obtain the the user itself. 
+* `updateUserInfo: () => Promise<void>`: triggers a request to update both the user object and the CSRF-token.
+It can be used to obtain the the user itself.
 * `register: (username: string, email: string, password: string) => Promise<void>`:
 triggers a request to register a new user. If successful, the server will have sent an email
 to the email provided as parameter. If unsuccessful, it will raise an exception containing
@@ -636,20 +640,3 @@ input fields (password and password-repeat) and a submit button. Upon submit the
 #### Parameters
 
 * `translator?: Translator`: A function which maps keys to user facing strings.
-
-## Signals
-
-You can use the Signals AI-Kit Authentication emits when states are changed. The following Signals are available:
-
-* `user_pre_login` is emitted before a login  request is handeled
-* `user_post_login` is emitted after a login  request is handeled
-* `user_pre_logout` is emitted before a logout request is handeled
-* `user_post_logout` is emitted after a logout request is handeled
-* `user_pre_registered` is emitted before a request to register is handeled
-* `user_post_registered` is emitted after a request to register is handeled
-* `user_pre_activated` is emitted before a request to activate a user is handeled
-* `user_post_activated` is emitted after a request to activate a user is handeled
-* `user_pre_forgot_password` is emitted before a forgot_password request is handeled
-* `user_post_forgot_password` is emitted after a forgot_password request is handeled
-* `user_pre_reset_password` is emitted before a reset_password request is handeled
-* `user_post_reset_password` is emitted after a reset_password request is handeled
