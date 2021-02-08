@@ -2,20 +2,18 @@ import React, {
   FC, useContext, useEffect, useState,
 } from 'react';
 import { AxiosError } from 'axios';
-import { useParams } from 'react-router-dom';
-import { AuthFunctionContext } from '../store/UserStore';
+import { AuthFunctionContext } from '..';
 import { ErrorView } from './AuthView';
-import { FullConfig } from '../Configuration';
 import { makeActivationCard } from './Activation';
 import { TranslatorProps } from '../internationalization';
+import { FullConfig } from '../config/Components';
 
-export const makeActivateEmailAddress: (
-  config: FullConfig,
-) => {
+export const makeActivateEmailAddress = (config: FullConfig): {
   ActivateEmailAddress: FC<TranslatorProps>;
   ActivationView: FC<TranslatorProps>;
   ActivationCard: FC<TranslatorProps>;
-} = (config) => {
+} => {
+  const { useQueryParams } = config.routing;
   const { ActivationView, ActivationCard } = makeActivationCard(config);
   const {
     defaultTranslator,
@@ -25,7 +23,7 @@ export const makeActivateEmailAddress: (
   const ActivateEmailAddress: FC<TranslatorProps> = ({
     translator: t = defaultTranslator,
   }) => {
-    const { ident, token } = useParams();
+    const { ident, token } = useQueryParams();
     const { activateEmailAddress, csrf } = useContext(AuthFunctionContext);
     const [error, setError] = useState<string|undefined>(undefined);
     const [loading, setLoading] = useState(true);
@@ -41,7 +39,7 @@ export const makeActivateEmailAddress: (
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ident, token, csrf]);
 
-    if (loading) return components.loadingIndicator();
+    if (loading) return <components.loadingIndicator />;
 
     if (error) {
       const errorKey = `auth:EmailActivation.Errors.${error}`;

@@ -3,21 +3,19 @@ import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import Link from '@material-ui/core/Link';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, {
   FC, useContext, useState,
 } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
 import { AxiosError } from 'axios';
-import { AuthFunctionContext } from '../store/UserStore';
+import { AuthFunctionContext } from '..';
 import { LogoutReason } from '../store/types';
 import { ErrorMessage } from '../api/types';
-import { FullConfig, Identifier } from '../Configuration';
 import { AuthView } from './AuthView';
 import { PasswordField } from './common/PasswordField';
 import { TranslatorProps } from '../internationalization';
 import { useFormStyles } from './common/styles';
+import { FullConfig, Identifier } from '../config/Components';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   loggedOutText: {
@@ -39,6 +37,7 @@ export const makeLoginForm: (config: FullConfig) => {
   defaultTranslator,
   userIdentifier,
   disableUserRegistration,
+  routing: { link: Link },
 }) => {
   const LoginForm: FC<TranslatorProps> = ({
     translator: t = defaultTranslator,
@@ -139,8 +138,7 @@ export const makeLoginForm: (config: FullConfig) => {
                 id="login_password_reset"
                 variant="body1"
                 color="textPrimary"
-                component={RouterLink}
-                to={forgotPassword}
+                href={forgotPassword}
               >
                 {t('auth:LoginForm.ForgotPassword')}
               </Link>
@@ -156,8 +154,7 @@ export const makeLoginForm: (config: FullConfig) => {
             id="login_register"
             variant="body1"
             color="textPrimary"
-            component={RouterLink}
-            to={register}
+            href={register}
           >
             {t('auth:LoginForm.SignUp')}
           </Link>

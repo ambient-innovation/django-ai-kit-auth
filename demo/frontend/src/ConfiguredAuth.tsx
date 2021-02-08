@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
-import { configureAuth, de } from 'ai-kit-auth';
+import { configureAuth } from 'ai-kit-auth/dist/config/ReactRouter';
+import { de } from 'ai-kit-auth';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 
@@ -27,6 +28,6 @@ export const {
 } = configureAuth({
   defaultTranslator: de,
   components: {
-    backgroundImage: () => <BackgroundImage />,
+    backgroundImage: BackgroundImage,
   },
 });

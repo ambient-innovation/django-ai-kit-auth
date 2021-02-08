@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { FC } from 'react';
-import { User } from '../../api/types';
-import { defaultConfig, ProtectedRoute } from '../..';
+import { User } from '../../../api/types';
+import { defaultConfig, ProtectedRoute } from '../../../index';
 import { makeProtectedRoute } from '../ProtectedRoute';
-import { renderWithRouterAndUser } from './Util';
-import { mergeConfig } from '../../Configuration';
+import { renderWithRouterAndUser } from '../../tests/Util';
+import { mergeConfig } from '../../../Configuration';
 
 const mockUser: User = ({
   id: 42, username: 'Donald', email: 'donald@example.com',

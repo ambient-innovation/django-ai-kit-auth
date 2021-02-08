@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { FC } from 'react';
-import { User } from '../../api/types';
-import { LoginRoute } from '../..';
-import { renderWithRouterAndUser } from './Util';
+import { User } from '../../../api/types';
+import { LoginRoute } from '../../../index';
+import { renderWithRouterAndUser } from '../../tests/Util';
 
 const mockUser: User = ({
   id: 42, username: 'Donald', email: 'donald@example.com',

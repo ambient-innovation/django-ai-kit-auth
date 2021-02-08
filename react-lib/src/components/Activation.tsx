@@ -1,15 +1,14 @@
 import React, { FC } from 'react';
-import { useHistory } from 'react-router-dom';
 import {
   Button,
   createStyles, Grid, Paper, Typography,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import CheckIcon from '@material-ui/icons/Check';
-import { FullConfig } from '../Configuration';
 import { AuthView } from './AuthView';
 import { TranslatorProps } from '../internationalization';
 import { useFormStyles } from './common/styles';
+import { FullConfig } from '../config/Components';
 
 const useStyles = makeStyles(createStyles({
   CheckIcon: {
@@ -36,19 +35,22 @@ export const makeActivationCard: (config: FullConfig) => {
     mainPage,
   },
   defaultTranslator,
+  routing: { useRouteHandler },
 }) => {
   const ActivationCard: FC<TranslatorProps> = ({
     translator: t = defaultTranslator,
   }) => {
     const classes = useStyles();
     const formClasses = useFormStyles();
-    const history = useHistory();
+    const routeHandler = useRouteHandler();
 
     const handleRedirect = () => {
-      history.replace(
-        login,
-        { from: mainPage },
-      );
+      routeHandler.replace({
+        path: login,
+        query: {
+          next: mainPage,
+        },
+      });
     };
 
     return (

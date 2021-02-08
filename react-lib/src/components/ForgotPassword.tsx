@@ -3,15 +3,13 @@ import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import Link from '@material-ui/core/Link';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import React, { FC, useContext, useState } from 'react';
-import { useHistory, Link as RouterLink } from 'react-router-dom';
-import { AuthFunctionContext } from '../store/UserStore';
-import { FullConfig } from '../Configuration';
+import { AuthFunctionContext } from '..';
 import { AuthView } from './AuthView';
 import { TranslatorProps } from '../internationalization';
 import { useFormStyles } from './common/styles';
+import { FullConfig } from '../config/Components';
 
 const useStyles = makeStyles(createStyles({
   inputField: {
@@ -20,14 +18,15 @@ const useStyles = makeStyles(createStyles({
   },
 }));
 
-export const makeForgotPasswordForm: (config: FullConfig) => {
-  ForgotPasswordForm: FC<TranslatorProps>;
-  ForgotPasswordView: FC<TranslatorProps>;
-} = ({
+export const makeForgotPasswordForm = ({
   components: { backgroundImage },
   paths: { login, emailSent },
   defaultTranslator,
-}) => {
+  routing: { useRouteHandler, link: Link },
+}: FullConfig): {
+  ForgotPasswordForm: FC<TranslatorProps>;
+  ForgotPasswordView: FC<TranslatorProps>;
+} => {
   const ForgotPasswordForm: FC<TranslatorProps> = ({
     translator: t = defaultTranslator,
   }) => {
@@ -35,7 +34,7 @@ export const makeForgotPasswordForm: (config: FullConfig) => {
     const formClasses = useFormStyles();
     const [email, setEmail] = useState('');
     const { requestPasswordReset } = useContext(AuthFunctionContext);
-    const history = useHistory();
+    const routeHandler = useRouteHandler();
 
     return (
       <Paper className={formClasses.paper}>
@@ -56,7 +55,7 @@ export const makeForgotPasswordForm: (config: FullConfig) => {
           onSubmit={(e) => {
             e.preventDefault();
             requestPasswordReset(email);
-            history.push(emailSent);
+            routeHandler.push(emailSent);
           }}
         >
           <TextField
@@ -91,8 +90,7 @@ export const makeForgotPasswordForm: (config: FullConfig) => {
               id="reset_to_login"
               variant="body1"
               color="textPrimary"
-              component={RouterLink}
-              to={login}
+              href={login}
             >
               {t('auth:ForgotPassword.BackToLogin')}
             </Link>

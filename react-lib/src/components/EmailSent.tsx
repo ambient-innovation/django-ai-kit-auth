@@ -1,16 +1,14 @@
 import React, { FC } from 'react';
-import { Link as RouterLink, useHistory } from 'react-router-dom';
 import {
   Button,
   createStyles, Grid, Paper, Typography,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import Link from '@material-ui/core/Link';
-import { FullConfig } from '../Configuration';
 import { AuthView } from './AuthView';
 import { MailSvg } from '../assets/MailSvg';
 import { TranslatorProps } from '../internationalization';
 import { useFormStyles } from './common/styles';
+import { FullConfig } from '../config/Components';
 
 const useStyles = makeStyles(createStyles({
   CheckIcon: {
@@ -32,10 +30,7 @@ const useStyles = makeStyles(createStyles({
   },
 }));
 
-export const makeEmailSentCard: (config: FullConfig) => {
-  EmailSentCard: FC<TranslatorProps>;
-  EmailSentView: FC<TranslatorProps>;
-} = ({
+export const makeEmailSentCard = ({
   components: { backgroundImage },
   paths: {
     mainPage,
@@ -43,19 +38,28 @@ export const makeEmailSentCard: (config: FullConfig) => {
     forgotPassword,
   },
   defaultTranslator,
-}) => {
+  routing: {
+    link: Link,
+    useRouteHandler,
+  },
+}: FullConfig): {
+  EmailSentCard: FC<TranslatorProps>;
+  EmailSentView: FC<TranslatorProps>;
+} => {
   const EmailSentCard: FC<TranslatorProps> = ({
     translator: t = defaultTranslator,
   }) => {
     const classes = useStyles();
     const formClasses = useFormStyles();
-    const history = useHistory();
+    const routeHandler = useRouteHandler();
 
     const handleRedirect = () => {
-      history.replace(
-        login,
-        { from: mainPage },
-      );
+      routeHandler.replace({
+        path: login,
+        query: {
+          from: mainPage,
+        },
+      });
     };
 
     return (
@@ -83,8 +87,7 @@ export const makeEmailSentCard: (config: FullConfig) => {
             id="reset_to_login"
             variant="body1"
             color="textPrimary"
-            component={RouterLink}
-            to={forgotPassword}
+            href={forgotPassword}
           >
             {t('auth:EmailSent.RequestAgain')}
           </Link>

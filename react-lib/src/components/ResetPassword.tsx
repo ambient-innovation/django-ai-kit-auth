@@ -5,10 +5,9 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
-import { useParams } from 'react-router-dom';
 import { useDebouncedCallback } from 'use-debounce';
-import { AuthFunctionContext } from '../store/UserStore';
-import { FullConfig } from '../Configuration';
+import { AuthFunctionContext } from '..';
+import { FullConfig } from '../config/Components';
 import { AuthView } from './AuthView';
 import { PasswordField } from './common/PasswordField';
 import { ErrorMessage } from '../api/types';
@@ -28,14 +27,15 @@ const useStyles = makeStyles(createStyles({
   },
 }));
 
-export const makeResetPasswordForm: (config: FullConfig) => {
-  ResetPasswordForm: FC<TranslatorProps>;
-  ResetPasswordView: FC<TranslatorProps>;
-} = ({
-  components: { loadingIndicator, backgroundImage },
+export const makeResetPasswordForm = ({
+  components: { loadingIndicator: LoadingIndicator, backgroundImage },
   paths: { login, forgotPassword },
   defaultTranslator,
-}) => {
+  routing: { useQueryParams },
+}: FullConfig): {
+  ResetPasswordForm: FC<TranslatorProps>;
+  ResetPasswordView: FC<TranslatorProps>;
+} => {
   const ResetPasswordForm: FC<TranslatorProps> = ({
     translator: t = defaultTranslator,
   }) => {
@@ -45,7 +45,7 @@ export const makeResetPasswordForm: (config: FullConfig) => {
     const [passwordErrors, setPasswordErrors] = useState<ErrorMessage|undefined>();
     const [successState, setSuccessState] = useState<SuccessState>(SuccessState.INITIAL);
     const { validatePassword, resetPassword } = useContext(AuthFunctionContext);
-    const { ident, token } = useParams();
+    const { ident, token } = useQueryParams();
 
     const [debouncedPasswordValidation] = useDebouncedCallback(
       (pw: string) => {
@@ -149,7 +149,7 @@ export const makeResetPasswordForm: (config: FullConfig) => {
         {
           successState === SuccessState.LOADING && (
             <Grid container item xs={12} justify="center">
-              {loadingIndicator()}
+              <LoadingIndicator />
             </Grid>
           )
         }

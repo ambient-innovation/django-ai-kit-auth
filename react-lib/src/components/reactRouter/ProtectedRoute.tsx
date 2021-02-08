@@ -1,31 +1,26 @@
 import React, { FC, useContext } from 'react';
-import { Redirect, Route, RouteProps } from 'react-router-dom';
-import { AuthFunctionContext } from '../store/UserStore';
-import { FullConfig } from '../Configuration';
+import {
+  Redirect, Route, RouteProps, useLocation,
+} from 'react-router-dom';
+import { AuthFunctionContext } from '../..';
+import { FullConfig } from '../../config/Components';
 
-export const makeProtectedRoute: (
-  config: FullConfig,
-) => FC<RouteProps> = ({
+export const makeProtectedRoute = ({
   paths: { mainPage, login },
   components: { loadingIndicator },
-}) => ({
+}: FullConfig): FC<RouteProps> => ({
   component,
   render,
   children,
   ...routeProps
 }) => {
   const { loggedIn, loading } = useContext(AuthFunctionContext);
-  const pathname = routeProps.location?.pathname || mainPage;
+  const location = useLocation();
+  const pathname = location.pathname || mainPage;
 
   if (loading) return <Route {...routeProps} component={loadingIndicator} />;
   if (!loggedIn) {
-    return (
-      <Redirect to={{
-        pathname: login,
-        state: { from: pathname },
-      }}
-      />
-    );
+    return <Redirect to={`${login}?next=${pathname}`} />;
   }
 
   return (

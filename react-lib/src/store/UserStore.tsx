@@ -1,7 +1,7 @@
 import React, {
   createContext, FC, useContext, useEffect, useMemo, useState,
 } from 'react';
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import { PasswordValidationInput, User } from '../api/types';
 import {
   activateEmailAddressAPI,
@@ -24,10 +24,10 @@ export type MockUserStoreProps<U extends unknown> =
 
 
 export const noop: () => void = () => null;
-export const dontResolvePromise = () => new Promise<void>(() => null);
-export const errorPromise = () => new Promise<void>(() => {
-  throw new Error('No User Store provided!');
-});
+export const dontResolvePromise = () => new Promise<void>(noop);
+export const errorPromise = () => Promise.reject(new Error(
+  'Could not find an AI-Authentication User Store in the component tree! Make sure, that you included a UserStore component in your component tree and that you did not mix components from different configurations!',
+));
 
 export const AuthFunctionContext = createContext<AuthFunctionContextValue>({
   loading: false,
@@ -93,9 +93,6 @@ export function makeGenericUserStore<U extends unknown = User>() {
           setCsrf(logoutData.csrf);
           setLoggedOut(reason);
         })
-        .catch(() => {
-          // TODO
-        })
         .finally(() => {
           setLoading(false);
         });
@@ -107,11 +104,6 @@ export function makeGenericUserStore<U extends unknown = User>() {
       .then((data) => {
         setUser(data.user);
         setCsrf(data.csrf);
-      })
-      .catch((error: AxiosError) => {
-        if (!error.response) {
-          throw new Error('Host unreachable');
-        }
       })
       .finally(() => setLoading(false));
 
