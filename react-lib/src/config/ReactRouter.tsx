@@ -9,7 +9,7 @@ import { Link } from '../components/reactRouter/Link';
 import { useRouteHandler } from '../components/reactRouter/useRouteHandler';
 import { useQueryParams } from '../components/reactRouter/useQueryParams';
 
-export const configureAuth = <UserType extends unknown = User>(config: ComponentConfig) => {
+export const configureAuth = <UserType extends unknown = User>(config?: ComponentConfig) => {
   const components = makeComponents({
     ...config,
     routing: {

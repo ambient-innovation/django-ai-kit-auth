@@ -1,4 +1,5 @@
 import { useHistory } from 'react-router-dom';
+import { useCallback } from 'react';
 import { RouteHandler, UrlDescriptor } from '../../config/components';
 
 const convertUrlDescriptor = (url: UrlDescriptor): string => {
@@ -13,7 +14,7 @@ export const useRouteHandler = (): RouteHandler => {
   const history = useHistory();
 
   return {
-    push: (url) => history.push(convertUrlDescriptor(url)),
-    replace: (url) => history.replace(convertUrlDescriptor(url)),
+    push: useCallback((url) => history.push(convertUrlDescriptor(url)), [history]),
+    replace: useCallback((url) => history.replace(convertUrlDescriptor(url)), [history]),
   };
 };
