@@ -1,4 +1,5 @@
 from unittest.mock import patch
+from urllib.parse import parse_qs
 import uuid
 from django.test import TestCase
 from django.contrib.auth import get_user_model
@@ -56,11 +57,14 @@ class MailTests(TestCase):
 class MakeURLTests(TestCase):
     def test_concatenates_arguments(self):
         args = [str(i) for i in range(10)]
-        self.assertEqual(make_url(*args), "/".join(args))
+        self.assertEqual(make_url(*args), "/".join(args) + "?")
 
     def test_strips_slashes(self):
         args = [f"/{i}/" for i in range(10)]
-        self.assertEqual(make_url(*args), "/".join(str(i) for i in range(10)))
+        self.assertEqual(make_url(*args), "/".join(str(i) for i in range(10)) + "?")
+
+    def test_adds_query_params(self):
+        self.assertEqual(make_url("auth", "test", a="b", c="d"), "auth/test?a=b&c=d")
 
 
 class ActivationTest(TestCase):
@@ -76,8 +80,8 @@ class ActivationTest(TestCase):
         send_user_activation_mail(user)
         mock_settings.SEND_USER_ACTIVATION_MAIL.assert_called()
         url = mock_settings.SEND_USER_ACTIVATION_MAIL.call_args[0][1]
-        ident = url.split("/")[-2]
-        self.assertEqual(ident, str(scramble_id(user.pk)))
+        params = parse_qs(url.split("?")[1])
+        self.assertEqual(params["ident"][0], str(scramble_id(user.pk)))
 
     @patch("ai_kit_auth.services.make_url")
     def test_activation_link_is_in_email(self, mock_make_url):
@@ -100,8 +104,8 @@ class InitResetPasswordTest(TestCase):
         send_reset_pw_mail(user)
         mock_settings.SEND_RESET_PW_MAIL.assert_called()
         url = mock_settings.SEND_RESET_PW_MAIL.call_args[0][1]
-        ident = url.split("/")[-2]
-        self.assertEqual(ident, str(scramble_id(user.pk)))
+        params = parse_qs(url.split("?")[1])
+        self.assertEqual(params["ident"][0], str(scramble_id(user.pk)))
 
     @patch("ai_kit_auth.services.make_url")
     def test_reset_link_is_in_email(self, mock_make_url):

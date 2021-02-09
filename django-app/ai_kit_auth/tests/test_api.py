@@ -2,7 +2,7 @@ from unittest.mock import Mock, patch
 from django.urls import reverse
 from django.contrib.auth import authenticate
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from django.middleware.csrf import _compare_salted_tokens
+from django.middleware.csrf import _compare_masked_tokens
 from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -124,7 +124,7 @@ class LoginTests(AuthTestCase):
             format="json",
         )
         self.assertTrue(
-            _compare_salted_tokens(
+            _compare_masked_tokens(
                 response.cookies["csrftoken"].value, response.data["csrf"]
             )
         )
@@ -233,7 +233,10 @@ class ValidatePasswordTests(AuthTestCase):
 class ActivateEmailTests(AuthTestCase):
     def test_activate_user(self):
         user = baker.make(UserModel, is_active=False, email="to@example.com")
-        ident, token = services.get_activation_url(user).split("/")[-2:]
+        ident = str(services.scramble_id(user.pk))
+        token_gen = PasswordResetTokenGenerator()
+        token = token_gen.make_token(user)
+
         response = self.client.post(
             activate_url, {"ident": ident, "token": token}, format="json"
         )
@@ -256,7 +259,10 @@ class ActivateEmailTests(AuthTestCase):
         user_post_activated.connect(receiver_post)
 
         user = baker.make(UserModel, is_active=False, email="to@example.com")
-        ident, token = services.get_activation_url(user).split("/")[-2:]
+        ident = str(services.scramble_id(user.pk))
+        token_gen = PasswordResetTokenGenerator()
+        token = token_gen.make_token(user)
+
         self.client.post(activate_url, {"ident": ident, "token": token}, format="json")
 
         user_pre_activated.disconnect(receiver_pre)

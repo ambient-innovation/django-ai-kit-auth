@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
+from django.utils.safestring import mark_safe
 
 from .settings import api_settings
 
@@ -61,8 +62,10 @@ def send_email(subject, text, html, to_address):
     msg.send()
 
 
-def make_url(*args):
-    return "/".join(str(s).strip("/") for s in args)
+def make_url(*pathArgs, **queryArgs):
+    path = "/".join(str(s).strip("/") for s in pathArgs)
+    query = "&".join(f"{key}={value}" for key, value in queryArgs.items())
+    return mark_safe(f"{path}?{query}")
 
 
 def get_activation_url(user):
@@ -71,7 +74,10 @@ def get_activation_url(user):
     token = token_gen.make_token(user)
 
     return make_url(
-        api_settings.FRONTEND.URL, api_settings.FRONTEND.ACTIVATION_ROUTE, ident, token
+        api_settings.FRONTEND.URL,
+        api_settings.FRONTEND.ACTIVATION_ROUTE,
+        ident=ident,
+        token=token,
     )
 
 
@@ -145,7 +151,10 @@ def get_password_reset_url(user):
     token = token_gen.make_token(user)
 
     return make_url(
-        api_settings.FRONTEND.URL, api_settings.FRONTEND.RESET_PW_ROUTE, ident, token
+        api_settings.FRONTEND.URL,
+        api_settings.FRONTEND.RESET_PW_ROUTE,
+        ident=ident,
+        token=token,
     )
 
 
