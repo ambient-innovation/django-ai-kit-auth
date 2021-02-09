@@ -8,7 +8,7 @@ import CheckIcon from '@material-ui/icons/Check';
 import { AuthView } from './AuthView';
 import { TranslatorProps } from '../internationalization';
 import { useFormStyles } from './common/styles';
-import { FullConfig } from '../config/Components';
+import { FullConfig } from '../config/components';
 
 const useStyles = makeStyles(createStyles({
   CheckIcon: {

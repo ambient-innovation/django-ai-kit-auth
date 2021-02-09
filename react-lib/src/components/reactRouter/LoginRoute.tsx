@@ -6,7 +6,7 @@ import {
 } from 'react-router-dom';
 
 import { AuthFunctionContext } from '../..';
-import { FullConfig } from '../../config/Components';
+import { FullConfig } from '../../config/components';
 
 export const makeLoginRoute = ({
   paths: { mainPage },

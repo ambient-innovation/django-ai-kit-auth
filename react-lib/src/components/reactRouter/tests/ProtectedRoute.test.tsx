@@ -1,63 +1,70 @@
 import * as React from 'react';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { render } from '@testing-library/react';
 import { FC } from 'react';
+import { createMemoryHistory } from 'history';
+import { Router } from 'react-router-dom';
 import { User } from '../../../api/types';
-import { defaultConfig, ProtectedRoute } from '../../../index';
 import { makeProtectedRoute } from '../ProtectedRoute';
-import { renderWithRouterAndUser } from '../../tests/Util';
-import { mergeConfig } from '../../../Configuration';
+import { makeGenericUserStore, MockUserStoreProps } from '../../..';
+import { getFullTestConfig } from '../../../tests/Helper';
+import { DeepPartial } from '../../../util';
+import { FullConfig } from '../../../config/components';
 
 const mockUser: User = ({
   id: 42, username: 'Donald', email: 'donald@example.com',
 });
 
+const { MockUserStore } = makeGenericUserStore();
+
+const renderComponent = (
+  apiFunctions?: MockUserStoreProps,
+  config?: DeepPartial<FullConfig>,
+  initialEntries: string[] = ['/'],
+) => {
+  const history = createMemoryHistory({ initialEntries });
+  const fullConfig = getFullTestConfig(config);
+  const ProtectedRoute = makeProtectedRoute(fullConfig);
+
+  return ({
+    history,
+    fullConfig,
+    ...render(
+      <MockUserStore {...apiFunctions}>
+        <Router history={history}>
+          <ProtectedRoute exact path={initialEntries[0]}>
+            Main
+          </ProtectedRoute>
+        </Router>
+      </MockUserStore>,
+    ),
+  });
+};
+
 test('redirects to login without user', () => {
-  const renderObject = renderWithRouterAndUser(
-    <ProtectedRoute />,
-  );
-  expect(renderObject.history.location.pathname).toEqual('/auth/login');
+  const renderObject = renderComponent();
+  expect(renderObject.history.location.pathname)
+    .toEqual(renderObject.fullConfig.paths.login);
 });
 
 test('redirect passes referral location', () => {
   const currentLocation = '/here';
-  const renderObject = renderWithRouterAndUser(
-    <ProtectedRoute location={{
-      pathname: currentLocation,
-      search: '',
-      state: null,
-      hash: '',
-    }}
-    />,
+  const renderObject = renderComponent(
+    {}, {}, [currentLocation],
   );
-  expect((renderObject.history.location.state as {from: string})
-    .from).toEqual(currentLocation);
+  expect(renderObject.history.location.search)
+    .toEqual(`?next=${currentLocation}`);
 });
 
 test('shows loading indicator when loading', () => {
-  const SimpleProtected = makeProtectedRoute(mergeConfig(defaultConfig, {
-    components: { loadingIndicator: () => <div>loading</div> },
-  }));
-  const renderObject = renderWithRouterAndUser(
-    <SimpleProtected />,
+  const renderObject = renderComponent(
     { loading: true },
+    { components: { loadingIndicator: (() => <div>loading</div>) as FC } },
   );
   expect(renderObject.getByText('loading')).toBeInTheDocument();
 });
 
 test('renders children when logged in', () => {
-  const renderObject = renderWithRouterAndUser(
-    <ProtectedRoute>
-      content
-    </ProtectedRoute>,
-    { user: mockUser },
-  );
-  expect(renderObject.getByText('content')).toBeInTheDocument();
-});
-
-test('renders component when logged in', () => {
-  const Content: FC = () => <div>content</div>;
-  const renderObject = renderWithRouterAndUser(
-    <ProtectedRoute component={Content} />,
-    { user: mockUser },
-  );
-  expect(renderObject.getByText('content')).toBeInTheDocument();
+  const renderObject = renderComponent({ user: mockUser });
+  expect(renderObject.getByText('Main')).toBeInTheDocument();
 });

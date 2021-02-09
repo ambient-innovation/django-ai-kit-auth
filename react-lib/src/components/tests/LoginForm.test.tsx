@@ -1,13 +1,14 @@
 import * as React from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { fireEvent, waitForElement } from '@testing-library/react';
-import { defaultConfig, Identifier, LoginForm } from '../..';
+import { render, fireEvent, waitForElement } from '@testing-library/react';
 import { makeLoginForm } from '../LoginForm';
 import { User } from '../../api/types';
-import { renderWithRouterAndUser } from './Util';
 import { LogoutReason } from '../../store/types';
-import { mergeConfig } from '../../Configuration';
 import { en } from '../../internationalization';
+import { makeGenericUserStore, MockUserStoreProps } from '../..';
+import { DeepPartial } from '../../util';
+import { FullConfig, Identifier } from '../../config/components';
+import { getFullTestConfig, TestRoutingProps } from '../../tests/Helper';
 
 const mockUser: User = ({
   id: 42, username: 'Donald', email: 'donald@example.com',
@@ -16,16 +17,32 @@ const mockPassword = '1324qwer';
 
 const login = jest.fn();
 
-const renderFunction = (
-  element: JSX.Element = <LoginForm />,
-) => renderWithRouterAndUser(element, { login });
+const { MockUserStore } = makeGenericUserStore();
+
+const renderComponent = (
+  config?: DeepPartial<FullConfig>,
+  apiFunctions?: MockUserStoreProps,
+  routingProps?: TestRoutingProps,
+) => {
+  const fullConfig = getFullTestConfig(config, routingProps);
+  const { LoginForm } = makeLoginForm(fullConfig);
+
+  return {
+    fullConfig,
+    ...render(
+      <MockUserStore login={login} {...apiFunctions}>
+        <LoginForm />
+      </MockUserStore>,
+    ),
+  };
+};
 
 beforeEach(() => {
   login.mockReturnValue(new Promise(() => mockUser));
 });
 
 test('submit calls login', () => {
-  const renderObject = renderFunction();
+  const renderObject = renderComponent();
   fireEvent.change(
     renderObject.getByLabelText(en('auth:LoginForm.UsernameOrEmail')),
     {
@@ -61,7 +78,7 @@ test('error in identifier field', async () => {
       },
     });
   }));
-  const renderObject = renderFunction();
+  const renderObject = renderComponent();
   fireEvent.submit(renderObject.getByRole('form'));
   await waitForElement(
     () => renderObject.getByText(en('auth:Common.FieldErrors.blank')),
@@ -80,7 +97,7 @@ test('error in password field', async () => {
       },
     });
   }));
-  const renderObject = renderFunction();
+  const renderObject = renderComponent();
   fireEvent.submit(renderObject.getByRole('form'));
   await waitForElement(
     () => renderObject.getByText(en('auth:Common.FieldErrors.blank')),
@@ -99,7 +116,7 @@ test('show general error', async () => {
       },
     });
   }));
-  const renderObject = renderFunction();
+  const renderObject = renderComponent();
   fireEvent.submit(renderObject.getByRole('form'));
   await waitForElement(
     () => renderObject.getByText(
@@ -109,65 +126,53 @@ test('show general error', async () => {
 });
 
 test('Email type in ident input field', () => {
-  const EmailLoginForm = makeLoginForm(mergeConfig(defaultConfig, {
-    userIdentifier: Identifier.Email,
-  })).LoginForm;
-  const renderOptions = renderFunction(<EmailLoginForm />);
+  const renderOptions = renderComponent({ userIdentifier: Identifier.Email });
   expect(renderOptions.getByLabelText(en('auth:LoginForm.Email')))
     .toHaveProperty('type', 'email');
 });
 
 test('user logout success text', () => {
-  const renderObject = renderWithRouterAndUser(
-    <LoginForm />,
-    { justLoggedOut: LogoutReason.USER },
-  );
+  const renderObject = renderComponent({}, { justLoggedOut: LogoutReason.USER });
   expect(renderObject.getByText(en('auth:LoginForm.LogoutSuccess'))).toBeInTheDocument();
 });
 
 test('auth logout notification', () => {
-  const renderObject = renderWithRouterAndUser(
-    <LoginForm />,
-    { justLoggedOut: LogoutReason.AUTH },
-  );
+  const renderObject = renderComponent({}, { justLoggedOut: LogoutReason.AUTH });
   expect(renderObject.getByText(en('auth:LoginForm.AuthLogoutNotification'))).toBeInTheDocument();
 });
 
 test('reset link leads to correct url', () => {
   const pathToForgotPassword = '/path/to/forgot-password';
-  const ForgotLoginForm = makeLoginForm(mergeConfig(defaultConfig, {
-    paths: { forgotPassword: pathToForgotPassword },
-  })).LoginForm;
-  const renderObject = renderFunction(<ForgotLoginForm />);
+  const linkCallback = jest.fn();
+  const renderObject = renderComponent(
+    { paths: { forgotPassword: pathToForgotPassword } },
+    {},
+    { linkCallback },
+  );
+
   fireEvent.click(renderObject.getByText(en('auth:LoginForm.ForgotPassword')));
-  const { entries } = renderObject.history;
-  expect(entries[entries.length - 1].pathname).toEqual(pathToForgotPassword);
+  expect(linkCallback).toHaveBeenCalledWith(pathToForgotPassword);
 });
 
 test('register link leads to correct url', () => {
   const pathToRegister = '/path/to/register';
-  const RegisterLoginForm = makeLoginForm(mergeConfig(defaultConfig, {
-    paths: { register: pathToRegister },
-  })).LoginForm;
-  const renderObject = renderFunction(<RegisterLoginForm />);
+  const linkCallback = jest.fn();
+  const renderObject = renderComponent(
+    { paths: { register: pathToRegister } },
+    {},
+    { linkCallback },
+  );
   fireEvent.click(renderObject.getByText(en('auth:LoginForm.SignUp')));
-  const { entries } = renderObject.history;
-  expect(entries[entries.length - 1].pathname).toEqual(pathToRegister);
+  expect(linkCallback).toHaveBeenCalledWith(pathToRegister);
 });
 
 test('register link is not shown if disabledUserRegistration', () => {
-  const PureLoginForm = makeLoginForm(mergeConfig(defaultConfig, {
-    disableUserRegistration: true,
-  })).LoginForm;
-  const renderObject = renderFunction(<PureLoginForm />);
+  const renderObject = renderComponent({ disableUserRegistration: true });
   expect(() => renderObject.getByText(en('auth:LoginForm.SignUp'))).toThrowError();
 });
 
 test('submit button disabled when loading', () => {
-  const renderObject = renderWithRouterAndUser(
-    <LoginForm />,
-    { loading: true },
-  );
+  const renderObject = renderComponent({}, { loading: true });
   expect(renderObject.getAllByRole('button').find(
     (element) => Object.values(element).find(
       (part) => part.type === 'submit',

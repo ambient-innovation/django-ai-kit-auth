@@ -1,21 +1,41 @@
 import * as React from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { fireEvent } from '@testing-library/react';
-import { renderWithRouterAndUser } from './Util';
-import { defaultConfig, ForgotPasswordForm } from '../..';
+import { render, fireEvent } from '@testing-library/react';
+import {
+  makeGenericUserStore, MockUserStoreProps,
+} from '../..';
 import { makeForgotPasswordForm } from '../ForgotPassword';
-import { mergeConfig } from '../../Configuration';
 import { en } from '../../internationalization';
+import { getFullTestConfig, TestRoutingProps } from '../../tests/Helper';
+import { DeepPartial } from '../../util';
+import { FullConfig } from '../../config/components';
 
 const mockEmail = 'mock@example.com';
+
+const { MockUserStore } = makeGenericUserStore();
+
+const renderComponent = (
+  apiFunctions?: MockUserStoreProps,
+  config?: DeepPartial<FullConfig>,
+  routingProps?: TestRoutingProps,
+) => {
+  const fullConfig = getFullTestConfig(config, routingProps);
+  const { ForgotPasswordForm } = makeForgotPasswordForm(fullConfig);
+
+  return {
+    fullConfig,
+    ...render(
+      <MockUserStore {...apiFunctions}>
+        <ForgotPasswordForm />
+      </MockUserStore>,
+    ),
+  };
+};
 
 test('submit calls login', () => {
   const requestPasswordReset = jest.fn();
   requestPasswordReset.mockReturnValue(new Promise<void>((r) => r()));
-  const renderObject = renderWithRouterAndUser(
-    <ForgotPasswordForm />,
-    { requestPasswordReset },
-  );
+  const renderObject = renderComponent({ requestPasswordReset });
   fireEvent.change(
     renderObject.getByLabelText(en('auth:ForgotPassword.InputLabel'), { exact: false }),
     {
@@ -32,11 +52,10 @@ test('submit calls login', () => {
 
 test('login link leads to correct url', () => {
   const pathToLogin = '/path/to/login';
-  const LoginForgotForm = makeForgotPasswordForm(mergeConfig(defaultConfig, {
-    paths: { login: pathToLogin },
-  })).ForgotPasswordForm;
-  const renderObject = renderWithRouterAndUser(<LoginForgotForm />);
+  const linkCallback = jest.fn();
+  const renderObject = renderComponent(
+    {}, { paths: { login: pathToLogin } }, { linkCallback },
+  );
   fireEvent.click(renderObject.getByText(en('auth:ForgotPassword.BackToLogin')));
-  const { entries } = renderObject.history;
-  expect(entries[entries.length - 1].pathname).toEqual(pathToLogin);
+  expect(linkCallback).toHaveBeenCalledWith(pathToLogin);
 });

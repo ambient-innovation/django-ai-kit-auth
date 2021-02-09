@@ -1,7 +1,7 @@
 import { Route } from 'react-router-dom';
 import React from 'react';
 import { User } from '../api/types';
-import { ComponentConfig, makeComponents } from './Components';
+import { ComponentConfig, makeComponents } from './components';
 import { Translator } from '../internationalization';
 import { makeLoginRoute } from '../components/reactRouter/LoginRoute';
 import { makeProtectedRoute } from '../components/reactRouter/ProtectedRoute';

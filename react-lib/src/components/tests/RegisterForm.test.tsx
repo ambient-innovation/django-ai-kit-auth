@@ -1,12 +1,12 @@
 import * as React from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { fireEvent, waitForElement } from '@testing-library/react';
-import { defaultConfig, Identifier, RegisterForm } from '../..';
+import { render, fireEvent, waitForElement } from '@testing-library/react';
 import { makeRegisterForm } from '../Register';
-import { renderWithRouterAndUser } from './Util';
-import { mergeConfig } from '../../Configuration';
+import { DeepPartial } from '../../util';
 import { en } from '../../internationalization';
-import { dontResolvePromise } from '../../store/UserStore';
+import { dontResolvePromise, makeGenericUserStore, MockUserStoreProps } from '../../store/UserStore';
+import { FullConfig, Identifier } from '../../config/components';
+import { getFullTestConfig, TestRoutingProps } from '../../tests/Helper';
 
 const mockUser = ({
   username: 'Donald', email: 'donald@example.com', password: 'longpass',
@@ -16,11 +16,25 @@ const sleep = async () => new Promise((r) => setTimeout(r, 400));
 
 const register = jest.fn();
 
+const { MockUserStore } = makeGenericUserStore();
+
 const renderFunction = (
-  element: JSX.Element = <RegisterForm />,
-) => renderWithRouterAndUser(element, {
-  register,
-});
+  config?: DeepPartial<FullConfig>,
+  testContext?: MockUserStoreProps,
+  routingProps?: TestRoutingProps,
+) => {
+  const fullConfig: FullConfig = getFullTestConfig(config, routingProps);
+  const { RegisterForm } = makeRegisterForm(fullConfig);
+
+  return {
+    fullConfig,
+    ...render(
+      <MockUserStore register={register} {...testContext}>
+        <RegisterForm />
+      </MockUserStore>,
+    ),
+  };
+};
 
 beforeEach(() => {
   register.mockReturnValue(dontResolvePromise());
@@ -29,19 +43,13 @@ beforeEach(() => {
 test.each(
   [Identifier.Username, Identifier.UsernameOrEmail],
 )('with identifier %s, the username textbox is rendered', (userIdentifier) => {
-  const { RegisterForm: CustomForm } = makeRegisterForm(mergeConfig(defaultConfig, {
-    userIdentifier,
-  }));
-  const { getByTestId } = renderFunction(<CustomForm />);
+  const { getByTestId } = renderFunction({ userIdentifier });
 
   expect(getByTestId('register_username')).toBeVisible();
 });
 
 test('with email identifier, username textbox is not rendered', () => {
-  const { RegisterForm: CustomForm } = makeRegisterForm(mergeConfig(defaultConfig, {
-    userIdentifier: Identifier.Email,
-  }));
-  const { queryByTestId } = renderFunction(<CustomForm />);
+  const { queryByTestId } = renderFunction({ userIdentifier: Identifier.Email });
 
   expect(queryByTestId('register_username')).toBeFalsy();
 });
@@ -71,10 +79,7 @@ test('submit calls register', () => {
 test('password is validated once, when typing is finished', async () => {
   const validatePassword = jest.fn();
   validatePassword.mockReturnValue(dontResolvePromise());
-  const renderObject = renderWithRouterAndUser(
-    <RegisterForm />,
-    { validatePassword },
-  );
+  const renderObject = renderFunction({}, { validatePassword });
   fireEvent.change(
     renderObject.getByLabelText(en('auth:RegisterForm.Username')),
     { target: { value: mockUser.username } },
@@ -193,10 +198,7 @@ test('error in password while typing', async () => {
       },
     });
   });
-  const renderObject = renderWithRouterAndUser(
-    <RegisterForm />,
-    { validatePassword },
-  );
+  const renderObject = renderFunction({}, { validatePassword });
   fireEvent.change(
     renderObject.getByLabelText(en('auth:RegisterForm.Password')),
     { target: { value: '123' } },
@@ -227,11 +229,10 @@ test('show general error', async () => {
 
 test('sign in link leads to correct url', () => {
   const pathToLogin = '/path/to/login';
-  const LoginRegisterForm = makeRegisterForm(mergeConfig(defaultConfig, {
-    paths: { login: pathToLogin },
-  })).RegisterForm;
-  const renderObject = renderFunction(<LoginRegisterForm />);
+  const linkCallback = jest.fn();
+  const renderObject = renderFunction(
+    { paths: { login: pathToLogin } }, {}, { linkCallback },
+  );
   fireEvent.click(renderObject.getByText(en('auth:RegisterForm.BackToLogin')));
-  const { entries } = renderObject.history;
-  expect(entries[entries.length - 1].pathname).toEqual(pathToLogin);
+  expect(linkCallback).toHaveBeenCalledWith(pathToLogin);
 });

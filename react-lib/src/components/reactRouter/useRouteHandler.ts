@@ -1,5 +1,5 @@
 import { useHistory } from 'react-router-dom';
-import { RouteHandler, UrlDescriptor } from '../../config/Components';
+import { RouteHandler, UrlDescriptor } from '../../config/components';
 
 const convertUrlDescriptor = (url: UrlDescriptor): string => {
   if (typeof url === 'string') return url;

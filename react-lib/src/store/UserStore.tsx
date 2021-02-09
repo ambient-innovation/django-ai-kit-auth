@@ -19,12 +19,12 @@ export interface UserStoreProps {
   apiUrl: string;
   apiAuthPath: string;
 }
-export type MockUserStoreProps<U extends unknown> =
+export type MockUserStoreProps<U extends unknown=User> =
   Partial<UserStoreValue<U> & AuthFunctionContextValue>;
 
 
 export const noop: () => void = () => null;
-export const dontResolvePromise = () => new Promise<void>(noop);
+export const dontResolvePromise = <T extends unknown=void>() => new Promise<T>(noop);
 export const errorPromise = () => Promise.reject(new Error(
   'Could not find an AI-Authentication User Store in the component tree! Make sure, that you included a UserStore component in your component tree and that you did not mix components from different configurations!',
 ));

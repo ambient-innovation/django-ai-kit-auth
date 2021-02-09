@@ -8,8 +8,8 @@ import {
   render, waitForElement, fireEvent, act,
 } from '@testing-library/react';
 
-import { UserStore, useUserStore } from '../..';
 import { User } from '../../api/types';
+import { dontResolvePromise, makeGenericUserStore } from '../UserStore';
 
 const maxios = new MockAdapter(axios);
 
@@ -21,56 +21,58 @@ beforeEach(() => {
   maxios.reset();
 });
 
-const StoreDisplay: FC = () => {
-  const {
-    user, csrf, loading, login, logout, updateUserInfo,
-  } = useUserStore();
+const renderStoreValue = () => {
+  const { UserStore, useUserStore } = makeGenericUserStore();
 
-  if (loading) return <div>loading</div>;
+  const StoreDisplay: FC = () => {
+    const {
+      user, csrf, loading, login, logout, updateUserInfo,
+    } = useUserStore();
 
-  return (
-    <div>
-      {user ? (
-        <div>
-          <div>{user.username}</div>
-          <div>{user.email}</div>
-          <div>{user.id}</div>
-          <button
-            type="button"
-            onClick={() => logout()
-              .catch(() => null)}
-          >
-            Logout
-          </button>
-        </div>
-      ) : (
-        <div>
-          no user
-          <button
-            type="button"
-            onClick={() => login(mockUser.username, 'pass')
-              .catch(() => null)}
-          >
-            Login
-          </button>
-        </div>
-      )}
-      <button type="button" onClick={() => updateUserInfo()}>
-        Update
-      </button>
-      <div>{csrf}</div>
-      { loading && <div>loading</div> }
-    </div>
+    if (loading) return <div>loading</div>;
+
+    return (
+      <div>
+        {user ? (
+          <div>
+            <div>{user.username}</div>
+            <div>{user.email}</div>
+            <div>{user.id}</div>
+            <button
+              type="button"
+              onClick={() => logout()
+                .catch(() => null)}
+            >
+              Logout
+            </button>
+          </div>
+        ) : (
+          <div>
+            no user
+            <button
+              type="button"
+              onClick={() => login(mockUser.username, 'pass')
+                .catch(() => null)}
+            >
+              Login
+            </button>
+          </div>
+        )}
+        <button type="button" onClick={() => updateUserInfo()}>
+          Update
+        </button>
+        <div>{csrf}</div>
+        { loading && <div>loading</div> }
+      </div>
+    );
+  };
+
+  return render(
+    <UserStore apiUrl="" apiAuthPath="">
+      <StoreDisplay />
+    </UserStore>,
   );
 };
-
-const renderStoreValue = () => render(
-  <UserStore apiUrl="" apiAuthPath="">
-    <StoreDisplay />
-  </UserStore>,
-);
-
-const sleep = async () => new Promise((r) => setTimeout(r, 200));
 
 test('UserStore tries to obtain user information', async () => {
   const csrf = 'abcdsdcbasdasd';
@@ -81,12 +83,7 @@ test('UserStore tries to obtain user information', async () => {
 });
 
 test('UserStore is loading initially', () => {
-  maxios.onGet('/me/').reply(async () => {
-    // wait for some time, so that the loading can actually be shown
-    await sleep();
-
-    return [400];
-  });
+  maxios.onGet('/me/').reply(dontResolvePromise);
   const renderObject = renderStoreValue();
   expect(renderObject.getByText('loading')).toBeInTheDocument();
 });
@@ -113,11 +110,7 @@ test('UserStore sends login', async () => {
 
 test('UserStore shows loading while logging in', async () => {
   maxios.onGet('/me/').reply(200, { user: null, csrf: '' });
-  maxios.onPost('/login/').reply(async () => {
-    await sleep();
-
-    return [400];
-  });
+  maxios.onPost('/login/').reply(dontResolvePromise);
   const renderObject = renderStoreValue();
   await waitForElement(() => renderObject.getByText('Login'));
   fireEvent.click(renderObject.getByText('Login'));
@@ -148,11 +141,7 @@ test('UserStore sends logout', async () => {
 
 test('UserStore shows loading while logging out', async () => {
   maxios.onGet('/me/').reply(200, { user: mockUser, csrf: '' });
-  maxios.onPost('/logout/').reply(async () => {
-    await sleep();
-
-    return [400];
-  });
+  maxios.onPost('/logout/').reply(dontResolvePromise);
   const renderObject = renderStoreValue();
   await waitForElement(() => renderObject.getByText('Logout'));
   fireEvent.click(renderObject.getByText('Logout'));

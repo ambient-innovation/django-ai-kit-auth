@@ -12,7 +12,7 @@ import { useDebouncedCallback } from 'use-debounce';
 import { AuthFunctionContext } from '..';
 import { AuthView } from './AuthView';
 import { ErrorMessage } from '../api/types';
-import { FullConfig, Identifier } from '../config/Components';
+import { FullConfig, Identifier } from '../config/components';
 import { PasswordField } from './common/PasswordField';
 import { TranslatorProps } from '../internationalization';
 import { useFormStyles } from './common/styles';

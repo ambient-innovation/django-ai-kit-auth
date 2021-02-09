@@ -3,7 +3,7 @@ import {
   Redirect, Route, RouteProps, useLocation,
 } from 'react-router-dom';
 import { AuthFunctionContext } from '../..';
-import { FullConfig } from '../../config/Components';
+import { FullConfig } from '../../config/components';
 
 export const makeProtectedRoute = ({
   paths: { mainPage, login },
@@ -20,7 +20,11 @@ export const makeProtectedRoute = ({
 
   if (loading) return <Route {...routeProps} component={loadingIndicator} />;
   if (!loggedIn) {
-    return <Redirect to={`${login}?next=${pathname}`} />;
+    return (
+      <Route {...routeProps}>
+        <Redirect to={`${login}?next=${pathname}`} />
+      </Route>
+    );
   }
 
   return (

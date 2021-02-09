@@ -6,7 +6,7 @@ import { AuthFunctionContext } from '..';
 import { ErrorView } from './AuthView';
 import { makeActivationCard } from './Activation';
 import { TranslatorProps } from '../internationalization';
-import { FullConfig } from '../config/Components';
+import { FullConfig } from '../config/components';
 
 export const makeActivateEmailAddress = (config: FullConfig): {
   ActivateEmailAddress: FC<TranslatorProps>;

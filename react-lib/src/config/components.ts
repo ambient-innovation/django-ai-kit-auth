@@ -1,4 +1,4 @@
-import React, { ComponentType } from 'react';
+import { ComponentType } from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { TypographyProps } from '@material-ui/core';
 import { en, Translator } from '../internationalization';
@@ -59,8 +59,8 @@ export const defaultComponentConfig: DefaultConfig = {
   userIdentifier: Identifier.UsernameOrEmail, // what should the user type in the login screen?
   disableUserRegistration: false, // setting this to true will remove the register path completely
   components: {
-    backgroundImage: () => <DefaultBackgroundImage />,
-    loadingIndicator: () => <CircularProgress />,
+    backgroundImage: DefaultBackgroundImage,
+    loadingIndicator: CircularProgress,
   },
 };
 
@@ -83,7 +83,7 @@ export interface RoutingConfig {
   routing: {
     link: ComponentType<LinkProps>;
     useRouteHandler: () => RouteHandler;
-    useQueryParams: <QP extends {[key: string]: string}>() => QP;
+    useQueryParams: () => Record<string, string>;
   };
 }
 
@@ -98,6 +98,24 @@ export const makeComponents = <UserType extends unknown = User>(
     routing: config.routing,
   };
 
+  const { base } = fullConfig.paths;
+  Object.keys(fullConfig.paths).forEach((key) => {
+    switch (key) {
+      case 'activation':
+      case 'resetPassword':
+      case 'login':
+      case 'register':
+      case 'forgotPassword':
+      case 'emailSent':
+        fullConfig.paths[key] = `${base}${fullConfig.paths[key]}`;
+        break;
+      case 'mainPage':
+      case 'base':
+        break;
+      default:
+        throw new Error(`No path configuration for path '${key}. This is likely a bug in ai-auth-kit.`);
+    }
+  });
   const store = makeGenericUserStore<UserType>();
   const login = makeLoginForm(fullConfig);
   const register = makeRegisterForm(fullConfig);

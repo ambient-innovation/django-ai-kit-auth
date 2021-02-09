@@ -7,7 +7,7 @@ import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import { useDebouncedCallback } from 'use-debounce';
 import { AuthFunctionContext } from '..';
-import { FullConfig } from '../config/Components';
+import { FullConfig } from '../config/components';
 import { AuthView } from './AuthView';
 import { PasswordField } from './common/PasswordField';
 import { ErrorMessage } from '../api/types';
@@ -84,6 +84,7 @@ export const makeResetPasswordForm = ({
               onSubmit={(e) => {
                 e.preventDefault();
 
+                console.log('submitting', ident, token, password);
                 if (ident && token) {
                   setSuccessState(SuccessState.LOADING);
                   resetPassword(ident, token, password).then(() => {
