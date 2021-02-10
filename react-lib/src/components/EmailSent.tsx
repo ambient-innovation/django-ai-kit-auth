@@ -55,7 +55,7 @@ export const makeEmailSentCard = ({
 
     const handleRedirect = () => {
       routeHandler.replace({
-        path: login,
+        pathname: login,
         query: {
           from: mainPage,
         },

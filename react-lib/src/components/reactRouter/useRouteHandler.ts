@@ -4,10 +4,10 @@ import { RouteHandler, UrlDescriptor } from '../../config/components';
 
 const convertUrlDescriptor = (url: UrlDescriptor): string => {
   if (typeof url === 'string') return url;
-  if (!url.query) return url.path;
+  if (!url.query) return url.pathname;
   const query = new URLSearchParams(url.query).toString();
 
-  return `${url.path}?${query}`;
+  return `${url.pathname}?${query}`;
 };
 
 export const useRouteHandler = (): RouteHandler => {

@@ -46,7 +46,7 @@ export const makeActivationCard: (config: FullConfig) => {
 
     const handleRedirect = () => {
       routeHandler.replace({
-        path: login,
+        pathname: login,
         query: {
           next: mainPage,
         },

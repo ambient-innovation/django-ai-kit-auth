@@ -572,7 +572,7 @@ It uses the widely used `react-router` library to define functionality for page 
 #### Parameters
 
 The parameters are identical to those of [`makeComponents`](#makecomponents), with the exception that
-no config fields are mandatory.
+there is no `routing` field.
 
 #### Returns
 

@@ -70,7 +70,7 @@ export interface LinkProps extends Pick<TypographyProps,
 }
 
 export type UrlDescriptor = string | {
-  path: string;
+  pathname: string;
   query?: { [key: string]: string };
 }
 
@@ -93,7 +93,7 @@ export type FullConfig = DefaultConfig & RoutingConfig;
 export const makeComponents = <UserType extends unknown = User>(
   config: InputConfig,
 ) => {
-  const fullConfig = {
+  const fullConfig: FullConfig = {
     ...mergeConfig(defaultComponentConfig, config),
     routing: config.routing,
   };
