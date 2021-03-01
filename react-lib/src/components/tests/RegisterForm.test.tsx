@@ -6,7 +6,7 @@ import { DeepPartial } from '../../util';
 import { en } from '../../internationalization';
 import { dontResolvePromise, makeGenericUserStore, MockUserStoreProps } from '../../store/UserStore';
 import { FullConfig, Identifier } from '../..';
-import {defaultApiConfig, getFullTestConfig, TestRoutingProps} from '../../tests/Helper';
+import { defaultApiConfig, getFullTestConfig, TestRoutingProps } from '../../tests/Helper';
 
 const mockUser = ({
   username: 'Donald', email: 'donald@example.com', password: 'longpass',

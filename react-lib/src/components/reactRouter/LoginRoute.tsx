@@ -1,6 +1,5 @@
 import React, { FC, useContext } from 'react';
 import {
-  Redirect,
   Route,
   RouteProps,
 } from 'react-router-dom';
