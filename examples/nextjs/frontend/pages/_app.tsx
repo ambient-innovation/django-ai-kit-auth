@@ -4,7 +4,7 @@ import { UserStore } from '../src/configureAuth';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <UserStore apiUrl='http://localhost:8000/api/v1/' apiAuthPath='auth/'>
+    <UserStore>
       <Component {...pageProps} />
     </UserStore>
   );

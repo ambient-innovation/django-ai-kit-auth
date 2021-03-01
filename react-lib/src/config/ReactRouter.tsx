@@ -1,7 +1,7 @@
 import { Route } from 'react-router-dom';
 import React from 'react';
 import { User } from '../api/types';
-import { ComponentConfig, makeComponents } from './components';
+import { InputConfig, makeComponents } from './components';
 import { Translator } from '../internationalization';
 import { makeLoginRoute } from '../components/reactRouter/LoginRoute';
 import { makeProtectedRoute } from '../components/reactRouter/ProtectedRoute';
@@ -9,14 +9,18 @@ import { Link } from '../components/reactRouter/Link';
 import { useRouteHandler } from '../components/reactRouter/useRouteHandler';
 import { useQueryParams } from '../components/reactRouter/useQueryParams';
 
-export const configureAuth = <UserType extends unknown = User>(config?: ComponentConfig) => {
+export interface ReactRouterConfig extends Omit<InputConfig, 'routing'> {
+  routing?: InputConfig['routing'];
+}
+
+export const configureAuth = <UserType extends unknown = User>(config: ReactRouterConfig) => {
   const components = makeComponents({
-    ...config,
     routing: {
       link: Link,
       useRouteHandler,
       useQueryParams,
     },
+    ...config,
   });
   const { fullConfig } = components;
 

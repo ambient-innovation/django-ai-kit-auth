@@ -5,10 +5,11 @@ import { makeLoginForm } from '../LoginForm';
 import { User } from '../../api/types';
 import { LogoutReason } from '../../store/types';
 import { en } from '../../internationalization';
-import { makeGenericUserStore, MockUserStoreProps } from '../..';
+import {
+  makeGenericUserStore, MockUserStoreProps, FullConfig, Identifier,
+} from '../..';
 import { DeepPartial } from '../../util';
-import { FullConfig, Identifier } from '../../config/components';
-import { getFullTestConfig, TestRoutingProps } from '../../tests/Helper';
+import { defaultApiConfig, getFullTestConfig, TestRoutingProps } from '../../tests/Helper';
 
 const mockUser: User = ({
   id: 42, username: 'Donald', email: 'donald@example.com',
@@ -17,7 +18,7 @@ const mockPassword = '1324qwer';
 
 const login = jest.fn();
 
-const { MockUserStore } = makeGenericUserStore();
+const { MockUserStore } = makeGenericUserStore(defaultApiConfig);
 
 const renderComponent = (
   config?: DeepPartial<FullConfig>,

@@ -30,4 +30,8 @@ export const {
   components: {
     backgroundImage: BackgroundImage,
   },
+  api: {
+    url: 'http://localhost:8000/api/v1/',
+    authPath: 'auth/',
+  },
 });

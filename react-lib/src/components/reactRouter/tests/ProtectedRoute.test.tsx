@@ -6,16 +6,16 @@ import { createMemoryHistory } from 'history';
 import { Router } from 'react-router-dom';
 import { User } from '../../../api/types';
 import { makeProtectedRoute } from '../ProtectedRoute';
-import { makeGenericUserStore, MockUserStoreProps } from '../../..';
-import { getFullTestConfig } from '../../../tests/Helper';
+import { makeGenericUserStore, MockUserStoreProps, FullConfig } from '../../..';
+import { defaultApiConfig, getFullTestConfig } from '../../../tests/Helper';
 import { DeepPartial } from '../../../util';
-import { FullConfig } from '../../../config/components';
+
 
 const mockUser: User = ({
   id: 42, username: 'Donald', email: 'donald@example.com',
 });
 
-const { MockUserStore } = makeGenericUserStore();
+const { MockUserStore } = makeGenericUserStore(defaultApiConfig);
 
 const renderComponent = (
   apiFunctions?: MockUserStoreProps,

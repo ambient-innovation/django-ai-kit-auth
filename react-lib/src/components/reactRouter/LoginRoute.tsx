@@ -5,19 +5,24 @@ import {
   RouteProps,
 } from 'react-router-dom';
 
-import { AuthFunctionContext } from '../..';
-import { FullConfig } from '../../config/components';
+import { AuthFunctionContext, FullConfig } from '../..';
+
 
 export const makeLoginRoute = ({
   paths: { mainPage },
-  routing: { useQueryParams },
+  routing: { useQueryParams, useRouteHandler },
 }: FullConfig): FC<RouteProps> => ({
   children, ...routeProps
 }) => {
   const { loggedIn } = useContext(AuthFunctionContext);
   const { next } = useQueryParams();
+  const { replace } = useRouteHandler();
 
-  if (loggedIn) return <Redirect to={next || mainPage} />;
+  if (loggedIn) {
+    replace(next || mainPage);
+
+    return <Route {...routeProps} />;
+  }
 
   return (
     <Route {...routeProps}>

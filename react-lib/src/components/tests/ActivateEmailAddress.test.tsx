@@ -3,15 +3,15 @@ import { FC } from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { render, waitForElement } from '@testing-library/react';
 
-import { makeGenericUserStore, MockUserStoreProps } from '../..';
+import { makeGenericUserStore, MockUserStoreProps, FullConfig } from '../..';
 import { makeActivateEmailAddress } from '../ActivateEmailAddress';
 import { en } from '../../internationalization';
-import { getFullTestConfig } from '../../tests/Helper';
+import { defaultApiConfig, getFullTestConfig } from '../../tests/Helper';
 import { dontResolvePromise } from '../../store/UserStore';
 import { DeepPartial } from '../../util';
-import { FullConfig } from '../../config/components';
 
-const { MockUserStore } = makeGenericUserStore();
+
+const { MockUserStore } = makeGenericUserStore(defaultApiConfig);
 
 const renderComponent = (
   apiFunctions?: MockUserStoreProps, config?: DeepPartial<FullConfig>,

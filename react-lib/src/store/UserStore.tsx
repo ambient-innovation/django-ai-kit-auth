@@ -15,10 +15,16 @@ import {
 } from '../api/api';
 import { AuthFunctionContextValue, LogoutReason, UserStoreValue } from './types';
 
-export interface UserStoreProps {
-  apiUrl: string;
-  apiAuthPath: string;
+export interface ApiConfig {
+  url: string;
+  authPath: string;
 }
+
+export interface UserStoreProps<U extends unknown> {
+  initialUser?: U;
+  initialCsrf?: string;
+}
+
 export type MockUserStoreProps<U extends unknown=User> =
   Partial<UserStoreValue<U> & AuthFunctionContextValue>;
 
@@ -46,16 +52,18 @@ export const AuthFunctionContext = createContext<AuthFunctionContextValue>({
   register: errorPromise,
 });
 
-export function makeGenericUserStore<U extends unknown = User>() {
+export function makeGenericUserStore<U extends unknown = User>(
+  { url: apiUrl, authPath: apiAuthPath }: ApiConfig,
+) {
   const UserContext = createContext<UserStoreValue<U>>({ user: null });
 
-  const UserStore: FC<UserStoreProps> = ({
-    children, apiUrl, apiAuthPath,
+  const UserStore: FC<UserStoreProps<U>> = ({
+    children, initialCsrf, initialUser,
   }) => {
     const [loggedOut, setLoggedOut] = useState<LogoutReason>(LogoutReason.NONE);
     const [loading, setLoading] = useState(true);
-    const [user, setUser] = useState<U|null>(null);
-    const [csrf, setCsrf] = useState('');
+    const [user, setUser] = useState<U|null>(initialUser ?? null);
+    const [csrf, setCsrf] = useState(initialCsrf ?? '');
 
     const axiosRequestConfig = useMemo(() => ({
       withCredentials: true,
@@ -67,7 +75,7 @@ export function makeGenericUserStore<U extends unknown = User>() {
           'X-CSRFToken': csrf,
         },
       },
-    }), [apiUrl, csrf]);
+    }), [csrf]);
 
     const login: (userIdentifier: string, password: string) => Promise<void> = (
       userIdentifier, password,

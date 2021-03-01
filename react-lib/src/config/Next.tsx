@@ -1,45 +1,50 @@
-import React, { FC } from 'react';
+import React, { FC, useContext, useMemo } from 'react';
 import { useRouter } from 'next/router';
-import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from 'next';
-import { ParsedUrlQuery } from 'querystring';
-import { ComponentConfig, FullConfig, makeComponents } from './components';
+import {
+  InputConfig, makeComponents,
+} from './components';
 import { User } from '../api/types';
 import { Link } from '../components/next/Link';
 import { useQueryParams } from '../components/next/useQueryParams';
-import { Translator } from '../internationalization';
+import { Translator, TranslatorProps, AuthFunctionContext } from '..';
 
-export const authPathFilter = (fullConfig: FullConfig) => (path: string) => {
-  const { paths } = fullConfig;
 
-  return path !== paths.base && path !== paths.mainPage;
-};
-
-export const pathToParam = (fullConfig: FullConfig) => (path: string) => {
-  const { base } = fullConfig.paths;
-
-  // remove base path and leading '/' from path
-  return path.slice(Math.max(0, base.length + 1));
-};
+export interface NextConfig extends Omit<InputConfig, 'routing'> {
+  routing?: InputConfig['routing'];
+}
 
 export interface AuthPageProps {
   t?: Translator;
-  authpage?: string;
 }
 
-export interface StaticAuthPaths extends ParsedUrlQuery {
-  authpage: string;
-}
-
-export const configureAuth = <UserType extends unknown = User>(config?: ComponentConfig) => {
+export const configureAuth = <UserType extends unknown = User>(config: NextConfig) => {
   const components = makeComponents({
-    ...config,
     routing: {
       link: Link,
       useRouteHandler: useRouter,
       useQueryParams,
     },
+    ...config,
   });
   const { fullConfig } = components;
+
+  const LoginComponent: FC<TranslatorProps> = (props) => {
+    const { loggedIn } = useContext(AuthFunctionContext);
+    const { replace, query } = useRouter();
+    const nextUrl = useMemo(() => {
+      const next: string|undefined = Array.isArray(query.next) ? query.next[0] : query.next;
+
+      return next ?? components.fullConfig.paths.mainPage;
+    }, [query]);
+
+    if (loggedIn) {
+      replace(nextUrl);
+
+      return null;
+    }
+
+    return <components.LoginView {...props} />;
+  };
 
   const getAuthComponent = (authpage?: string) => {
     if (authpage) {
@@ -51,7 +56,7 @@ export const configureAuth = <UserType extends unknown = User>(config?: Componen
         case fullConfig.paths.forgotPassword:
           return components.ForgotPasswordView;
         case fullConfig.paths.login:
-          return components.LoginView;
+          return LoginComponent;
         case fullConfig.paths.resetPassword:
           return components.ResetPasswordView;
         case fullConfig.paths.register:
@@ -67,47 +72,21 @@ export const configureAuth = <UserType extends unknown = User>(config?: Componen
     return null;
   };
 
-  const AuthPage: FC<AuthPageProps> = ({ t, authpage }) => {
-    const Component = getAuthComponent(authpage);
+  const AuthPage: FC<AuthPageProps> = ({ t }) => {
+    const { query } = useRouter();
+    const { authpage } = query;
+    const Component = useMemo(() => getAuthComponent(
+      Array.isArray(authpage) ? authpage[0] : authpage,
+    ), [authpage]);
 
     if (!Component) return null;
 
     return <Component translator={t} />;
   };
 
-  const getStaticAuthProps: GetStaticProps<AuthPageProps, StaticAuthPaths> = async ({
-    params,
-  }) => {
-    const authpage = params?.authpage;
-
-    return { props: { authpage } };
-  };
-
-  const getStaticAuthPaths: GetStaticPaths<StaticAuthPaths> = async ({
-    locales,
-  }) => {
-    const { paths } = fullConfig;
-    const authpages = Object.values(paths)
-      .filter(authPathFilter(fullConfig))
-      .map(pathToParam(fullConfig));
-
-    return ({
-      paths: authpages.reduce<GetStaticPathsResult<StaticAuthPaths>['paths']>(
-        (array, authpage) => [
-          ...array,
-          ...(locales ? locales.map(
-            (locale: string|undefined) => ({ params: { authpage }, locale }),
-          ) : [{ params: { authpage } }]),
-        ], [],
-      ),
-      fallback: false,
-    });
-  };
-
   return {
     ...components,
+    LoginComponent,
     AuthPage,
-    getStaticAuthProps,
-    getStaticAuthPaths,
   };
 };

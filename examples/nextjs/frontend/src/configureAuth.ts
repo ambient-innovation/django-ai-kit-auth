@@ -1,5 +1,10 @@
-import { configureAuth } from 'ai-kit-auth/dist/config/Next';
+import { configureAuthNext } from "ai-kit-auth";
 
 export const {
-  UserStore, useUserStore, AuthPage, getStaticAuthPaths, getStaticAuthProps,
-} = configureAuth();
+  UserStore, useUserStore, AuthPage,
+} = configureAuthNext({
+  api: {
+    url: 'http://localhost:8000/api/v1/',
+    authPath: 'auth/',
+  },
+});

@@ -14,6 +14,7 @@ import { makeActivateEmailAddress } from '../components/ActivateEmailAddress';
 import { makeEmailSentCard } from '../components/EmailSent';
 import { AuthView, ErrorView } from '../components/AuthView';
 import { ErrorCard } from '../components/ErrorCard';
+import { ApiConfig } from '../store/UserStore';
 
 export enum Identifier {
   Username = 1,
@@ -41,8 +42,6 @@ export interface DefaultConfig {
     loadingIndicator: ComponentType; // is shown while user info is retrieved from server
   };
 }
-
-export type ComponentConfig = DeepPartial<DefaultConfig>;
 
 export const defaultComponentConfig: DefaultConfig = {
   paths: {
@@ -79,16 +78,17 @@ export interface RouteHandler {
   replace: (url: UrlDescriptor) => void;
 }
 
-export interface RoutingConfig {
+export interface MandatoryConfig {
   routing: {
     link: ComponentType<LinkProps>;
     useRouteHandler: () => RouteHandler;
     useQueryParams: () => Record<string, string>;
   };
+  api: ApiConfig;
 }
 
-export type InputConfig = ComponentConfig & RoutingConfig;
-export type FullConfig = DefaultConfig & RoutingConfig;
+export type InputConfig = DeepPartial<DefaultConfig> & MandatoryConfig;
+export type FullConfig = DefaultConfig & MandatoryConfig;
 
 export const makeComponents = <UserType extends unknown = User>(
   config: InputConfig,
@@ -96,6 +96,7 @@ export const makeComponents = <UserType extends unknown = User>(
   const fullConfig: FullConfig = {
     ...mergeConfig(defaultComponentConfig, config),
     routing: config.routing,
+    api: config.api,
   };
 
   const { base } = fullConfig.paths;
@@ -116,7 +117,7 @@ export const makeComponents = <UserType extends unknown = User>(
         throw new Error(`No path configuration for path '${key}. This is likely a bug in ai-auth-kit.`);
     }
   });
-  const store = makeGenericUserStore<UserType>();
+  const store = makeGenericUserStore<UserType>(fullConfig.api);
   const login = makeLoginForm(fullConfig);
   const register = makeRegisterForm(fullConfig);
   const forgot = makeForgotPasswordForm(fullConfig);

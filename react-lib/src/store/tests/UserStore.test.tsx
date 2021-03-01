@@ -10,6 +10,7 @@ import {
 
 import { User } from '../../api/types';
 import { dontResolvePromise, makeGenericUserStore } from '../UserStore';
+import { defaultApiConfig } from '../../tests/Helper';
 
 const maxios = new MockAdapter(axios);
 
@@ -22,7 +23,7 @@ beforeEach(() => {
 });
 
 const renderStoreValue = () => {
-  const { UserStore, useUserStore } = makeGenericUserStore();
+  const { UserStore, useUserStore } = makeGenericUserStore(defaultApiConfig);
 
   const StoreDisplay: FC = () => {
     const {
@@ -68,7 +69,7 @@ const renderStoreValue = () => {
   };
 
   return render(
-    <UserStore apiUrl="" apiAuthPath="">
+    <UserStore>
       <StoreDisplay />
     </UserStore>,
   );

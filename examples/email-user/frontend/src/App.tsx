@@ -11,10 +11,7 @@ const App: React.FC = () => (
   <>
     <CssBaseline />
     <ThemeProvider theme={AiKitTheme}>
-      <UserStore
-        apiUrl="http://localhost:8000/api/v1/"
-        apiAuthPath="auth/"
-      >
+      <UserStore>
         <BrowserRouter>
           <Switch>
             {

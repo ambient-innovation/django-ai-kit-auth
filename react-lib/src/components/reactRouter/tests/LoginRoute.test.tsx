@@ -4,15 +4,16 @@ import { render } from '@testing-library/react';
 import { Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import { User } from '../../../api/types';
-import { getFullTestConfig, TestRoutingProps } from '../../../tests/Helper';
+import { defaultApiConfig, getFullTestConfig, TestRoutingProps } from '../../../tests/Helper';
 import { makeLoginRoute } from '../LoginRoute';
 import { makeGenericUserStore, MockUserStoreProps } from '../../..';
+import { noop } from '../../../store/UserStore';
 
 const mockUser: User = ({
   id: 42, username: 'Donald', email: 'donald@example.com',
 });
 
-const { MockUserStore } = makeGenericUserStore();
+const { MockUserStore } = makeGenericUserStore(defaultApiConfig);
 
 const renderComponent = (
   apiFunctions?: MockUserStoreProps,
@@ -38,17 +39,25 @@ const renderComponent = (
 };
 
 test('redirects to main page when logged in', () => {
-  const renderObject = renderComponent({ user: mockUser });
-  expect(renderObject.history.location.pathname)
-    .toEqual(renderObject.fullConfig.paths.mainPage);
+  const replace = jest.fn();
+
+  const { fullConfig } = renderComponent(
+    { user: mockUser },
+    { routeHandler: { replace, push: noop } },
+  );
+  expect(replace).toHaveBeenCalledWith(fullConfig.paths.mainPage);
 });
 
 test('redirects to referrer', () => {
-  const renderObject = renderComponent(
+  const replace = jest.fn();
+  renderComponent(
     { user: mockUser },
-    { queryParams: { next: '/fromHere' } },
+    {
+      queryParams: { next: '/fromHere' },
+      routeHandler: { replace, push: noop },
+    },
   );
-  expect(renderObject.history.location.pathname).toEqual('/fromHere');
+  expect(replace).toHaveBeenCalledWith('/fromHere');
 });
 
 test('renders children when not logged in', () => {

@@ -3,7 +3,7 @@ import * as React from 'react';
 import { render, fireEvent, waitForElement } from '@testing-library/react';
 import { en } from '../../internationalization';
 import { dontResolvePromise, makeGenericUserStore, MockUserStoreProps } from '../../store/UserStore';
-import { getFullTestConfig, TestRoutingProps } from '../../tests/Helper';
+import { defaultApiConfig, getFullTestConfig, TestRoutingProps } from '../../tests/Helper';
 import { makeResetPasswordForm } from '../ResetPassword';
 
 const mockData = {
@@ -14,7 +14,7 @@ const mockData = {
 
 const sleep = async () => new Promise((r) => setTimeout(r, 400));
 
-const { MockUserStore } = makeGenericUserStore();
+const { MockUserStore } = makeGenericUserStore(defaultApiConfig);
 
 const renderComponent = (
   apiFunctions?: MockUserStoreProps,

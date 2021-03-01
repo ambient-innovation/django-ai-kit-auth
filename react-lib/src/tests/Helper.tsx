@@ -3,9 +3,9 @@ import { FC } from 'react';
 import { DeepPartial, mergeConfig } from '../util';
 import {
   defaultComponentConfig, DefaultConfig,
-  FullConfig, LinkProps, RouteHandler, RoutingConfig,
-} from '../config/components';
-import { noop } from '../store/UserStore';
+  FullConfig, LinkProps, MandatoryConfig, RouteHandler,
+} from '..';
+import { ApiConfig, noop } from '../store/UserStore';
 
 export const getTestComponents = (): DefaultConfig['components'] => ({
   backgroundImage: jest.fn(() => null),
@@ -32,7 +32,7 @@ export const makeTestLink = (
   </a>
 );
 
-export const getTestRouting = (props?: TestRoutingProps): RoutingConfig['routing'] => ({
+export const getTestRouting = (props?: TestRoutingProps): MandatoryConfig['routing'] => ({
   link: jest.fn(makeTestLink(props?.linkCallback)),
   useRouteHandler: jest.fn(() => props?.routeHandler ?? {
     push: jest.fn(), replace: jest.fn(),
@@ -40,12 +40,23 @@ export const getTestRouting = (props?: TestRoutingProps): RoutingConfig['routing
   useQueryParams: jest.fn(() => props?.queryParams ?? {}),
 });
 
+export const defaultApiConfig = {
+  url: '',
+  authPath: '/',
+};
+
 export const getFullTestConfig = (
-  config?: DeepPartial<FullConfig>, routingProps?: TestRoutingProps,
+  config?: DeepPartial<FullConfig>,
+  routingProps?: TestRoutingProps,
+  apiProps?: Partial<ApiConfig>,
 ): FullConfig => ({
   ...mergeConfig({
     ...defaultComponentConfig,
     components: getTestComponents(),
     routing: getTestRouting(routingProps),
+    api: {
+      ...defaultApiConfig,
+      ...apiProps,
+    },
   }, config ?? {}),
 });
