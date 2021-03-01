@@ -1,8 +1,9 @@
+import { PrivateProtection } from '../src/configureAuth';
 
 export default function Home() {
   return (
-    <div>
+    <PrivateProtection>
       Main
-    </div>
+    </PrivateProtection>
   );
 };

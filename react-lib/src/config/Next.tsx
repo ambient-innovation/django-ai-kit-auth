@@ -7,6 +7,7 @@ import { User } from '../api/types';
 import { Link } from '../components/next/Link';
 import { useQueryParams } from '../components/next/useQueryParams';
 import { Translator, TranslatorProps, AuthFunctionContext } from '..';
+import { makePrivateProtection } from '../components/next/PrivateProtection';
 
 
 export interface NextConfig extends Omit<InputConfig, 'routing'> {
@@ -84,9 +85,12 @@ export const configureAuth = <UserType extends unknown = User>(config: NextConfi
     return <Component translator={t} />;
   };
 
+  const PrivateProtection = makePrivateProtection(fullConfig);
+
   return {
     ...components,
     LoginComponent,
     AuthPage,
+    PrivateProtection,
   };
 };
