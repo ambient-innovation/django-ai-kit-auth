@@ -102,6 +102,7 @@ AI-KIT: Authentication provides the following components and functions:
 * UserStore
     * [UserStore](#userstore)
     * [UserContext](#usercontext)
+    * [mockUserStore](#mockuserstore)
     * [AuthFunctionContext](#authfunctioncontext)
     * [useUserStore](#useuserstore)
 * Routes
@@ -183,7 +184,7 @@ export const defaultConfig = {
     emailSent: '/email-sent', // success feedback after email was sent from the
                               // forgot password page
   },
-  defailtTranslator: en, // A 'Translator' function, responsible for mapping keys
+  defaultTranslator: en, // A 'Translator' function, responsible for mapping keys
                          // to user facing strings.
   userIdentifier: Identifier.UsernameOrEmail, // what should the user type in the
                                               // login screen?
@@ -308,6 +309,11 @@ const App: React.FC = () => (
 export default App;
 ```
 
+### MockUserStore
+
+This component provides a mocked [`UserStore`](#UserStore) for testing purposes.
+It works the same way [`UserStore`](#UserStore) does.
+It does not provide fully functioning authentication helper functions to its children, but rather empty ones.
 
 ### AuthFunctionContext
 
@@ -335,6 +341,8 @@ and sets the `user` in [`UserContext`](#usercontext) to `null`.
 * `justLoggedOut: boolean`: Is set to true after a successful `logout`. However, it is not
 persistent, so after the next page refresh, it will be set to `false` again. It is used to
 display a non-persistent notification that the logout was successful on the login page.
+* `updateUserInfo: () => Promise<void>`: triggers a request to update both the user object and the CSRF-token.
+It can be used to obtain the the user itself.
 * `register: (username: string, email: string, password: string) => Promise<void>`:
 triggers a request to register a new user. If successful, the server will have sent an email
 to the email provided as parameter. If unsuccessful, it will raise an exception containing
