@@ -10,7 +10,7 @@
     "@types/react-router-dom": "^5.1.3",
     "ai-kit-auth": "file:../../react-lib",
     "ai-kit-common": "^1.0.1",
-    "axios": "^0.20.0",
+    "axios": "^0.21.1",
     "node-sass": "^4.14.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",

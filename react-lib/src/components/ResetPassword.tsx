@@ -48,7 +48,7 @@ export const makeResetPasswordForm: (config: FullConfig) => {
     const { ident, token } = useParams();
 
     const [debouncedPasswordValidation] = useDebouncedCallback(
-      (pw) => {
+      (pw: string) => {
         validatePassword({ ident, password: pw })
           .then(() => {
             setPasswordErrors(undefined);
