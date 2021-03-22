@@ -252,8 +252,19 @@ class ActivateEmailTests(AuthTestCase):
             activate_url, {"ident": ident, "token": token}, format="json"
         )
         user.refresh_from_db()
-        # self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertFalse(user.is_active)
+
+    def test_set_unusable_password_not_called_when_user_is_not_in_db(self):
+        user = baker.prepare(UserModel, is_active=False, email="to@example.com")
+        user.set_unusable_password = Mock()
+        user.save()
+        user.set_unusable_password.assert_not_called()
+
+    def test_set_unusable_password_not_called_when_user_was_inactive_before(self):
+        user = baker.make(UserModel, is_active=False, email="to@example.com")
+        user.set_unusable_password = Mock()
+        user.save()
+        user.set_unusable_password.assert_not_called()
 
     def test_activate_user_emits_signals(self):
         received = Mock()
