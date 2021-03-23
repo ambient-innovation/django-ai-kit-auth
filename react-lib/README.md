@@ -21,10 +21,10 @@ yarn add ai-kit-auth
 `ai-kit-auth` has a number of peer dependencies that you need to install yourself before you get started:
 
 * `react@^16.8.0`
-* `react-router-dom@^5.0.0`
-* `history@^4.0.0`
-* `@material-ui/core@^4.9.0`
-* `@material-ui/icons@^4.9.0`
+* `react-router-dom@^5.0.0` Necessary only if you want to use the react router config
+* `next@^10.0.0` Necessary only if you want to use the next js config
+* `@material-ui/core@^4.9.0` Necessary only if you want to use the UI-components
+* `@material-ui/icons@^4.9.0` Necessary only if you want to use the UI-components
 
 While it is possible to customize many aspects of appearance and behaviour,
 the fastest way to get a functioning authentication module is to use a default
@@ -33,14 +33,19 @@ If you use `react-router`, you can create a configuration file like this:
 
 ```typescript jsx
 // configureAuth.ts
-import { configureAuth } from 'ai-kit-auth/dist/config/ReactRouter';
+import { configureAuthReactRouter } from 'ai-kit-auth';
 
 export const {
     UserStore,
     useUserStore,
     makeAuthRoutes,
     ProtectedRoute,
-} = configureAuth();
+} = configureAuthReactRouter({
+  api: {
+    url: 'http://localhost:8000/api/v1/',
+    authPath: 'auth/',
+  }
+});
 ```
 
 Then you can set up your `App.tsx` (or `App.jsx`) like this:
@@ -58,18 +63,15 @@ const App: React.FC = () => (
   <>
     <CssBaseline />
     <ThemeProvider theme={DefaultTheme}>
-      <UserStore
-        apiUrl="http://localhost:8000/api/v1/"
-        apiAuthPath="auth/"
-      >
+      <UserStore>
         <BrowserRouter>
-            <Switch>
-                {
-                  // Create routes for login, registration, password reset etc.
-                  makeAuthRoutes()
-                }
-                <ProtectedRoute exact path="/" component={MainPage} />
-            </Switch>
+          <Switch>
+            {
+              // Create routes for login, registration, password reset etc.
+              makeAuthRoutes()
+            }
+            <ProtectedRoute exact path="/" component={MainPage} />
+          </Switch>
         </BrowserRouter>
       </UserStore>
     </ThemeProvider>
@@ -139,17 +141,22 @@ AI-KIT: Authentication provides the following components and functions:
     * [ErrorCard](#errorcard)
     * [ErrorView](#errorview)
 * ReactRouter
-    * [configureAuth](#reactrouterconfigureauth)
+    * [configureAuthReactRouter](#configureauthReactRouter)
     * [makeAuthRoutes](#makeauthroutes)
     * [ProtectedRoute](#protectedroute)
     * [LoginRoute](#loginroute)
+* Next JS
+    * [configureAuthNext](#configureauthnext)
 
 ### makeComponents
 
-This is the general function to create customized components for authentication pages as well as the [UserStore](#userstore).
+This is the general function to create customized components for authentication
+pages as well as the [UserStore](#userstore).
 However, it does not have a default configuration for routing (or jumping between pages).
-These defaults are implemented in the respective configuration functions for different routing libraries.
-If you use `react-router`, use the [configureAuth](#reactrouterconfigureauth) function instead.
+These defaults are implemented in the respective configuration functions for
+different routing libraries.
+If you use `react-router`, use the [configureAuthReactRouter](#configureauthreactrouter) function instead.
+In case you use `next`, [configureAuthNext](#configureauthnext) is the way to go.
 
 #### Parameters
 
@@ -159,7 +166,7 @@ your django backend to use a custom `UserSerializer`. Then you need to describe 
 a custom `User` interface, which you pass to this function.
 * `config: InputConfig`: a configuration object with information about route paths, components etc.
 Besides a deep `Partial` of [`defaultConfig`](#defaultconfig)'s type, this type also has mandatory
-fields regarding the routing:
+fields regarding the routing and backend api:
 ```typescript jsx
   routing: {
     link: React.ComponentType<LinkProps>; // Component to display whenever a hyperlink is needed
@@ -168,6 +175,16 @@ fields regarding the routing:
     useQueryParams: () => Record<string, string>; // A React hook which gives an object containing the urls'
                                                   // query parameters on a key=value basis.
   };
+  api: {
+    url: string; // tells the store, where to send login requests.
+                 // This should be the url to the django backend
+                 // of your project including `api/v1/` or similar.
+    authPath: string; // The path at which the auth routes are available in the backend.
+                      // If you included the ai-kit-auth paths as
+                      // `path(r"api/v1/auth/", "ai_kit_auth.urls"),` in your django app,
+                      // you must set `apiAuthPath` to `auth/`./
+  };
+}
 ```
 If you are absolutely certain that you need to use this function, please take a look at the source
 code for more information.
@@ -255,10 +272,10 @@ export const {
 ```
 
 If you would like to use dynamic translations, we suggest to use [i18next](#https://www.i18next.com/)
-and to pass your translator function `t` to `makeAuthRoutes` or to the respective
-view components, if you are using them separately.
+and to pass your translator function `t` to [`makeAuthRoutes`](#makeauthroutes)
+if you use `react-router` or the [`AuthPage`](#authpage) component if you use `next`.
 That way, auth components are re-rendered whenever the language changes.
-In that case, you need to provide all the translations by yourself, in the namespace `auth`.
+In that case, you need to provide all the translations yourself in the namespace `auth`.
 To get started, you can copy the `.json` files containing our translations from the
 `dist/internationalization` folder of this module.
 
@@ -266,16 +283,18 @@ To get started, you can copy the `.json` files containing our translations from 
 
 ```typescript jsx
 import { useTranslation } from 'react-i18next';
-import { makeAuthRoutes } from 'ai-kit-auth';
+import { UserStore, makeAuthRoutes } from './configureAuth';
 ...
 
 const App: FC = () => {
   const { t } = useTranslation(['auth']);
 
   return (
-    <Switch>
-      {makeAuthRoutes(t)}
-    </Switch>
+    <UserStore>
+      <Switch>
+        {makeAuthRoutes(t)}
+      </Switch>
+    </UserStore>
   );
 };
 ```
@@ -289,6 +308,29 @@ Its values are:
 * `Identifier.Email`: login only with email address and remove username field from register form
 * `Identifier.UsernameOrEmail`: login with either username or email address (default)
 
+### makeGenericUserStore
+
+This function creates a [`UserStore`](#userstore) component function, as well as
+`UserContext` for accessing user data in class-based components,
+[`MockUserStore`](#mockuserstore) for testing purposes,
+and [`useUserStore`](#useusertore), a hook for accessing user data in functional components.
+Use this function if you only want to use the login, register, etc. functions without the
+material-ui components.
+
+#### Parameters
+
+* Type parameter `UserType`: tells typescript, what kind of user object you expect from the backend.
+If you want to load more data than just the username and email of a user, you need to configure
+your django backend to use a custom `UserSerializer`. Then you need to describe the data structure in
+* `api: { url: string; authPath: string }`: a config object with information about how to
+  reach the backend.
+  For more detailed information see [`makeComponents`](#makecomponents).
+
+#### Note
+
+:warning: **Do not mix Components configured in different configuration calls,
+ as they will not necessarily share a `UserContext`!**
+
 ### UserStore
 
 This component provides user data and authentication helper functions to its children via
@@ -298,25 +340,26 @@ component tree, so that it contains any components which might try to access use
 or perform user actions like login, logout etc.
 
 #### Props
-* `apiUrl`: tells the store, where to send login requests.
-  This should be the url to the django backend of your project including `api/v1/` or similar.
-* `apiAuthPath`: The path at which the auth routes are available in the backend.
-  If you included the ai-kit-auth paths as `path(r"api/v1/auth/", "ai_kit_auth.urls"),` in your django
-  app, you must set `apiAuthPath` to `auth/`.
+* `initialUser?: User`: An object of the `User` type provided as type
+  parameter to the configuration function.
+  If no such object is provided, the `UserStore` will try to load user
+  information from the backend.
+  This prop could be used if you want to do server side rendering and obtained the
+  user info in an async `getServerSideProps` call.
+* `initialCsrf?: string`: If you provide an `initialUser` object, you should also
+  provide the initial csrf token which you obtained when you obtained the user object.
+  Otherwise it might happen that unsafe calls without csrf token are blocked by the backend.
 
 #### Example
 
 ```typescript jsx
 // App.tsx
 import React from 'react';
-import { UserStore } from 'ai-kit-auth';
+import { UserStore } from './configuredAuth';
 import ...
 
 const App: React.FC = () => (
-  <UserStore
-    apiUrl="http://localhost:8000/api/v1/"
-    apiAuthPath="auth/"
-  >
+  <UserStore>
     <BrowserRouter>
       ...
     </BrowserRouter>
@@ -329,15 +372,14 @@ export default App;
 ### MockUserStore
 
 This component provides a mocked [`UserStore`](#UserStore) for testing purposes.
-It works the same way [`UserStore`](#UserStore) does.
-It does not provide fully functioning authentication helper functions to its children, but rather empty ones.
+It provides the same context that [`UserStore`](#UserStore) does, however,
+all functions provided here return promises that never resolve.
 
 ### AuthFunctionContext
 
 This is a react `Context` and can be used as such. Its Consumer will receive the following fields:
 
-* `apiUrl: string`: contains the url of the backend. This is exactly the same as the
-`apiUrl` prop passed to `UserStore`
+* `apiUrl: string`: contains the url of the backend provided in the configuration.
 * `csrf: string`:
 a token obtained from the server, used to guard against Cross Site Request Forgeries.
 Whenever you make a `POST`, `DELETE`, `PATCH` or `PUT` request to our backend, you need to
@@ -383,7 +425,10 @@ This is a react `Context` and can be used as such. Its Consumer will receive the
 
 * `user: { id: number; username: string; email: string }|undefined`
 
-You can configure the type of `user` with [`configAuth`](#configauth).
+You can configure the type of `user` with [`makeComponents`](#makecomponents),
+[`makeGenericUserStore`](#makegenericuserstore),
+[`configureAuthReactRouter`](#configureauthreactrouter) or
+[`configureAuthNext`](#configureauthnext).
 If it is undefined, the user is not logged in.
 
 
@@ -564,7 +609,7 @@ input fields (password and password-repeat) and a submit button. Upon submit the
 
 ## React Router Integration
 
-### React Router configureAuth
+### configureAuthReactRouter
 
 This function provides default values to the mandatory ones of [`makeComponents`](#makecomponents).
 It uses the widely used `react-router` library to define functionality for page transitions.
@@ -689,3 +734,22 @@ If there is no referrer, it redirects to the `main page` (default `'/'`).
 
 ```
 
+## Next JS Integration
+
+### configureAuthNext
+
+This function provides default values to the mandatory ones of [`makeComponents`](#makecomponents).
+It uses the very popular next.js framework for routing.
+
+#### Parameters
+
+The parameters are identical to those of [`makeComponents`](#makecomponents), with the exception that
+there is no `routing` field.
+
+#### Returns
+
+An object containing all components returned by [`makeComponents`](#makecomponents), as well as
+
+* [`AuthPage`](#authpage)
+* [`PrivateProtection`](#privateprotection)
+* [`LoginComponent`](#logincomponent)
