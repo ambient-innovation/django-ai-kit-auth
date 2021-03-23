@@ -87,7 +87,7 @@ default. Default configurations are:
 
 ::
 
-    DEFAULTS = {
+    AI_KIT_AUTH = {
         # You can disable any or all of the endpoints created by ai-kit-auth
         # by setting the respective entry in this section to False.
         "ENABLE_ENDPOINTS": {

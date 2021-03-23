@@ -241,8 +241,22 @@ class ActivateEmailTests(AuthTestCase):
             activate_url, {"ident": ident, "token": token}, format="json"
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        # we have to get the user object again to see the updates
-        self.assertTrue(UserModel.objects.get(pk=user.id).is_active)
+        user.refresh_from_db()
+        self.assertTrue(user.is_active)
+
+    def test_activate_user_fails_when_user_was_deactivated(self):
+        user = baker.make(UserModel, is_active=True, email="to@example.com")
+        ident, token = services.get_activation_url(user).split("/")[-2:]
+
+        user.is_active = False
+        user.save()
+
+        response = self.client.post(
+            activate_url, {"ident": ident, "token": token}, format="json"
+        )
+        user.refresh_from_db()
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertFalse(user.is_active)
 
     def test_activate_user_emits_signals(self):
         received = Mock()
