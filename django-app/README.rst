@@ -498,33 +498,40 @@ Error Codes
 The backend never sends user facing error messages, but general error codes.
 Internationalisation happens in the frontend.
 
-+---------------------------+--------------------------------------------------+
-| error code                | possible user facing message                     |
-+===========================+==================================================+
-| `blank`                   | This field may not be blank.                     |
-+---------------------------+--------------------------------------------------+
-| `username_unique`         | This username has already been taken.            |
-+---------------------------+--------------------------------------------------+
-| `password_too_short`      | Password too short, it should contain at least 8 |
-|                           | characters.                                      |
-+---------------------------+--------------------------------------------------+
-| `password_too_similar`    | Password too similar to your username or email   |
-|                           | address.                                         |
-+---------------------------+--------------------------------------------------+
-| `password_too_common`     | The password you've entered is too common and    |
-|                           | thus unsafe. Please try to think of something    |
-|                           | else.                                            |
-+---------------------------+--------------------------------------------------+
-| `passwords_not_identical` | Both passwords entered are not identical.        |
-+---------------------------+--------------------------------------------------+
-| `invalid_credentials`     | The combination of username (or email, depending |
-|                           | on configuration) and password is invalid. Please|
-|                           | try again.                                       |
-+---------------------------+--------------------------------------------------+
-| `activation_link_invalid` | The activation link you tried to use is invalid. |
-|                           | This may be due to a typo, or because it has     |
-|                           | been used already.                               |
-+---------------------------+--------------------------------------------------+
++-------------------------------+-------------------------------------------------------+
+| error code                    | possible user facing message                          |
++===============================+=======================================================+
+| `blank`                       | This field may not be blank.                          |
++-------------------------------+-------------------------------------------------------+
+| `username_unique`             | This username has already been taken.                 |
++-------------------------------+-------------------------------------------------------+
+| `password_too_short`          | Password too short, it should contain at least 8      |
+|                               | characters.                                           |
++-------------------------------+-------------------------------------------------------+
+| `password_too_similar`        | Password too similar to your username or email        |
+|                               | address.                                              |
++-------------------------------+-------------------------------------------------------+
+| `password_too_common`         | The password you've entered is too common and         |
+|                               | thus unsafe. Please try to think of something         |
+|                               | else.                                                 |
++-------------------------------+-------------------------------------------------------+
+| `passwords_not_identical`     | Both passwords entered are not identical.             |
++-------------------------------+-------------------------------------------------------+
+| `invalid_credentials`         | The combination of username (or email, depending      |
+|                               | on configuration) and password is invalid. Please     |
+|                               | try again.                                            |
++-------------------------------+-------------------------------------------------------+
+| `activation_link_invalid`     | The activation link you tried to use is invalid.      |
+|                               | This may be due to a typo, or because it has          |
+|                               | been used already.                                    |
++-------------------------------+-------------------------------------------------------+
+| `password_reset_link_invalid` | The password reset link you tried to use is invalid.  |
+|                               | This may be due to a typo, or because it has          |
+|                               | been used already.                                    |
++-------------------------------+-------------------------------------------------------+
+
+Another reason for getting `password_reset_link_invalid` might be that you are logged in
+into the django admin view with the same user you are trying to reset the password for.
 
 Signals
 -------
