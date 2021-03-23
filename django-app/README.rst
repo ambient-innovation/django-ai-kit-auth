@@ -268,7 +268,7 @@ expects
 
 
 both fields are required.
-In addition a csrf-token returned from the `/me` call is needed in the request header.
+In addition a csrf-token returned from the `/me` call is needed in the request header as X-CSRFTOKEN.
 The endpoint answers with the status code 200
 and
 
