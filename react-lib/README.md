@@ -147,6 +147,9 @@ AI-KIT: Authentication provides the following components and functions:
     * [LoginRoute](#loginroute)
 * Next JS
     * [configureAuthNext](#configureauthnext)
+    * [AuthPage](#authpage)
+    * [PrivateProtection](#privateprotection)
+    * [LoginComponent](#logincomponent)
 
 ### makeComponents
 
@@ -453,10 +456,7 @@ Styled page wrapper for a [LoginForm](#loginform).
 
 ```typescript jsx
 const App: React.FC = () => (
-  <UserStore
-    apiUrl="http://localhost:8000/api/v1/"
-    apiAuthPath="auth/"
-  >
+  <UserStore>
     <LoginView />
   </UserStore>
 );
@@ -487,10 +487,7 @@ Styled page wrapper for a [RegisterForm](#registerform).
 
 ```typescript jsx
 const App: React.FC = () => (
-  <UserStore
-    apiUrl="http://localhost:8000/api/v1/"
-    apiAuthPath="auth/"
-  >
+  <UserStore>
     <RegisterView />
   </UserStore>
 );
@@ -516,8 +513,9 @@ token, which are needed to activate a user's email address.
 If found, they are sent to the `/activate_email/` endpoint of the backend and the result
 of that request is rendered as error or success view. While waiting for the request,
 a loading indicator is shown.
-This component needs to be placed within a `Route` with parameters `ident` and `token`,
-and also needs a `UserStore` as parent somewhere in the tree, so that it can find the
+This component needs to be placed within a `Route` so the the query parameters `ident`
+and `token` can be read.
+It also needs a `UserStore` as parent somewhere in the tree, so that it can find the
 `activateEmailAddress` function.
 
 #### Parameters
@@ -529,11 +527,10 @@ and also needs a `UserStore` as parent somewhere in the tree, so that it can fin
 ```typescript jsx
     <Route
       exact
-      path={`${normPath}/activation/:ident/:token([0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})`}
+      path={`${authPath}/activation/`}
       component={ActivateEmailAddress}
       key="activation"
-    />,
-
+    />
 ```
 #### Note
 
@@ -553,10 +550,7 @@ Styled page wrapper for a [ForgotPasswordForm](#forgotpasswordform).
 
 ```typescript jsx
 const App: React.FC = () => (
-  <UserStore
-    apiUrl="http://localhost:8000/api/v1/"
-    apiAuthPath="auth/"
-  >
+  <UserStore>
     <ForgotPasswordView />
   </UserStore>
 );
@@ -586,10 +580,7 @@ Styled page wrapper for a [ResetPasswordForm](#resetpasswordform).
 
 ```typescript jsx
 const App: React.FC = () => (
-  <UserStore
-    apiUrl="http://localhost:8000/api/v1/"
-    apiAuthPath="auth/"
-  >
+  <UserStore>
     <ResetPasswordView />
   </UserStore>
 );
@@ -630,11 +621,16 @@ An object containing all components returned by [`makeComponents`](#makecomponen
 #### Example
 
 ```typescript jsx
-import { configureAuth } from 'ai-kit-auth/dist/config/ReactRouter';
+import { configureAuthReactRouter } from 'ai-kit-auth';
 
 export const {
     UserStore, useUserStore, makeAuthRoutes, ProtectedRoute,
-} = configureAuth();
+} = configureAuthReactRouter({
+  api: {
+    url: 'http://localhost:8000/api/v1/',
+    authPath: 'auth/',
+  },
+});
 ```
 
 ### makeAuthRoutes
@@ -663,10 +659,7 @@ import { makeAuthRoutes } from 'ai-kit-auth';
 import ...
 
 const App: React.FC = () => (
-  <UserStore
-    apiUrl="http://localhost:8000/api/v1/"
-    apiAuthPath="auth/"
-  >
+  <UserStore>
     <BrowserRouter>
         <Switch>
             {makeAuthRoutes()}
@@ -692,10 +685,7 @@ During the check a loading indicator is shown.
 #### Example
 
 ```typescript jsx
-<UserStore
-  apiUrl="http://localhost:8000/api/v1/"
-  apiAuthPath="auth/"
->
+<UserStore>
   <BrowserRouter>
     <Switch>
       <ProtectedRoute exact path="/">
@@ -721,10 +711,7 @@ If there is no referrer, it redirects to the `main page` (default `'/'`).
 #### Example
 
 ```typescript jsx
-<UserStore
-  apiUrl="http://localhost:8000/api/v1/"
-  apiAuthPath="auth/"
->
+<UserStore>
   <BrowserRouter>
     <Switch>
       <LoginRoute  exact path="/auth/login" component={LoginView} />
@@ -753,3 +740,91 @@ An object containing all components returned by [`makeComponents`](#makecomponen
 * [`AuthPage`](#authpage)
 * [`PrivateProtection`](#privateprotection)
 * [`LoginComponent`](#logincomponent)
+
+#### Example
+
+```typescript jsx
+import { configureAuthNext } from 'ai-kit-auth';
+
+export const {
+    UserStore, useUserStore, makeAuthRoutes, ProtectedRoute,
+} = configureAuthNext({
+  api: {
+    url: 'http://localhost:8000/api/v1',
+    authPath: 'auth/',
+  },
+});
+```
+
+### AuthPage
+
+You can use this component to render all authentication pages using a dynamic route.
+For this to work, simply export it from a file `[authpage].tsx` or `[authpage].jsx`
+in the folder `pages/auth/` in your next.js project, or, if you configured `paths.base`,
+in the folder `pages/<paths.base>/`.
+
+#### Props
+
+* `t?: `[`Translator`](#translator) If you work with [next-i18next](#https://github.com/isaachinman/next-i18next),
+  you can use the `appWithTranslation` HOC or the `serverSideTranslation` to provide a
+  translator function, which is passed to all dynamic pages automatically.
+
+#### Example
+
+```typescript jsx
+import React from 'react';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { AuthPage } from '../../src/configureAuth';
+
+export default AuthPage;
+
+export const getStaticProps = async ({ locale }) => ({
+  props: {
+    ...await serverSideTranslations(locale, ['auth']),
+  },
+});
+```
+
+### PrivateProtection
+
+You can wrap content, that requires login, in this component in order to send visitors who are
+not logged in straight to the login page when they try to see the wrapped content.
+If you do not provide user info during server side rendering, a loading indicator will be
+rendered instead of the content.
+
+#### Example
+
+```typescript jsx
+import React from 'react';
+import { useUserStore, PrivateProtection } from '../configureAuth';
+
+export const MyComponentThatNeedsAUser: React.FC => () => {
+  const { user } = useUserStore();
+
+  return (
+    <PrivateProtection>
+      Hello, {user?.username}
+    </PrivateProtection>
+  );
+};
+```
+
+### LoginComponent
+
+This component is a wrapper for [`LoginView`](#loginview) and redirects to the previous page or
+the main page in case the user is already logged in.
+If you use [`AuthPage`](#authpage), you will not need this component.
+
+#### Props
+
+* `translator?: `[`Translator`](#translator)
+
+#### Example
+
+```typescript jsx
+const MyPage = () => (
+  <UserStore>
+    <LoginComponent />
+  </UserStore>
+)
+```
