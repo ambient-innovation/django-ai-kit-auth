@@ -2,6 +2,7 @@ import * as React from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { render } from '@testing-library/react';
 import { Router } from 'react-router-dom';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { createMemoryHistory } from 'history';
 import { User } from '../../../api/types';
 import { defaultApiConfig, getFullTestConfig, TestRoutingProps } from '../../../tests/Helper';

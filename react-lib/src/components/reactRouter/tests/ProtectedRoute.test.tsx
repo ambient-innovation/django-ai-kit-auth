@@ -2,6 +2,7 @@ import * as React from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { render } from '@testing-library/react';
 import { FC } from 'react';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { createMemoryHistory } from 'history';
 import { Router } from 'react-router-dom';
 import { User } from '../../../api/types';

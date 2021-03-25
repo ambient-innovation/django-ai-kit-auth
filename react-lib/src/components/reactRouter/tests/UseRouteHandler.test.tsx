@@ -3,6 +3,7 @@ import * as React from 'react';
 import { render } from '@testing-library/react';
 import { FC, useEffect } from 'react';
 import { Router } from 'react-router-dom';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { createMemoryHistory } from 'history';
 import { useRouteHandler } from '../useRouteHandler';
 
