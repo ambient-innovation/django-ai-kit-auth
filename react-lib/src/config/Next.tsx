@@ -32,14 +32,14 @@ export const configureAuth = <UserType extends unknown = User>(config: NextConfi
   const LoginComponent: FC<TranslatorProps> = (props) => {
     const { loggedIn } = useContext(AuthFunctionContext);
     const { replace, query } = useRouter();
-    const nextUrl = useMemo(() => {
+    const urlToBeVisitedNext = useMemo(() => {
       const next: string|undefined = Array.isArray(query.next) ? query.next[0] : query.next;
 
       return next ?? components.fullConfig.paths.mainPage;
     }, [query]);
 
     if (loggedIn) {
-      replace(nextUrl);
+      replace(urlToBeVisitedNext);
 
       return null;
     }
