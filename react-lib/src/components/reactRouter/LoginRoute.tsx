@@ -6,26 +6,29 @@ import {
 
 import { AuthFunctionContext, FullConfig } from '../..';
 
+export type MakeLoginRouteResult = FC<RouteProps>;
 
-export const makeLoginRoute = ({
+export function makeLoginRoute({
   paths: { mainPage },
   routing: { useQueryParams, useRouteHandler },
-}: FullConfig): FC<RouteProps> => ({
-  children, ...routeProps
-}) => {
-  const { loggedIn } = useContext(AuthFunctionContext);
-  const { next } = useQueryParams();
-  const { replace } = useRouteHandler();
+}: FullConfig): MakeLoginRouteResult {
+  return ({
+    children, ...routeProps
+  }) => {
+    const { loggedIn } = useContext(AuthFunctionContext);
+    const { next } = useQueryParams();
+    const { replace } = useRouteHandler();
 
-  if (loggedIn) {
-    replace(next || mainPage);
+    if (loggedIn) {
+      replace(next || mainPage);
 
-    return <Route {...routeProps} />;
-  }
+      return <Route {...routeProps} />;
+    }
 
-  return (
-    <Route {...routeProps}>
-      {children}
-    </Route>
-  );
-};
+    return (
+      <Route {...routeProps}>
+        {children}
+      </Route>
+    );
+  };
+}

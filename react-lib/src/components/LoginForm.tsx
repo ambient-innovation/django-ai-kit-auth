@@ -8,14 +8,14 @@ import React, {
   FC, useContext, useState,
 } from 'react';
 import { AxiosError } from 'axios';
-import { AuthFunctionContext } from '..';
+import { AuthFunctionContext, FullConfig, Identifier } from '..';
 import { LogoutReason } from '../store/types';
 import { ErrorMessage } from '../api/types';
 import { AuthView } from './AuthView';
 import { PasswordField } from './common/PasswordField';
 import { TranslatorProps } from '../internationalization';
 import { useFormStyles } from './common/styles';
-import { FullConfig, Identifier } from '../config/components';
+
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   loggedOutText: {
@@ -28,17 +28,19 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   },
 }));
 
-export const makeLoginForm: (config: FullConfig) => {
+export interface MakeLoginFormResult {
   LoginForm: FC<TranslatorProps>;
   LoginView: FC<TranslatorProps>;
-} = ({
+}
+
+export function makeLoginForm({
   components: { backgroundImage },
   paths: { forgotPassword, register },
   defaultTranslator,
   userIdentifier,
   disableUserRegistration,
   routing: { link: Link },
-}) => {
+}: FullConfig): MakeLoginFormResult {
   const LoginForm: FC<TranslatorProps> = ({
     translator: t = defaultTranslator,
   }) => {
@@ -171,4 +173,4 @@ export const makeLoginForm: (config: FullConfig) => {
   );
 
   return { LoginForm, LoginView };
-};
+}

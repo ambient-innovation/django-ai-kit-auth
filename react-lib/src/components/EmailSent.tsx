@@ -8,7 +8,7 @@ import { AuthView } from './AuthView';
 import { MailSvg } from '../assets/MailSvg';
 import { TranslatorProps } from '../internationalization';
 import { useFormStyles } from './common/styles';
-import { FullConfig } from '../config/components';
+import { FullConfig } from '..';
 
 const useStyles = makeStyles(createStyles({
   CheckIcon: {
@@ -30,7 +30,12 @@ const useStyles = makeStyles(createStyles({
   },
 }));
 
-export const makeEmailSentCard = ({
+export interface MakeEmailSentCardResult {
+  EmailSentCard: FC<TranslatorProps>;
+  EmailSentView: FC<TranslatorProps>;
+}
+
+export function makeEmailSentCard({
   components: { backgroundImage },
   paths: {
     mainPage,
@@ -42,10 +47,7 @@ export const makeEmailSentCard = ({
     link: Link,
     useRouteHandler,
   },
-}: FullConfig): {
-  EmailSentCard: FC<TranslatorProps>;
-  EmailSentView: FC<TranslatorProps>;
-} => {
+}: FullConfig): MakeEmailSentCardResult {
   const EmailSentCard: FC<TranslatorProps> = ({
     translator: t = defaultTranslator,
   }) => {
@@ -104,4 +106,4 @@ export const makeEmailSentCard = ({
   );
 
   return { EmailSentCard, EmailSentView };
-};
+}

@@ -5,11 +5,10 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import React, { FC, useContext, useState } from 'react';
-import { AuthFunctionContext } from '..';
+import { AuthFunctionContext, FullConfig } from '..';
 import { AuthView } from './AuthView';
 import { TranslatorProps } from '../internationalization';
 import { useFormStyles } from './common/styles';
-import { FullConfig } from '../config/components';
 
 const useStyles = makeStyles(createStyles({
   inputField: {
@@ -18,15 +17,17 @@ const useStyles = makeStyles(createStyles({
   },
 }));
 
-export const makeForgotPasswordForm = ({
+export interface MakeForgotPasswordFormResult {
+  ForgotPasswordForm: FC<TranslatorProps>;
+  ForgotPasswordView: FC<TranslatorProps>;
+}
+
+export function makeForgotPasswordForm({
   components: { backgroundImage },
   paths: { login, emailSent },
   defaultTranslator,
   routing: { useRouteHandler, link: Link },
-}: FullConfig): {
-  ForgotPasswordForm: FC<TranslatorProps>;
-  ForgotPasswordView: FC<TranslatorProps>;
-} => {
+}: FullConfig): MakeForgotPasswordFormResult {
   const ForgotPasswordForm: FC<TranslatorProps> = ({
     translator: t = defaultTranslator,
   }) => {
@@ -107,4 +108,4 @@ export const makeForgotPasswordForm = ({
   );
 
   return { ForgotPasswordForm, ForgotPasswordView };
-};
+}

@@ -1,10 +1,10 @@
 import { Route } from 'react-router-dom';
 import React from 'react';
 import { User } from '../api/types';
-import { InputConfig, makeComponents } from './components';
+import { InputConfig, makeComponents, MakeComponentsResult } from './components';
 import { Translator } from '../internationalization';
-import { makeLoginRoute } from '../components/reactRouter/LoginRoute';
-import { makeProtectedRoute } from '../components/reactRouter/ProtectedRoute';
+import { makeLoginRoute, MakeLoginRouteResult } from '../components/reactRouter/LoginRoute';
+import { makeProtectedRoute, MakeProtectedRouteResult } from '../components/reactRouter/ProtectedRoute';
 import { Link } from '../components/reactRouter/Link';
 import { useRouteHandler } from '../components/reactRouter/useRouteHandler';
 import { useQueryParams } from '../components/reactRouter/useQueryParams';
@@ -13,8 +13,18 @@ export interface ReactRouterConfig extends Omit<InputConfig, 'routing'> {
   routing?: InputConfig['routing'];
 }
 
-export const configureAuth = <UserType extends unknown = User>(config: ReactRouterConfig) => {
-  const components = makeComponents({
+export interface ConfigureAuthReactRouterResult<U extends unknown>
+  extends MakeComponentsResult<U>
+{
+  ProtectedRoute: MakeProtectedRouteResult;
+  LoginRoute: MakeLoginRouteResult;
+  makeAuthRoutes: (translator?: Translator) => JSX.Element[];
+}
+
+export function configureAuthReactRouter <UserType extends unknown = User>(
+  config: ReactRouterConfig,
+): ConfigureAuthReactRouterResult<UserType> {
+  const components = makeComponents<UserType>({
     routing: {
       link: Link,
       useRouteHandler,
@@ -76,4 +86,4 @@ export const configureAuth = <UserType extends unknown = User>(config: ReactRout
     LoginRoute,
     makeAuthRoutes,
   });
-};
+}

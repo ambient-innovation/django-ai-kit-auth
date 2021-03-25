@@ -26,15 +26,17 @@ const useStyles = makeStyles(createStyles({
   },
 }));
 
-export const makeResetPasswordForm = ({
+export interface MakeResetPasswordFormResult {
+  ResetPasswordForm: FC<TranslatorProps>;
+  ResetPasswordView: FC<TranslatorProps>;
+}
+
+export function makeResetPasswordForm({
   components: { loadingIndicator: LoadingIndicator, backgroundImage },
   paths: { login, forgotPassword },
   defaultTranslator,
   routing: { useQueryParams },
-}: FullConfig): {
-  ResetPasswordForm: FC<TranslatorProps>;
-  ResetPasswordView: FC<TranslatorProps>;
-} => {
+}: FullConfig): MakeResetPasswordFormResult {
   const ResetPasswordForm: FC<TranslatorProps> = ({
     translator: t = defaultTranslator,
   }) => {
@@ -221,4 +223,4 @@ export const makeResetPasswordForm = ({
   );
 
   return { ResetPasswordForm, ResetPasswordView };
-};
+}

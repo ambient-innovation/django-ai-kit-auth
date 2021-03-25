@@ -1,4 +1,4 @@
-import { ComponentType } from 'react';
+import { ComponentType, Context, FC } from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { TypographyProps } from '@material-ui/core';
 import { en, Translator } from '../internationalization';
@@ -6,15 +6,18 @@ import { DefaultBackgroundImage } from '../assets/DefaultBackgroundImage';
 import { User } from '../api/types';
 import { DeepPartial, mergeConfig } from '../util';
 import { AuthFunctionContext, makeGenericUserStore } from '..';
-import { makeLoginForm } from '../components/LoginForm';
-import { makeRegisterForm } from '../components/Register';
-import { makeForgotPasswordForm } from '../components/ForgotPassword';
-import { makeResetPasswordForm } from '../components/ResetPassword';
-import { makeActivateEmailAddress } from '../components/ActivateEmailAddress';
-import { makeEmailSentCard } from '../components/EmailSent';
-import { AuthView, ErrorView } from '../components/AuthView';
-import { ErrorCard } from '../components/ErrorCard';
-import { ApiConfig } from '../store/UserStore';
+import { makeLoginForm, MakeLoginFormResult } from '../components/LoginForm';
+import { makeRegisterForm, MakeRegisterFormResult } from '../components/Register';
+import { makeForgotPasswordForm, MakeForgotPasswordFormResult } from '../components/ForgotPassword';
+import { makeResetPasswordForm, MakeResetPasswordFormResult } from '../components/ResetPassword';
+import { makeActivateEmailAddress, MakeActivateEmailAddressResult } from '../components/ActivateEmailAddress';
+import { makeEmailSentCard, MakeEmailSentCardResult } from '../components/EmailSent';
+import {
+  AuthView, AuthViewProps, ErrorView, ErrorViewProps,
+} from '../components/AuthView';
+import { ErrorCard, ErrorCardProps } from '../components/ErrorCard';
+import { ApiConfig, MakeGenericUserStoreResult } from '../store/UserStore';
+import { AuthFunctionContextValue } from '../store/types';
 
 export enum Identifier {
   Username = 1,
@@ -90,9 +93,25 @@ export interface MandatoryConfig {
 export type InputConfig = DeepPartial<DefaultConfig> & MandatoryConfig;
 export type FullConfig = DefaultConfig & MandatoryConfig;
 
-export const makeComponents = <UserType extends unknown = User>(
+export interface MakeComponentsResult<U extends unknown> extends
+  MakeGenericUserStoreResult<U>,
+  MakeLoginFormResult,
+  MakeRegisterFormResult,
+  MakeForgotPasswordFormResult,
+  MakeResetPasswordFormResult,
+  MakeActivateEmailAddressResult,
+  MakeEmailSentCardResult
+{
+  AuthFunctionContext: Context<AuthFunctionContextValue>;
+  AuthView: FC<AuthViewProps>;
+  ErrorCard: FC<ErrorCardProps>;
+  ErrorView: FC<ErrorViewProps>;
+  fullConfig: FullConfig;
+}
+
+export function makeComponents <UserType extends unknown = User>(
   config: InputConfig,
-) => {
+): MakeComponentsResult<UserType> {
   const fullConfig: FullConfig = {
     ...mergeConfig(defaultComponentConfig, config),
     routing: config.routing,
@@ -139,4 +158,4 @@ export const makeComponents = <UserType extends unknown = User>(
     ErrorView,
     fullConfig,
   };
-};
+}

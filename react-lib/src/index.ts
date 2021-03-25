@@ -20,9 +20,9 @@ export {
 } from './internationalization';
 
 export {
-  ReactRouterConfig, configureAuth as configureAuthReactRouter,
+  ReactRouterConfig, configureAuthReactRouter,
 } from './config/ReactRouter';
 
 export {
-  NextConfig, AuthPageProps, configureAuth as configureAuthNext,
+  NextConfig, AuthPageProps, configureAuthNext,
 } from './config/Next';

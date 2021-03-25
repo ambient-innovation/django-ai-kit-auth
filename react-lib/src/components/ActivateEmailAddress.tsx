@@ -2,17 +2,18 @@ import React, {
   FC, useContext, useEffect, useState,
 } from 'react';
 import { AxiosError } from 'axios';
-import { AuthFunctionContext } from '..';
+import { AuthFunctionContext, FullConfig } from '..';
 import { ErrorView } from './AuthView';
 import { makeActivationCard } from './Activation';
 import { TranslatorProps } from '../internationalization';
-import { FullConfig } from '../config/components';
 
-export const makeActivateEmailAddress = (config: FullConfig): {
+export interface MakeActivateEmailAddressResult {
   ActivateEmailAddress: FC<TranslatorProps>;
   ActivationView: FC<TranslatorProps>;
   ActivationCard: FC<TranslatorProps>;
-} => {
+}
+
+export function makeActivateEmailAddress(config: FullConfig): MakeActivateEmailAddressResult {
   const { useQueryParams } = config.routing;
   const { ActivationView, ActivationCard } = makeActivationCard(config);
   const {
@@ -59,4 +60,4 @@ export const makeActivateEmailAddress = (config: FullConfig): {
   };
 
   return { ActivateEmailAddress, ActivationCard, ActivationView };
-};
+}

@@ -1,4 +1,5 @@
 import React, {
+  Context,
   createContext, FC, useContext, useEffect, useMemo, useState,
 } from 'react';
 import axios from 'axios';
@@ -52,9 +53,16 @@ export const AuthFunctionContext = createContext<AuthFunctionContextValue>({
   register: errorPromise,
 });
 
+export interface MakeGenericUserStoreResult<U extends unknown> {
+  UserContext: Context<UserStoreValue<U>>;
+  UserStore: FC<UserStoreProps<U>>;
+  MockUserStore: FC<MockUserStoreProps<U>>;
+  useUserStore: () => UserStoreValue<U>&AuthFunctionContextValue;
+}
+
 export function makeGenericUserStore<U extends unknown = User>(
   { url: apiUrl, authPath: apiAuthPath }: ApiConfig,
-) {
+): MakeGenericUserStoreResult<U> {
   const UserContext = createContext<UserStoreValue<U>>({ user: null });
 
   const UserStore: FC<UserStoreProps<U>> = ({

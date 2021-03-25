@@ -1,7 +1,7 @@
 import React, { FC, useContext, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import {
-  InputConfig, makeComponents,
+  InputConfig, makeComponents, MakeComponentsResult,
 } from './components';
 import { User } from '../api/types';
 import { Link } from '../components/next/Link';
@@ -18,8 +18,18 @@ export interface AuthPageProps {
   t?: Translator;
 }
 
-export const configureAuth = <UserType extends unknown = User>(config: NextConfig) => {
-  const components = makeComponents({
+export interface ConfigureAuthNextResult<U extends unknown>
+  extends MakeComponentsResult<U>
+{
+  LoginComponent: FC<TranslatorProps>;
+  AuthPage: FC<AuthPageProps>;
+  PrivateProtection: FC;
+}
+
+export function configureAuthNext<UserType extends unknown = User>(
+  config: NextConfig,
+): ConfigureAuthNextResult<UserType> {
+  const components = makeComponents<UserType>({
     routing: {
       link: Link,
       useRouteHandler: useRouter,
@@ -93,4 +103,4 @@ export const configureAuth = <UserType extends unknown = User>(config: NextConfi
     AuthPage,
     PrivateProtection,
   };
-};
+}

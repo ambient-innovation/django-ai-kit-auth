@@ -9,10 +9,9 @@ import React, { FC, useContext, useState } from 'react';
 import { AxiosError } from 'axios';
 import { useDebouncedCallback } from 'use-debounce';
 
-import { AuthFunctionContext } from '..';
+import { AuthFunctionContext, FullConfig, Identifier } from '..';
 import { AuthView } from './AuthView';
 import { ErrorMessage } from '../api/types';
-import { FullConfig, Identifier } from '../config/components';
 import { PasswordField } from './common/PasswordField';
 import { TranslatorProps } from '../internationalization';
 import { useFormStyles } from './common/styles';
@@ -23,16 +22,17 @@ const useStyles = makeStyles(createStyles({
   },
 }));
 
-export const makeRegisterForm = ({
+export interface MakeRegisterFormResult {
+  RegisterForm: FC<TranslatorProps>;
+  RegisterView: FC<TranslatorProps>;
+}
+export function makeRegisterForm({
   components: { backgroundImage },
   paths: { login },
   defaultTranslator,
   userIdentifier,
   routing: { link: Link },
-}: FullConfig): {
-  RegisterForm: FC<TranslatorProps>;
-  RegisterView: FC<TranslatorProps>;
-} => {
+}: FullConfig): MakeRegisterFormResult {
   const RegisterForm: FC<TranslatorProps> = ({
     translator: t = defaultTranslator,
   }) => {
@@ -216,4 +216,4 @@ export const makeRegisterForm = ({
   );
 
   return { RegisterForm, RegisterView };
-};
+}
