@@ -4,8 +4,8 @@ variables:
   DOCKER_DRIVER: overlay2
   DJANGO: django-app
   REACT: react-lib
-  IMAGE_TAG_REACT_ROUTER_BACKEND: $CI_REGISTRY_IMAGE/examples/react-router/backend:$CI_COMMIT_REF_SLUG
-  IMAGE_TAG_REACT_ROUTER_FRONTEND: $CI_REGISTRY_IMAGE/examples/react-router/frontend:$CI_COMMIT_REF_SLUG
+  IMAGE_TAG_REACT_ROUTER_BACKEND: $CI_REGISTRY_IMAGE/react-router/backend:$CI_COMMIT_REF_SLUG
+  IMAGE_TAG_REACT_ROUTER_FRONTEND: $CI_REGISTRY_IMAGE/react-router/frontend:$CI_COMMIT_REF_SLUG
   DOCKER_HOST: tcp://localhost:2375
   DOCKER_API_VERSION: "1.39"
 
@@ -84,8 +84,8 @@ build-react-router-backend:
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     # https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#using-docker-caching
-    - docker pull $CI_REGISTRY_IMAGE/examples/react-router/backend:develop || true
-    - docker build --cache-from $CI_REGISTRY_IMAGE/examples/react-router/backend:develop -t $IMAGE_TAG_REACT_ROUTER_BACKEND --file ./examples/react-router/backend/Dockerfile ./
+    - docker pull $CI_REGISTRY_IMAGE/react-router/backend:develop || true
+    - docker build --cache-from $CI_REGISTRY_IMAGE/react-router/backend:develop -t $IMAGE_TAG_REACT_ROUTER_BACKEND --file ./examples/react-router/backend/Dockerfile ./
     - docker push $IMAGE_TAG_REACT_ROUTER_BACKEND
 
 build-react-router-frontend:
@@ -98,11 +98,11 @@ build-react-router-frontend:
     - normal-load
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    - docker pull $CI_REGISTRY_IMAGE/examples/react-router/frontend:develop || true
-    - docker build --cache-from $CI_REGISTRY_IMAGE/examples/react-router/frontend:develop -t $IMAGE_TAG_REACT_ROUTER_FRONTEND --build-arg app_env=production --file ./examples/react-router/frontend/Dockerfile ./
+    - docker pull $CI_REGISTRY_IMAGE/react-router/frontend:develop || true
+    - docker build --cache-from $CI_REGISTRY_IMAGE/react-router/frontend:develop -t $IMAGE_TAG_REACT_ROUTER_FRONTEND --build-arg app_env=production --file ./react-router/frontend/Dockerfile ./
     - docker push $IMAGE_TAG_REACT_ROUTER_FRONTEND
 
-e2e-test-demo:
+e2e-test-react-router:
   stage: e2e
   except:
     - tags
