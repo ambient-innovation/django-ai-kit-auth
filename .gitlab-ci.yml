@@ -99,7 +99,7 @@ build-react-router-frontend:
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker pull $CI_REGISTRY_IMAGE/react-router/frontend:develop || true
-    - docker build --cache-from $CI_REGISTRY_IMAGE/react-router/frontend:develop -t $IMAGE_TAG_REACT_ROUTER_FRONTEND --build-arg app_env=production --file ./react-router/frontend/Dockerfile ./
+    - docker build --cache-from $CI_REGISTRY_IMAGE/react-router/frontend:develop -t $IMAGE_TAG_REACT_ROUTER_FRONTEND --build-arg app_env=production --file ./examples/react-router/frontend/Dockerfile ./
     - docker push $IMAGE_TAG_REACT_ROUTER_FRONTEND
 
 e2e-test-react-router:
