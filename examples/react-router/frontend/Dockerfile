@@ -4,13 +4,13 @@ FROM node:12.14
 ENV CI true
 
 # set working directory
-WORKDIR /demo/frontend
+WORKDIR /examples/react-router/frontend
 
 # add `/demo/frontend/node_modules/.bin` to $PATH
-ENV PATH /demo/frontend/node_modules/.bin:$PATH
+ENV PATH /examples/react-router/frontend/node_modules/.bin:$PATH
 
 # install and cache demo/frontend dependencies
-COPY demo/frontend/package*.json ./
+COPY examples/react-router/frontend/package*.json ./
 COPY react-lib /react-lib
 
 RUN echo "installing npm packages" && \
@@ -18,15 +18,15 @@ RUN echo "installing npm packages" && \
     cd /react-lib && \
     echo "build ai-kit-auth package" && \
     npm ci && \
-    npm link /demo/frontend/node_modules/react && \
-    npm link /demo/frontend/node_modules/react-router-dom && \
-    npm link /demo/frontend/node_modules/@material-ui/styles && \
+    npm link /examples/react-router/frontend/node_modules/react && \
+    npm link /examples/react-router/frontend/node_modules/react-router-dom && \
+    npm link /examples/react-router/frontend/node_modules/@material-ui/styles && \
     npm run build && \
     npm link && \
     cd - && \
     npm link ai-kit-auth
 
-COPY demo/frontend .
+COPY examples/react-router/frontend .
 
 
 # In production, we want to install the node server and run the "npm run build" command.

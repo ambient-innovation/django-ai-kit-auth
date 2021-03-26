@@ -4,8 +4,8 @@ variables:
   DOCKER_DRIVER: overlay2
   DJANGO: django-app
   REACT: react-lib
-  IMAGE_TAG_BACKEND: $CI_REGISTRY_IMAGE/demo/backend:$CI_COMMIT_REF_SLUG
-  IMAGE_TAG_FRONTEND: $CI_REGISTRY_IMAGE/demo/frontend:$CI_COMMIT_REF_SLUG
+  IMAGE_TAG_REACT_ROUTER_BACKEND: $CI_REGISTRY_IMAGE/examples/react-router/backend:$CI_COMMIT_REF_SLUG
+  IMAGE_TAG_REACT_ROUTER_FRONTEND: $CI_REGISTRY_IMAGE/examples/react-router/frontend:$CI_COMMIT_REF_SLUG
   DOCKER_HOST: tcp://localhost:2375
   DOCKER_API_VERSION: "1.39"
 
@@ -73,7 +73,7 @@ unit-test-react:
   script:
     - npm test --prefix $REACT
 
-build-demo-backend:
+build-react-router-backend:
   stage: build
   except:
     - tags
@@ -84,11 +84,11 @@ build-demo-backend:
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     # https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#using-docker-caching
-    - docker pull $CI_REGISTRY_IMAGE/demo/backend:develop || true
-    - docker build --cache-from $CI_REGISTRY_IMAGE/demo/backend:develop -t $IMAGE_TAG_BACKEND --file ./demo/backend/Dockerfile ./
-    - docker push $IMAGE_TAG_BACKEND
+    - docker pull $CI_REGISTRY_IMAGE/examples/react-router/backend:develop || true
+    - docker build --cache-from $CI_REGISTRY_IMAGE/examples/react-router/backend:develop -t $IMAGE_TAG_REACT_ROUTER_BACKEND --file ./examples/react-router/backend/Dockerfile ./
+    - docker push $IMAGE_TAG_REACT_ROUTER_BACKEND
 
-build-demo-frontend:
+build-react-router-frontend:
   stage: build
   except:
     - tags
@@ -98,17 +98,17 @@ build-demo-frontend:
     - normal-load
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    - docker pull $CI_REGISTRY_IMAGE/demo/frontend:develop || true
-    - docker build --cache-from $CI_REGISTRY_IMAGE/demo/frontend:develop -t $IMAGE_TAG_FRONTEND --build-arg app_env=production --file ./demo/frontend/Dockerfile ./
-    - docker push $IMAGE_TAG_FRONTEND
+    - docker pull $CI_REGISTRY_IMAGE/examples/react-router/frontend:develop || true
+    - docker build --cache-from $CI_REGISTRY_IMAGE/examples/react-router/frontend:develop -t $IMAGE_TAG_REACT_ROUTER_FRONTEND --build-arg app_env=production --file ./examples/react-router/frontend/Dockerfile ./
+    - docker push $IMAGE_TAG_REACT_ROUTER_FRONTEND
 
 e2e-test-demo:
   stage: e2e
   except:
     - tags
   dependencies:
-    - build-demo-backend
-    - build-demo-frontend
+    - build-react-router-backend
+    - build-react-router-frontend
   tags:
     - high-load
   artifacts:
@@ -122,10 +122,10 @@ e2e-test-demo:
       junit: test-reports/reporter*.xml
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    - docker pull $IMAGE_TAG_FRONTEND
-    - docker run -d -p 3000:5000 $IMAGE_TAG_FRONTEND bash -c ./run.sh
-    - docker pull $IMAGE_TAG_BACKEND
-    - docker run -d -p 8000:8000 -e DJANGO_SESSION_COOKIE_SECURE=False -e DJANGO_CACHE_BACKEND=local $IMAGE_TAG_BACKEND ./run_backend.sh loadfixtures
+    - docker pull $IMAGE_TAG_REACT_ROUTER_FRONTEND
+    - docker run -d -p 3000:5000 $IMAGE_TAG_REACT_ROUTER_FRONTEND bash -c ./run.sh
+    - docker pull $IMAGE_TAG_REACT_ROUTER_BACKEND
+    - docker run -d -p 8000:8000 -e DJANGO_SESSION_COOKIE_SECURE=False -e DJANGO_CACHE_BACKEND=local $IMAGE_TAG_REACT_ROUTER_BACKEND ./run_backend.sh loadfixtures
     - docker run --rm
       -v ${PWD}/cypress/cypress:/app/cypress
       -v ${PWD}/cypress/cypress.json:/app/cypress.json

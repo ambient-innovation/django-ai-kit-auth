@@ -13,7 +13,7 @@ RUN pipenv install --deploy --system
 COPY ./examples/nextjs/backend .
 
 # Create empty env-file to avoid warnings
-RUN touch ./demo/.env
+RUN touch ./.env
 
 EXPOSE 8000
 

@@ -1,19 +1,19 @@
 FROM python:3.7
 ENV PYTHONUNBUFFERED 1
 
-WORKDIR /demo/backend
+WORKDIR /examples/react-router/backend
 
 # Install dependencies
 RUN pip install -U pip pipenv
-COPY ./demo/backend/Pipfile ./demo/backend/Pipfile.lock ./
+COPY ./examples/react-router/backend/Pipfile ./examples/react-router/backend/Pipfile.lock ./
 COPY ./django-app /django-app
 
 RUN pipenv install --deploy --system
 
-COPY ./demo/backend /demo/backend
+COPY ./examples/react-router/backend .
 
 # Create empty env-file to avoid warnings
-RUN touch ./demo/.env
+RUN touch ./.env
 
 EXPOSE 8000
 

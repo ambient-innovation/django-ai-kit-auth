@@ -16,7 +16,7 @@ django-cors-headers = ">=3.2.1"
 # Deploy
 gunicorn = "==20.0.4"                      # Webserver
 # Local installation of django-ai-kit-auth
-django-ai-kit-auth = {editable = true,path = "./../../django-app"}
+django-ai-kit-auth = {editable = true,path = "./../../../django-app"}
 
 [dev-packages]
 flake8 = "==3.7.9"                         # Linting
