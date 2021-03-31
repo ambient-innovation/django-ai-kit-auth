@@ -152,7 +152,7 @@ build-next-backend:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     # https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#using-docker-caching
     - docker pull $CI_REGISTRY_IMAGE/next/backend:develop || true
-    - docker build --cache-from $CI_REGISTRY_IMAGE/next/backend:develop -t $IMAGE_TAG_NEXT_BACKEND --file ./examples/next/backend/Dockerfile ./
+    - docker build --cache-from $CI_REGISTRY_IMAGE/next/backend:develop -t $IMAGE_TAG_NEXT_BACKEND --file ./examples/nextjs/backend/Dockerfile ./
     - docker push $IMAGE_TAG_NEXT_BACKEND
 
 build-next-frontend:
@@ -166,7 +166,7 @@ build-next-frontend:
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker pull $CI_REGISTRY_IMAGE/next/frontend:develop || true
-    - docker build --cache-from $CI_REGISTRY_IMAGE/next/frontend:develop -t $IMAGE_TAG_NEXT_FRONTEND --build-arg app_env=production --file ./examples/next/frontend/Dockerfile ./
+    - docker build --cache-from $CI_REGISTRY_IMAGE/next/frontend:develop -t $IMAGE_TAG_NEXT_FRONTEND --build-arg app_env=production --file ./examples/nextjs/frontend/Dockerfile ./
     - docker push $IMAGE_TAG_NEXT_FRONTEND
 
 e2e-next-router:
