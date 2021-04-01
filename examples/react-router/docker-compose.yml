@@ -1,0 +1,28 @@
+version: '2'
+
+services:
+  backend:
+    build:
+      context: ../../
+      dockerfile: ./examples/react-router/backend/Dockerfile
+    env_file: ./backend/docker-compose.env
+    command: bash ./run_backend_local.sh
+    volumes:
+      - ./backend:/examples/react-router/backend
+      - ../../django-app:/django-app
+    ports:
+      - "8000:8000"
+    restart: "no"
+
+  frontend:
+    build:
+      context: ../../
+      dockerfile: ./examples/react-router/frontend/Dockerfile
+    env_file: ./frontend/docker-compose.env
+    command: bash ./run_local.sh
+    volumes:
+      - ./frontend/src:/examples/react-router/frontend/src
+      - ../../react-lib/dist:/react-lib/dist
+    ports:
+      - "3000:3000"
+    restart: "no"

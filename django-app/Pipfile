@@ -6,7 +6,6 @@ verify_ssl = true
 [packages]
 Django = ">=3.0.0"
 djangorestframework = "*"
-djangorestframework-simplejwt = "*"
 
 [dev-packages]
 commit_parser = {path = "./../python_commit_parser"}

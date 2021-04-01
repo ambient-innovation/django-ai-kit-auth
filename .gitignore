@@ -25,6 +25,9 @@ venv
 # NPM
 node_modules/
 
+# NEXTJS
+.next
+
 # docker
 celerybeat.pid
 celerybeat-schedule

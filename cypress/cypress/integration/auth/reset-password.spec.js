@@ -4,7 +4,7 @@
 describe('Rest password and password validation', function () {
   // we need a real ident to do password validation
   const { ident } = Cypress.config().users['root'];
-  const resetPasswordPage = `/auth/reset-password/${ident}/1234-4563`;
+  const resetPasswordPage = `/auth/reset-password/?ident=${ident}&token=1234-4563`;
 
   const fillOutForm = (password, password2 = '', submit = false) => {
     password !== '' && cy.get('input[id="reset_password"]')

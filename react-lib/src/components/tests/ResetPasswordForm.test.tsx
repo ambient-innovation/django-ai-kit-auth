@@ -1,11 +1,10 @@
 import * as React from 'react';
-import { Route } from 'react-router-dom';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { fireEvent, waitForElement } from '@testing-library/dom';
-import { renderWithRouterAndUser } from './Util';
-import { ResetPasswordForm } from '../..';
+import { render, fireEvent, waitForElement } from '@testing-library/react';
 import { en } from '../../internationalization';
-import { dontResolvePromise } from '../../store/UserStore';
+import { dontResolvePromise, makeGenericUserStore, MockUserStoreProps } from '../../store/UserStore';
+import { defaultApiConfig, getFullTestConfig, TestRoutingProps } from '../../tests/Helper';
+import { makeResetPasswordForm } from '../ResetPassword';
 
 const mockData = {
   password: '12345678',
@@ -15,27 +14,40 @@ const mockData = {
 
 const sleep = async () => new Promise((r) => setTimeout(r, 400));
 
+const { MockUserStore } = makeGenericUserStore(defaultApiConfig);
+
+const renderComponent = (
+  apiFunctions?: MockUserStoreProps,
+  routingProps?: TestRoutingProps,
+) => {
+  const fullConfig = getFullTestConfig({}, {
+    queryParams: { ident: '1234', token: '1234-1234' },
+    ...routingProps,
+  });
+  const { ResetPasswordForm } = makeResetPasswordForm(fullConfig);
+
+  return {
+    fullConfig,
+    ...render(
+      <MockUserStore {...apiFunctions}>
+        <ResetPasswordForm />
+      </MockUserStore>,
+    ),
+  };
+};
+
 // eslint-disable-next-line jest/expect-expect
 test('renders the password form when ident and token are provided', async () => {
-  const renderObject = renderWithRouterAndUser(
-    <Route path="/reset-password/:ident/:token">
-      <ResetPasswordForm />
-    </Route>,
-    { resetPassword: () => Promise.resolve() },
-    ['/reset-password/1234/1234-1234'],
-  );
+  const renderObject = renderComponent({ resetPassword: () => Promise.resolve() });
   await waitForElement(() => renderObject.getByText(en('auth:ResetPassword.ResetPassword')));
 });
 
 test('password is validated once, when typing is finished', async () => {
   const validatePassword = jest.fn();
   validatePassword.mockReturnValue(dontResolvePromise());
-  const renderObject = renderWithRouterAndUser(
-    <Route path="/reset-password/:ident/:token">
-      <ResetPasswordForm />
-    </Route>,
+  const renderObject = renderComponent(
     { validatePassword },
-    [`/reset-password/${mockData.ident}/1234-1234`],
+    { queryParams: { ident: mockData.ident, token: '1234-1234' } },
   );
   fireEvent.change(
     renderObject.getByLabelText(en('auth:ResetPassword.NewPassword')),
@@ -58,15 +70,12 @@ test('password is validated once, when typing is finished', async () => {
 
 // eslint-disable-next-line jest/expect-expect
 test('error state', async () => {
-  const renderObject = renderWithRouterAndUser(
-    <Route path="/reset-password/:ident/:token">
-      <ResetPasswordForm />
-    </Route>,
+  const renderObject = renderComponent(
     {
       // eslint-disable-next-line prefer-promise-reject-errors
       resetPassword: () => Promise.reject({ response: { data: { error: {} } } }),
     },
-    [`/reset-password/${mockData.ident}/${mockData.token}`],
+    { queryParams: mockData },
   );
   fireEvent.change(
     renderObject.getByLabelText(en('auth:ResetPassword.NewPassword')),
@@ -91,14 +100,9 @@ test('error state', async () => {
 
 // eslint-disable-next-line jest/expect-expect
 test('success state', async () => {
-  const renderObject = renderWithRouterAndUser(
-    <Route path="/reset-password/:ident/:token">
-      <ResetPasswordForm />
-    </Route>,
-    {
-      resetPassword: () => Promise.resolve(),
-    },
-    [`/reset-password/${mockData.ident}/${mockData.token}`],
+  const renderObject = renderComponent(
+    { resetPassword: () => Promise.resolve() },
+    { queryParams: mockData },
   );
   fireEvent.change(
     renderObject.getByLabelText(en('auth:ResetPassword.NewPassword')),

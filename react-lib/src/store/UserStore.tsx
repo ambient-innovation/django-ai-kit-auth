@@ -1,7 +1,8 @@
 import React, {
+  Context,
   createContext, FC, useContext, useEffect, useMemo, useState,
 } from 'react';
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import { PasswordValidationInput, User } from '../api/types';
 import {
   activateEmailAddressAPI,
@@ -15,19 +16,25 @@ import {
 } from '../api/api';
 import { AuthFunctionContextValue, LogoutReason, UserStoreValue } from './types';
 
-export interface UserStoreProps {
-  apiUrl: string;
-  apiAuthPath: string;
+export interface ApiConfig {
+  url: string;
+  authPath: string;
 }
-export type MockUserStoreProps<U extends unknown> =
+
+export interface UserStoreProps<U extends unknown> {
+  initialUser?: U;
+  initialCsrf?: string;
+}
+
+export type MockUserStoreProps<U extends unknown=User> =
   Partial<UserStoreValue<U> & AuthFunctionContextValue>;
 
 
 export const noop: () => void = () => null;
-export const dontResolvePromise = () => new Promise<void>(() => null);
-export const errorPromise = () => new Promise<void>(() => {
-  throw new Error('No User Store provided!');
-});
+export const dontResolvePromise = <T extends unknown=void>() => new Promise<T>(noop);
+export const errorPromise = () => Promise.reject(new Error(
+  'Could not find an AI-Authentication User Store in the component tree! Make sure, that you included a UserStore component in your component tree and that you did not mix components from different configurations!',
+));
 
 export const AuthFunctionContext = createContext<AuthFunctionContextValue>({
   loading: false,
@@ -46,16 +53,25 @@ export const AuthFunctionContext = createContext<AuthFunctionContextValue>({
   register: errorPromise,
 });
 
-export function makeGenericUserStore<U extends unknown = User>() {
+export interface MakeGenericUserStoreResult<U extends unknown> {
+  UserContext: Context<UserStoreValue<U>>;
+  UserStore: FC<UserStoreProps<U>>;
+  MockUserStore: FC<MockUserStoreProps<U>>;
+  useUserStore: () => UserStoreValue<U>&AuthFunctionContextValue;
+}
+
+export function makeGenericUserStore<U extends unknown = User>(
+  { url: apiUrl, authPath: apiAuthPath }: ApiConfig,
+): MakeGenericUserStoreResult<U> {
   const UserContext = createContext<UserStoreValue<U>>({ user: null });
 
-  const UserStore: FC<UserStoreProps> = ({
-    children, apiUrl, apiAuthPath,
+  const UserStore: FC<UserStoreProps<U>> = ({
+    children, initialCsrf, initialUser,
   }) => {
     const [loggedOut, setLoggedOut] = useState<LogoutReason>(LogoutReason.NONE);
     const [loading, setLoading] = useState(true);
-    const [user, setUser] = useState<U|null>(null);
-    const [csrf, setCsrf] = useState('');
+    const [user, setUser] = useState<U|null>(initialUser ?? null);
+    const [csrf, setCsrf] = useState(initialCsrf ?? '');
 
     const axiosRequestConfig = useMemo(() => ({
       withCredentials: true,
@@ -67,7 +83,7 @@ export function makeGenericUserStore<U extends unknown = User>() {
           'X-CSRFToken': csrf,
         },
       },
-    }), [apiUrl, csrf]);
+    }), [csrf]);
 
     const login: (userIdentifier: string, password: string) => Promise<void> = (
       userIdentifier, password,
@@ -93,9 +109,6 @@ export function makeGenericUserStore<U extends unknown = User>() {
           setCsrf(logoutData.csrf);
           setLoggedOut(reason);
         })
-        .catch(() => {
-          // TODO
-        })
         .finally(() => {
           setLoading(false);
         });
@@ -107,11 +120,6 @@ export function makeGenericUserStore<U extends unknown = User>() {
       .then((data) => {
         setUser(data.user);
         setCsrf(data.csrf);
-      })
-      .catch((error: AxiosError) => {
-        if (!error.response) {
-          throw new Error('Host unreachable');
-        }
       })
       .finally(() => setLoading(false));
 
