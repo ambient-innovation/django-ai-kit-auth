@@ -1,6 +1,6 @@
-import React, {FC} from 'react';
-import {configureAuth, de, Identifier} from 'ai-kit-auth';
-import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
+import React, { FC } from 'react';
+import { configureAuthReactRouter, de, Identifier } from 'ai-kit-auth';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
@@ -24,10 +24,14 @@ export const {
   useUserStore,
   ProtectedRoute,
   makeAuthRoutes,
-} = configureAuth({
+} = configureAuthReactRouter({
   defaultTranslator: de,
   userIdentifier: Identifier.Email,
   components: {
-    backgroundImage: () => <BackgroundImage />,
+    backgroundImage: BackgroundImage,
+  },
+  api: {
+    url: 'http://localhost:8000/api/v1/',
+    authPath: 'auth/',
   },
 });

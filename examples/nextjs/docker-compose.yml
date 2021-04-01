@@ -1,0 +1,30 @@
+version: '2'
+
+services:
+  backend:
+    build:
+      context: ../../
+      dockerfile: ./examples/nextjs/backend/Dockerfile
+    env_file: ./backend/docker-compose.env
+    command: bash ./run_backend_local.sh
+    volumes:
+      - ./backend:/examples/nextjs/backend
+      - ../../django-app:/django-app
+    ports:
+      - "8000:8000"
+    restart: "no"
+
+  frontend:
+    build:
+      context: ../../
+      dockerfile: ./examples/nextjs/frontend/Dockerfile
+    env_file: ./frontend/docker-compose.env
+    command: bash ./run_local.sh
+    volumes:
+      - ./frontend/src:/examples/nextjs/frontend/src
+      - ./frontend/pages:/examples/nextjs/frontend/pages
+      - ./frontend/public:/examples/nextjs/frontend/public
+      - ../../react-lib/dist:/react-lib/dist
+    ports:
+      - "3000:3000"
+    restart: "no"

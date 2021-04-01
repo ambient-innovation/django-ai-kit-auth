@@ -4,17 +4,14 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
-import Link from '@material-ui/core/Link';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import React, { FC, useContext, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
 import { AxiosError } from 'axios';
 import { useDebouncedCallback } from 'use-debounce';
 
-import { AuthFunctionContext } from '../store/UserStore';
+import { AuthFunctionContext, FullConfig, Identifier } from '..';
 import { AuthView } from './AuthView';
 import { ErrorMessage } from '../api/types';
-import { FullConfig, Identifier } from '../Configuration';
 import { PasswordField } from './common/PasswordField';
 import { TranslatorProps } from '../internationalization';
 import { useFormStyles } from './common/styles';
@@ -25,15 +22,17 @@ const useStyles = makeStyles(createStyles({
   },
 }));
 
-export const makeRegisterForm: (config: FullConfig) => {
+export interface MakeRegisterFormResult {
   RegisterForm: FC<TranslatorProps>;
   RegisterView: FC<TranslatorProps>;
-} = ({
+}
+export function makeRegisterForm({
   components: { backgroundImage },
   paths: { login },
   defaultTranslator,
   userIdentifier,
-}) => {
+  routing: { link: Link },
+}: FullConfig): MakeRegisterFormResult {
   const RegisterForm: FC<TranslatorProps> = ({
     translator: t = defaultTranslator,
   }) => {
@@ -202,8 +201,7 @@ export const makeRegisterForm: (config: FullConfig) => {
           id="register_back_to_login"
           variant="body1"
           color="textPrimary"
-          component={RouterLink}
-          to={login}
+          href={login}
         >
           {t('auth:RegisterForm.BackToLogin')}
         </Link>
@@ -218,4 +216,4 @@ export const makeRegisterForm: (config: FullConfig) => {
   );
 
   return { RegisterForm, RegisterView };
-};
+}

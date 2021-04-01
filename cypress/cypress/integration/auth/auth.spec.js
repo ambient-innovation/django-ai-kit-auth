@@ -29,12 +29,12 @@ describe('Login with E-Mail and password', function () {
     cy.visit(loginPage);
     cy.get('button[id=login_submit]').click();
     cy.get('.Mui-error').should('have.lengthOf.above', 1);
-    cy.url().should('eq', `${Cypress.config().baseUrl}${loginPage}`);
+    cy.url().should('satisfy', (url) => url.startsWith(`${Cypress.config().baseUrl}${loginPage}`));
   });
 
    it('should redirect to the dashboard when successfully logged in', () => {
      cy.visit(mainPage);
-     cy.url().should('eq', `${Cypress.config().baseUrl}${loginPage}`);
+     cy.url().should('satisfy', (url) => url.startsWith(`${Cypress.config().baseUrl}${loginPage}`));
      login('default');
      cy.url().should('eq', `${Cypress.config().baseUrl}${mainPage}`);
    });
