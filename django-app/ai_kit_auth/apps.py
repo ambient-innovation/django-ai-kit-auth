@@ -2,4 +2,5 @@ from django.apps import AppConfig
 
 
 class DjangoAiKitAuthConfig(AppConfig):
-    name = "django_ai_kit_auth"
+    name = "ai_kit_auth"
+    verbose_name = "Ai Kit: Authentication"
