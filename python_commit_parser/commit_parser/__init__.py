@@ -1,10 +1,11 @@
 from semantic_release.history.parser_angular import parse_commit_message
+from semantic_release.history.parser_helpers import ParsedCommit
 
 
 def django_parser(commit_msg):
-    level, change_type, scope, *args = parse_commit_message(commit_msg)
+    parsed = parse_commit_message(commit_msg)
 
-    if not scope or "django" not in scope:
-        return (0, "chore", scope, *args)
+    if not parsed.scope or "django" not in parsed.scope:
+        return ParsedCommit(0, "chore", *parsed[2:])
 
-    return (level, change_type, scope, *args)
+    return parsed
