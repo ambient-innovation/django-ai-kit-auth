@@ -1,5 +1,4 @@
 import { ComponentType, Context, FC } from 'react';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import { TypographyProps } from '@material-ui/core';
 import { en, Translator } from '../internationalization';
 import { DefaultBackgroundImage } from '../assets/DefaultBackgroundImage';
@@ -18,6 +17,7 @@ import {
 import { ErrorCard, ErrorCardProps } from '../components/ErrorCard';
 import { ApiConfig, MakeGenericUserStoreResult } from '../store/UserStore';
 import { AuthFunctionContextValue } from '../store/types';
+import LoadingIndicator from '../components/LoadingIndicator';
 
 export enum Identifier {
   Username = 1,
@@ -62,7 +62,7 @@ export const defaultComponentConfig: DefaultConfig = {
   disableUserRegistration: false, // setting this to true will remove the register path completely
   components: {
     backgroundImage: DefaultBackgroundImage,
-    loadingIndicator: CircularProgress,
+    loadingIndicator: LoadingIndicator,
   },
 };
 

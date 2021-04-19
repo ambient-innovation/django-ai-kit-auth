@@ -1,5 +1,5 @@
 # base image
-FROM node:12.14
+FROM node:15.14
 
 ENV CI true
 

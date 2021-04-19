@@ -59,7 +59,7 @@ export function makeRegisterForm({
     const classes = useStyles();
     const formClasses = useFormStyles();
 
-    const [debouncedPasswordValidation] = useDebouncedCallback(
+    const debouncedPasswordValidation = useDebouncedCallback(
       (pw: string) => {
         validatePassword({ username, email, password: pw })
           .then(() => {
@@ -113,7 +113,6 @@ export function makeRegisterForm({
                   if (error.response) {
                     setErrors(error.response.data);
                   } else {
-                    // eslint-disable-next-line @typescript-eslint/camelcase
                     setErrors({ nonFieldErrors: ['general'] });
                   }
                 })

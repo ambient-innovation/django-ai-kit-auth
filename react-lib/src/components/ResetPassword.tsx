@@ -37,6 +37,35 @@ export function makeResetPasswordForm({
   defaultTranslator,
   routing: { useQueryParams },
 }: FullConfig): MakeResetPasswordFormResult {
+  const SuccessView: FC<TranslatorProps> = ({
+    translator: t = defaultTranslator,
+  }) => {
+    const classes = useStyles();
+
+    return (
+      <>
+        <Typography
+          className={classes.successText}
+          variant="body1"
+        >
+          {t('auth:ResetPassword.SuccessText')}
+        </Typography>
+
+        <Grid container item xs={12} justify="center">
+          <Button
+            type="button"
+            title={t('auth:ResetPassword.SuccessButtonText')}
+            variant="contained"
+            color="primary"
+            href={login}
+          >
+            {t('auth:ResetPassword.SuccessButtonText')}
+          </Button>
+        </Grid>
+      </>
+    );
+  };
+
   const ResetPasswordForm: FC<TranslatorProps> = ({
     translator: t = defaultTranslator,
   }) => {
@@ -48,7 +77,7 @@ export function makeResetPasswordForm({
     const { validatePassword, resetPassword } = useContext(AuthFunctionContext);
     const { ident, token } = useQueryParams();
 
-    const [debouncedPasswordValidation] = useDebouncedCallback(
+    const debouncedPasswordValidation = useDebouncedCallback(
       (pw: string) => {
         validatePassword({ ident, password: pw })
           .then(() => {
@@ -155,35 +184,6 @@ export function makeResetPasswordForm({
           )
         }
       </Paper>
-    );
-  };
-
-  const SuccessView: FC<TranslatorProps> = ({
-    translator: t = defaultTranslator,
-  }) => {
-    const classes = useStyles();
-
-    return (
-      <>
-        <Typography
-          className={classes.successText}
-          variant="body1"
-        >
-          {t('auth:ResetPassword.SuccessText')}
-        </Typography>
-
-        <Grid container item xs={12} justify="center">
-          <Button
-            type="button"
-            title={t('auth:ResetPassword.SuccessButtonText')}
-            variant="contained"
-            color="primary"
-            href={login}
-          >
-            {t('auth:ResetPassword.SuccessButtonText')}
-          </Button>
-        </Grid>
-      </>
     );
   };
 

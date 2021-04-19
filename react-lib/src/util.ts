@@ -1,6 +1,6 @@
 export type DeepPartial<T> = { [K in keyof T]?: DeepPartial<T[K]> };
 
-export const mergeConfig = <T extends {}>(
+export const mergeConfig = <T extends Record<string, unknown>>(
   defaults: T, configs: DeepPartial<T>,
 ): T => {
   const fullConfig = { ...defaults };
