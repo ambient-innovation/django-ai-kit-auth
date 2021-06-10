@@ -43,7 +43,7 @@ lint-react:
   before_script:
     - yarn install --pure-lockfile --cwd $REACT
   script:
-    - yarn lint --cwd $REACT
+    - yarn --cwd $REACT lint
 
 unit-test-django:
   image: python:3.7-slim
@@ -73,7 +73,7 @@ unit-test-react:
   before_script:
     - yarn install --pure-lockfile --cwd $REACT
   script:
-    - yarn test --cwd $REACT
+    - yarn --cwd $REACT test
 
 build-react-router-backend:
   stage: build
