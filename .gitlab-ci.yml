@@ -41,9 +41,9 @@ lint-react:
   tags:
     - low-load
   before_script:
-    - npm ci --prefix $REACT
+    - yarn install --pure-lockfile --cwd $REACT
   script:
-    - npm run --prefix $REACT lint
+    - yarn lint --cwd $REACT
 
 unit-test-django:
   image: python:3.7-slim
@@ -71,9 +71,9 @@ unit-test-react:
   tags:
     - normal-load
   before_script:
-    - npm ci --prefix $REACT
+    - yarn install --pure-lockfile --cwd $REACT
   script:
-    - npm test --prefix $REACT
+    - yarn test --cwd $REACT
 
 build-react-router-backend:
   stage: build
@@ -138,7 +138,7 @@ e2e-test-react-router:
       --network="host"
       --ipc=host
       ambientinnovation/cypress-docker:latest
-      bash -c "npm install && cypress run --browser chrome"
+      bash -c "yarn install && cypress run --browser chrome"
 
 build-next-backend:
   stage: build
@@ -203,7 +203,7 @@ e2e-next-router:
       --network="host"
       --ipc=host
       ambientinnovation/cypress-docker:latest
-      bash -c "npm install && cypress run --browser chrome"
+      bash -c "yarn install && cypress run --browser chrome"
 
 deploy-react:
   image: node:12
@@ -219,10 +219,10 @@ deploy-react:
   tags:
     - low-load
   before_script:
-    - npm ci --prefix $REACT
+    - yarn install --pure-lockfile --cwd $REACT
   script:
     - cd $REACT
-    - npm run build
+    - yarn build
     - npx semantic-release
 
 deploy-django:
