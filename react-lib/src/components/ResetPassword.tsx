@@ -66,6 +66,35 @@ export function makeResetPasswordForm({
     );
   };
 
+  const InvalidLinkView: FC<TranslatorProps> = ({
+    translator: t = defaultTranslator,
+  }) => {
+    const classes = useStyles();
+
+    return (
+      <>
+        <Typography
+          className={classes.successText}
+          variant="body1"
+        >
+          {t('auth:ResetPassword.InvalidLink')}
+        </Typography>
+
+        <Grid container item xs={12} justify="center">
+          <Button
+            type="button"
+            title={t('auth:ResetPassword.InvalidLinkButtonText')}
+            variant="contained"
+            color="primary"
+            href={forgotPassword}
+          >
+            {t('auth:ResetPassword.InvalidLinkButtonText')}
+          </Button>
+        </Grid>
+      </>
+    );
+  };
+
   const ResetPasswordForm: FC<TranslatorProps> = ({
     translator: t = defaultTranslator,
   }) => {
@@ -184,35 +213,6 @@ export function makeResetPasswordForm({
           )
         }
       </Paper>
-    );
-  };
-
-  const InvalidLinkView: FC<TranslatorProps> = ({
-    translator: t = defaultTranslator,
-  }) => {
-    const classes = useStyles();
-
-    return (
-      <>
-        <Typography
-          className={classes.successText}
-          variant="body1"
-        >
-          {t('auth:ResetPassword.InvalidLink')}
-        </Typography>
-
-        <Grid container item xs={12} justify="center">
-          <Button
-            type="button"
-            title={t('auth:ResetPassword.InvalidLinkButtonText')}
-            variant="contained"
-            color="primary"
-            href={forgotPassword}
-          >
-            {t('auth:ResetPassword.InvalidLinkButtonText')}
-          </Button>
-        </Grid>
-      </>
     );
   };
 

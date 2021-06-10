@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "Out of the box login capability in combination with django-ai-kit-auth",
   "main": "dist/index.js",
+  "module": "esm/index.js",
   "types": "dist/index.d.ts",
   "watch": {
     "build": {
@@ -15,7 +16,7 @@
   },
   "scripts": {
     "test": "jest",
-    "build": "tsc",
+    "build": "tsc -p tsconfig.json && tsc -p tsconfig.esm.json",
     "lint": "eslint 'src/**/*.{tsx,ts}'",
     "watch": "npm-watch"
   },
@@ -83,7 +84,8 @@
     "typescript": "^4.2.4"
   },
   "files": [
-    "dist/**/*"
+    "dist/**/*",
+    "esm/**/*"
   ],
   "jest": {
     "setupFilesAfterEnv": [
@@ -135,10 +137,5 @@
     "extends": [
       "@commitlint/config-conventional"
     ]
-  },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
   }
 }

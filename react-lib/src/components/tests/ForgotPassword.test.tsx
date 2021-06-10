@@ -11,7 +11,6 @@ import { en } from '../../internationalization';
 import { defaultApiConfig, getFullTestConfig, TestRoutingProps } from '../../tests/Helper';
 import { DeepPartial } from '../../util';
 
-
 const mockEmail = 'mock@example.com';
 
 const { MockUserStore } = makeGenericUserStore(defaultApiConfig);

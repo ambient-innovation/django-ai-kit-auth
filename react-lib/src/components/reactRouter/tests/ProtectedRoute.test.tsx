@@ -11,7 +11,6 @@ import { makeGenericUserStore, MockUserStoreProps, FullConfig } from '../../..';
 import { defaultApiConfig, getFullTestConfig } from '../../../tests/Helper';
 import { DeepPartial } from '../../../util';
 
-
 const mockUser: User = ({
   id: 42, username: 'Donald', email: 'donald@example.com',
 });

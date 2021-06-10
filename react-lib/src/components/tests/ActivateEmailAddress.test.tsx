@@ -10,7 +10,6 @@ import { defaultApiConfig, getFullTestConfig } from '../../tests/Helper';
 import { dontResolvePromise } from '../../store/UserStore';
 import { DeepPartial } from '../../util';
 
-
 const { MockUserStore } = makeGenericUserStore(defaultApiConfig);
 
 const renderComponent = (

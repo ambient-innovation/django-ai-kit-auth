@@ -6,7 +6,6 @@
   ],
   "compilerOptions": {
     "skipLibCheck": true,
-    "isolatedModules": false,
-    "resolveJsonModule": true
+    "isolatedModules": false
   }
 }

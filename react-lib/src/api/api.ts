@@ -4,7 +4,7 @@ import {
   CsrfResponse, MeResponse, PasswordValidationInput, User,
 } from './types';
 
-export const makeUrl = (authPath: string, suffix: string) => {
+export const makeUrl = (authPath: string, suffix: string): string => {
   const separator = authPath.endsWith('/') ? '' : '/';
 
   return `${authPath}${separator}${suffix}`;
@@ -15,68 +15,64 @@ const camelCaseError = <D>(
 ): Promise<AxiosResponse<D>> => apiCall
     .catch((error) => {
       if ('response' in error) {
-        const newError = {
+        throw new Error({
           ...error,
           response: {
             ...error.response,
             data: camelcaseKeys(error.response.data),
           },
-        };
-        throw newError;
+        });
       }
       throw error;
     });
 
 export const loginAPI = <U = User>(
   authPath: string, ident: string, password: string, config: AxiosRequestConfig,
-) => camelCaseError(axios.post<MeResponse<U>>(
-  makeUrl(authPath, 'login/'), { ident, password }, config,
-)).then(({ data }) => data);
+): Promise<MeResponse<U>> => camelCaseError(
+    axios.post<MeResponse<U>>(
+      makeUrl(authPath, 'login/'), { ident, password }, config,
+    ),
+  ).then(({ data }) => data);
 
-
-export const meAPI = <U = User>(authPath: string, config: AxiosRequestConfig) => (
-  camelCaseError(axios.get<MeResponse<U>>(makeUrl(authPath, 'me/'), config))
-    .then(({ data }) => camelcaseKeys(data)));
-
+export const meAPI = <U = User>(
+  authPath: string, config: AxiosRequestConfig,
+): Promise<MeResponse<U>> => (
+    camelCaseError(axios.get<MeResponse<U>>(makeUrl(authPath, 'me/'), config))
+      .then(({ data }) => camelcaseKeys(data)));
 
 export const logoutAPI = (
   authPath: string, config: AxiosRequestConfig,
-) => camelCaseError(axios.post<CsrfResponse>(makeUrl(authPath, 'logout/'), {}, config))
+): Promise<CsrfResponse> => camelCaseError(axios.post<CsrfResponse>(makeUrl(authPath, 'logout/'), {}, config))
   .then(({ data }) => camelcaseKeys(data));
-
 
 export const activateEmailAddressAPI = (
   authPath: string, ident: string, token: string, config: AxiosRequestConfig,
-) => (
+): Promise<unknown> => (
   camelCaseError(axios.post(
     makeUrl(authPath, 'activate_email/'), { ident, token }, config,
   ))
 );
 
-
 export const validatePasswordAPI = (
   authPath: string, input: PasswordValidationInput, config: AxiosRequestConfig,
-) => camelCaseError(axios.post<{}>(
+): Promise<unknown> => camelCaseError(axios.post(
   makeUrl(authPath, 'validate_password/'), input, config,
 ));
 
-
 export const sendPWResetEmail = (
   authPath: string, email: string, config: AxiosRequestConfig,
-) => camelCaseError(axios.post(
+): Promise<unknown> => camelCaseError(axios.post(
   makeUrl(authPath, 'send_pw_reset_email/'), { email }, config,
 ));
 
-
 export const resetPasswordAPI = (
   authPath: string, ident: string, token: string, password: string, config: AxiosRequestConfig,
-) => camelCaseError(axios.post(
+): Promise<unknown> => camelCaseError(axios.post(
   makeUrl(authPath, 'reset_password/'), { ident, token, password }, config,
 ));
 
-
 export const registerAPI = (
   authPath: string, username: string, email: string, password: string, config: AxiosRequestConfig,
-) => camelCaseError(axios.post(
+): Promise<unknown> => camelCaseError(axios.post(
   makeUrl(authPath, 'register/'), { username, email, password }, config,
 ));

@@ -16,7 +16,6 @@ import { PasswordField } from './common/PasswordField';
 import { TranslatorProps } from '../internationalization';
 import { useFormStyles } from './common/styles';
 
-
 const useStyles = makeStyles((theme: Theme) => createStyles({
   loggedOutText: {
     color: theme.palette.primary.main,
