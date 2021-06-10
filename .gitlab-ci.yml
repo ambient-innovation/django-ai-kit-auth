@@ -34,7 +34,7 @@ lint-django:
     - black --check $DJANGO/**/*.py --exclude .*/migrations/.*
 
 lint-react:
-  image: node:13
+  image: node:15
   stage: lint
   except:
     - tags
@@ -62,7 +62,7 @@ unit-test-django:
     - python runtests.py
 
 unit-test-react:
-  image: node:13
+  image: node:15
   stage: test
   except:
     - tags
@@ -206,7 +206,7 @@ e2e-next-router:
       bash -c "yarn install && cypress run --browser chrome"
 
 deploy-react:
-  image: node:12
+  image: node:15
   stage: deploy
   except:
     - tags
