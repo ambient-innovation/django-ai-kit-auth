@@ -81,7 +81,7 @@ class MeView(generics.GenericAPIView):
     """
 
     permission_classes = (AllowAny,)
-    user_serializer = api_settings.USER_SERIALIZER
+    serializer_class = api_settings.USER_SERIALIZER
 
     def get(self, request, *args, **kwargs):
         csrf_token = csrf.get_token(request)
@@ -89,9 +89,7 @@ class MeView(generics.GenericAPIView):
         if request.user.is_anonymous:
             user_data = None
         else:
-            user_serializer = self.user_serializer(
-                instance=request.user, context={"request": request}
-            )
+            user_serializer = self.get_serializer(instance=request.user)
             user_data = user_serializer.data
         return Response(
             {
