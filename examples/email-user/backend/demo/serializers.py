@@ -1,3 +1,4 @@
+from ai_kit_auth.serializers import LoginSerializer
 from rest_framework import serializers
 from . import models
 
