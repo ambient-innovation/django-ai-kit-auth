@@ -151,7 +151,6 @@ class ActivateUser(views.APIView):
             ValueError,
             OverflowError,
             UserModel.DoesNotExist,
-            UserModel.MultipleObjectsReturned,
         ):
             return Response(
                 {"error": "activation_link_invalid"}, status=status.HTTP_400_BAD_REQUEST
@@ -176,11 +175,7 @@ class InitiatePasswordResetView(views.APIView):
             if isinstance(field, EmailField):
                 filter_key += "__iexact"
             try:
-                user = UserModel.objects.get(
-                    **{
-                        filter_key: request.data[field.name],
-                    }
-                )
+                user = UserModel.objects.get(**{filter_key: request.data[field.name]})
                 break  # break as soon as a unique user is found
             except (
                 KeyError,
