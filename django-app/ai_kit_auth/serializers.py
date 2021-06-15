@@ -7,6 +7,7 @@ from django.contrib.auth.password_validation import (
 )
 from django.conf import settings
 from django.core.exceptions import ValidationError as DjangoValidationError
+from django.db.models import EmailField
 from django.db.utils import IntegrityError
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError, ErrorDetail
@@ -38,15 +39,17 @@ class LoginSerializer(serializers.Serializer):
     def validate(self, attrs):
         ident = attrs.get("ident")
         password = attrs.get("password")
-        # if the ident is an email, we have to map it to a username
-        try:
-            ident = UserModel.objects.get(
-                **{
-                    f"{UserModel.get_email_field_name()}__iexact": ident,
-                }
-            ).get_username()
-        except UserModel.DoesNotExist:
-            pass
+        # find a unique identity
+        for field_name in api_settings.USER_IDENTITY_FIELDS:
+            field = UserModel._meta.get_field(field_name)
+            filter_key = field.name
+            if isinstance(field, EmailField):
+                filter_key += "__iexact"
+            try:
+                ident = UserModel.objects.get(**{filter_key: ident}).get_username()
+            except (UserModel.DoesNotExist, UserModel.MultipleObjectsReturned):
+                continue
+            break
 
         user = authenticate(self.context["request"], username=ident, password=password)
 
@@ -87,7 +90,7 @@ class ValidatePasswordSerializer(serializers.Serializer):
             try:
                 pk = services.scramble_id(ident)
                 user = UserModel.objects.get(pk=pk)
-            except UserModel.DoesNotExist:
+            except (UserModel.DoesNotExist, UserModel.MultipleObjectsReturned):
                 # if anything goes wrong, we error out
                 raise_validation("unknown_user")
         else:
@@ -175,12 +178,15 @@ class RegistrationSerializer(serializers.Serializer):
                 }
             )
 
-        # make sure email is unique
-        if UserModel.objects.filter(
-            **{UserModel.get_email_field_name(): email}
-        ).exists():
-            code = "email_unique"
-            raise ValidationError({"email": [ErrorDetail(code, code=code)]})
+        # make sure identity is unique
+        for field_name in api_settings.USER_IDENTITY_FIELDS:
+            field = UserModel._meta.get_field(field_name)
+            filter_key = field.name
+            if isinstance(field, EmailField):
+                filter_key += "__iexact"
+            if UserModel.objects.filter(**{filter_key: attrs[field_name]}).exists():
+                code = f"{field.name}_unique"
+                raise ValidationError({field.name: [ErrorDetail(code, code=code)]})
 
         user_data = {
             UserModel.USERNAME_FIELD: username,

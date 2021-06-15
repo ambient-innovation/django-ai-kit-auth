@@ -1,4 +1,5 @@
 from django.contrib.auth import login, logout, get_user_model, tokens
+from django.db.models import EmailField
 from rest_framework import status, generics, views
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -142,14 +143,15 @@ class ActivateUser(views.APIView):
             token = request.data["token"]
             pk = services.scramble_id(ident)
             user = UserModel.objects.get(pk=pk)
-            assert tokens.PasswordResetTokenGenerator().check_token(user, token)
+            if not tokens.PasswordResetTokenGenerator().check_token(user, token):
+                raise ValueError
         except (
             KeyError,
             TypeError,
             ValueError,
             OverflowError,
-            AssertionError,
             UserModel.DoesNotExist,
+            UserModel.MultipleObjectsReturned,
         ):
             return Response(
                 {"error": "activation_link_invalid"}, status=status.HTTP_400_BAD_REQUEST
@@ -166,19 +168,32 @@ class InitiatePasswordResetView(views.APIView):
     permission_classes = (AllowAny,)
 
     def post(self, request, *args, **kwargs):
-        try:
-            user = UserModel.objects.get(
-                **{
-                    f"{UserModel.get_email_field_name()}__iexact": request.data[
-                        "email"
-                    ],
-                }
-            )
+        # Find user by identity field
+        user = None
+        for field_name in api_settings.USER_IDENTITY_FIELDS:
+            field = UserModel._meta.get_field(field_name)
+            filter_key = field.name
+            if isinstance(field, EmailField):
+                filter_key += "__iexact"
+            try:
+                user = UserModel.objects.get(
+                    **{
+                        filter_key: request.data[field.name],
+                    }
+                )
+                break  # break as soon as a unique user is found
+            except (
+                KeyError,
+                UserModel.DoesNotExist,
+                UserModel.MultipleObjectsReturned,
+            ):
+                pass
+
+        if user:
             user_pre_forgot_password.send(sender=InitiatePasswordResetView, user=user)
             services.send_reset_pw_mail(user)
             user_post_forgot_password.send(sender=InitiatePasswordResetView, user=user)
-        except (KeyError, UserModel.DoesNotExist):
-            pass
+
         # always return OK
         return Response(status=status.HTTP_200_OK)
 
@@ -201,13 +216,13 @@ class ResetPassword(views.APIView):
             # we need a valid session to reset the password
             pk = services.scramble_id(ident)
             user = UserModel.objects.get(pk=pk)
-            assert tokens.PasswordResetTokenGenerator().check_token(user, token)
+            if not tokens.PasswordResetTokenGenerator().check_token(user, token):
+                raise ValueError
         except (
             KeyError,
             TypeError,
             ValueError,
             OverflowError,
-            AssertionError,
             UserModel.DoesNotExist,
         ):
             # if anything goes wrong, we error out
