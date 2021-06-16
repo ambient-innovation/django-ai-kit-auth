@@ -62,6 +62,9 @@ the either one must contain `BREAKING CHANGE:` with a following description
 of what is changing. `body` and `footer` are not required if the type is not
 `fix` or `feat`.
 
+**Please do not squash commits, as the original commit messages are important for
+determining the next version for django and react libraries!**
+
 ## Local Development & Demo
 
 Use the included demo project to test and add new features to the library.
