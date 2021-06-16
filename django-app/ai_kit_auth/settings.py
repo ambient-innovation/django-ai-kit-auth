@@ -80,7 +80,6 @@ DEFAULTS = {
     ),
     "USERNAME_REQUIRED": False,
     "USER_SERIALIZER": "ai_kit_auth.serializers.UserSerializer",
-    "USER_IDENTITY_FIELDS": ("email", "username"),
     "FRONTEND": {
         "URL": "",
         "ACTIVATION_ROUTE": "/auth/activation/",

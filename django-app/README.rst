@@ -185,10 +185,6 @@ default. Default configurations are:
         # image, user role etc.
         # The default USER_SERIALIZER contains id, email and username.
         "USER_SERIALIZER": "ai_kit_auth.serializers.UserSerializer",
-        # The user model fields which are used to identify a user.
-        # They are iterated over in the given order to find a user from the "ident" parameter
-        # provided to the views.
-        "USER_IDENTITY_FIELDS": ("email", "username"),
         # information about the frontend, mostly the used routes. In most cases
         # the defaults are fine, but can be changed for localisation of the
         # urls.

@@ -244,16 +244,6 @@ class ActivateEmailTests(AuthTestCase):
         user.refresh_from_db()
         self.assertTrue(user.is_active)
 
-    def test_activate_user_with_invalid_token_fails(self):
-        user = baker.make(UserModel, is_active=False, email="to@example.com")
-        ident = str(services.scramble_id(user.pk))
-        token = "INVALID"
-
-        response = self.client.post(
-            activate_url, {"ident": ident, "token": token}, format="json"
-        )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
     def test_activate_user_fails_when_user_was_deactivated(self):
         user = baker.make(UserModel, is_active=True, email="to@example.com")
         ident, token = services.get_activation_url(user).split("/")[-2:]
