@@ -7,6 +7,10 @@ describe('Register new user', function () {
   const email = `${username}@example.com`;
 
   const register = (username, email, password) => {
+    cy.get('input[id="register_username"]')
+      .type(username)
+      .should('have.value', username);
+
     cy.get('input[id="register_email"]')
       .type(email)
       .should('have.value', email);
