@@ -7,7 +7,8 @@
   "users": {
     "default": {
       "username": "testuser",
-      "password": "testuserpassword"
+      "password": "testuserpassword",
+      "email": "user@example.com"
     },
     "root": {
       "username": "root",

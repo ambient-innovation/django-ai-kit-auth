@@ -12,11 +12,11 @@ describe('Login with E-Mail and password', function () {
   const mainPage = '/';
   const loginPage = '/auth/login';
   const login = (user) => {
-    const {username, password} = Cypress.config().users[user];
+    const {password, email} = Cypress.config().users[user];
 
     cy.get('input[id="login_userIdentifier"]')
-      .type(username)
-      .should('have.value', username);
+      .type(email)
+      .should('have.value', email);
 
     cy.get('input[id="login_password"]')
       .type(password)
