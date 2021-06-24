@@ -21,7 +21,7 @@ the instructions for your operating system before you continue.
 
 ### Automatic Setup
 
-Navigate to the `demo` folder and execute
+Navigate to the `examples/reaect-router` folder and execute
 
     bash setup_demo_project.sh
 
@@ -41,13 +41,13 @@ To do so, navigate to the `react-lib` folder and execute the following:
 
 #### Build Docker Container
 
-Navigate to the `demo` folder and execute
+Navigate to the `examples/react-router` folder and execute
 
     docker-compose build
 
 #### Deploy Docker Containers
 
-Navigate to the `demo` folder and execute
+Navigate to the `examples/react-router` folder and execute
 
     docker-compose up -d
     
@@ -85,7 +85,7 @@ Further, we included a separate post test in the demo, which can be triggered vi
 button. If you activate the developer's tools, you will see a response containing the string
 `'it works'`.
 
-In order to demonstate redirection after login, visit `localhost:3000/fallback` while logged out.
+In order to demonstrate redirection after login, visit `localhost:3000/fallback` while logged out.
 Then enter valid credentials in the opened login page and check the browser URL after login.
 
 The admin page is available on `localhost:8000/admin`. Here you can only login as user `root`.
