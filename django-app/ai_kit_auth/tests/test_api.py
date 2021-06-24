@@ -309,7 +309,7 @@ class ActivateEmailTests(AuthTestCase):
 
 class ResetPWTests(AuthTestCase):
     def test_init_password_reset(self):
-        response = self.client.post(send_pw_reset_email_url, {"email": self.user.email})
+        response = self.client.post(send_pw_reset_email_url, {"ident": self.user.email})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     @patch("ai_kit_auth.views.services.send_reset_pw_mail")
@@ -327,7 +327,7 @@ class ResetPWTests(AuthTestCase):
         user_pre_forgot_password.connect(receiver_pre)
         user_post_forgot_password.connect(receiver_post)
 
-        response = self.client.post(send_pw_reset_email_url, {"email": self.user.email})
+        response = self.client.post(send_pw_reset_email_url, {"ident": self.user.email})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         user_pre_forgot_password.disconnect(receiver_pre)
@@ -338,7 +338,7 @@ class ResetPWTests(AuthTestCase):
 
     def test_init_password_reset_fail(self):
         response = self.client.post(
-            send_pw_reset_email_url, {"email": "invalid_email@example.com"}
+            send_pw_reset_email_url, {"ident": "invalid_email@example.com"}
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
