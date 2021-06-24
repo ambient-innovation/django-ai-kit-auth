@@ -62,9 +62,9 @@ export const validatePasswordAPI = (
 
 
 export const sendPWResetEmail = (
-  authPath: string, email: string, config: AxiosRequestConfig,
+  authPath: string, ident: string, config: AxiosRequestConfig,
 ) => camelCaseError(axios.post(
-  makeUrl(authPath, 'send_pw_reset_email/'), { email }, config,
+  makeUrl(authPath, 'send_pw_reset_email/'), { ident }, config,
 ));
 
 

@@ -136,9 +136,9 @@ export function makeGenericUserStore<U extends unknown = User>(
       input,
     ) => validatePasswordAPI(apiAuthPath, input, axiosRequestConfig).then(noop);
 
-    const requestPasswordReset: (email: string) => Promise<void> = (
-      email: string,
-    ) => sendPWResetEmail(apiAuthPath, email, axiosRequestConfig).then(noop);
+    const requestPasswordReset: (ident: string) => Promise<void> = (
+      ident: string,
+    ) => sendPWResetEmail(apiAuthPath, ident, axiosRequestConfig).then(noop);
 
     const resetPassword: (
       ident: string, token: string, password: string,
