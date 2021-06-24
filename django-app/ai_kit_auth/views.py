@@ -169,13 +169,14 @@ class InitiatePasswordResetView(views.APIView):
     def post(self, request, *args, **kwargs):
         # Find user by identity field
         user = None
+        ident = request.data["ident"]
         for field_name in api_settings.USER_IDENTITY_FIELDS:
             field = UserModel._meta.get_field(field_name)
             filter_key = field.name
             if isinstance(field, EmailField):
                 filter_key += "__iexact"
             try:
-                user = UserModel.objects.get(**{filter_key: request.data[field.name]})
+                user = UserModel.objects.get(**{filter_key: ident})
                 break  # break as soon as a unique user is found
             except (
                 KeyError,
