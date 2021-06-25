@@ -36,7 +36,7 @@ export const Dashboard: FC<DashboardProps> = ({ title }) => {
           {title || 'Dashboard AI-KIT: Auth Demo'}
         </Typography>
 
-        {!!user?.username ?? (
+        {!!user?.username && (
           <Typography
             align="center"
             variant="body1"
