@@ -21,7 +21,7 @@ the instructions for your operating system before you continue.
 
 ### Automatic Setup
 
-Navigate to the `examples/reaect-router` folder and execute
+Navigate to the `examples/react-router` folder and execute
 
     bash setup_demo_project.sh
 
