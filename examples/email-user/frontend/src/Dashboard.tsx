@@ -36,13 +36,15 @@ export const Dashboard: FC<DashboardProps> = ({ title }) => {
           {title || 'Dashboard AI-KIT: Auth Demo'}
         </Typography>
 
-        <Typography
-          align="center"
-          variant="body1"
-        >
-          { /* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */ }
-          {`User: ${user!.username}`}
-        </Typography>
+        {!!user?.username && (
+          <Typography
+            align="center"
+            variant="body1"
+          >
+            { /* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */ }
+            {`User: ${user?.username}`}
+          </Typography>
+        )}
 
         <Typography
           align="center"
