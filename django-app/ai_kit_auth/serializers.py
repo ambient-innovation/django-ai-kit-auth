@@ -157,8 +157,12 @@ class RegistrationSerializer(serializers.Serializer):
                 value = str(uuid.uuid4())
             return unicodedata.normalize("NFKC", value)
 
-        username = normalize(attrs.get("username"))
-        email = attrs["email"]
+        username = normalize(attrs.pop("username"))
+        email = attrs.pop("email")
+        attrs[UserModel.USERNAME_FIELD] = username
+        attrs[UserModel.get_email_field_name()] = email
+        attrs["is_active"] = False
+
         password = attrs["password"]
 
         password_serializer = ValidatePasswordSerializer(
@@ -187,19 +191,14 @@ class RegistrationSerializer(serializers.Serializer):
             if UserModel.objects.filter(**{filter_key: attrs[field_name]}).exists():
                 code = f"{field.name}_unique"
                 raise ValidationError({field.name: [ErrorDetail(code, code=code)]})
+        return attrs
 
-        user_data = {
-            UserModel.USERNAME_FIELD: username,
-            UserModel.get_email_field_name(): email,
-            "is_active": False,
-        }
+    def create(self, validated_data):
         try:
-            user = UserModel(**user_data)
-            user.set_password(password)
-            user.save()
+            user = UserModel.objects.create_user(**validated_data)
             user_post_registered.send(sender=RegistrationSerializer, user=user)
         except IntegrityError:
             code = "username_unique"
             raise ValidationError({"username": [ErrorDetail(code, code=code)]})
         services.send_user_activation_mail(user)
-        return attrs
+        return user

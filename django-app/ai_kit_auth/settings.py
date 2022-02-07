@@ -80,6 +80,7 @@ DEFAULTS = {
     ),
     "USERNAME_REQUIRED": False,
     "USER_SERIALIZER": "ai_kit_auth.serializers.UserSerializer",
+    "REGISTRATION_SERIALIZER": "ai_kit_auth.serializers.RegistrationSerializer",
     "USER_IDENTITY_FIELDS": ("email", "username"),
     "FRONTEND": {
         "URL": "",
@@ -132,6 +133,7 @@ class APISettings:
             attr
             in [
                 "USER_SERIALIZER",
+                "REGISTRATION_SERIALIZER",
                 "CUSTOM_DATA_FUNCTION",
                 "SEND_USER_ACTIVATION_MAIL",
                 "SEND_ACTIVATION_BY_ADMIN_MAIL",

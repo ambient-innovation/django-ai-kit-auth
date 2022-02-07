@@ -412,6 +412,7 @@ class RegisterTests(AuthTestCase):
             {
                 "username": "testuser",
                 "email": "testuser@example.com",
+                "last_name": "last name",
                 "password": PASSWORD,
             },
             format="json",
@@ -420,8 +421,7 @@ class RegisterTests(AuthTestCase):
         user = UserModel.objects.get(email="testuser@example.com")
         self.assertEqual(user.username, "testuser")
         self.assertFalse(user.is_active)
-        # Make sure that password is not stored in plain text
-        self.assertNotEqual(user.password, PASSWORD)
+        self.assertTrue(user.check_password(PASSWORD))
 
     def test_register_user_emits_signals(self):
         received = Mock()
@@ -444,6 +444,7 @@ class RegisterTests(AuthTestCase):
             {
                 "username": "testuser_emit_signals",
                 "email": "testuser_emit_signals@example.com",
+                "last_name": "last name",
                 "password": PASSWORD,
             },
             format="json",
@@ -459,6 +460,7 @@ class RegisterTests(AuthTestCase):
             register_url,
             {
                 "username": self.user.username,
+                "last_name": "last name",
                 "email": "testuser@example.de",
                 "password": PASSWORD,
             },
@@ -472,6 +474,7 @@ class RegisterTests(AuthTestCase):
             register_url,
             {
                 "username": "testuser",
+                "last_name": "last name",
                 "email": self.user.email,
                 "password": PASSWORD,
             },
@@ -485,6 +488,7 @@ class RegisterTests(AuthTestCase):
             register_url,
             {
                 "username": "testuser",
+                "last_name": "last name",
                 "email": "testuser@example.com",
                 "password": "short",
             },
@@ -496,7 +500,7 @@ class RegisterTests(AuthTestCase):
     def test_register_blank_username_when_not_required(self):
         response = self.client.post(
             register_url,
-            {"username": "", "email": "a@example.com", "password": PASSWORD},
+            {"username": "", "email": "a@example.com", "password": PASSWORD, "last_name": "last name"},
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -504,16 +508,25 @@ class RegisterTests(AuthTestCase):
     def test_register_required_email_error(self):
         response = self.client.post(
             register_url,
-            {"username": "username123", "password": PASSWORD},
+            {"username": "username123", "password": PASSWORD, "last_name": "last name"},
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(str(response.data["email"][0]), "required")
 
+    def test_register_required_custom_field_error(self):
+        response = self.client.post(
+            register_url,
+            {"username": "username123", "password": PASSWORD, "email": "a@example.com"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(str(response.data["last_name"][0]), "required")
+
     def test_register_blank_email_error(self):
         response = self.client.post(
             register_url,
-            {"username": "username123", "email": "", "password": PASSWORD},
+            {"username": "username123", "email": "", "password": PASSWORD, "last_name": "last name"},
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -524,6 +537,7 @@ class RegisterTests(AuthTestCase):
             register_url,
             {
                 "username": "newuser42",
+                "last_name": "last name",
                 "email": "lasjdvh@example.com",
                 "password": "b3dkjA3",
             },
