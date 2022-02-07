@@ -105,12 +105,13 @@ class RegistrationView(generics.GenericAPIView):
 
     permission_classes = (AllowAny,)
 
-    serializer_class = serializers.RegistrationSerializer
+    serializer_class = api_settings.REGISTRATION_SERIALIZER
 
     def post(self, request, *args, **kwargs):
         user_pre_registered.send(sender=RegistrationView, user_data=request.data)
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
+        serializer.save()
         return Response({}, status=status.HTTP_201_CREATED)
 
 
