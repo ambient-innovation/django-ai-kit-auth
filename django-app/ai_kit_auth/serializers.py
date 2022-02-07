@@ -192,11 +192,10 @@ class RegistrationSerializer(serializers.Serializer):
             UserModel.USERNAME_FIELD: username,
             UserModel.get_email_field_name(): email,
             "is_active": False,
+            "password": password,
         }
         try:
-            user = UserModel(**user_data)
-            user.set_password(password)
-            user.save()
+            user = UserModel.objects.create_user(**user_data)
             user_post_registered.send(sender=RegistrationSerializer, user=user)
         except IntegrityError:
             code = "username_unique"

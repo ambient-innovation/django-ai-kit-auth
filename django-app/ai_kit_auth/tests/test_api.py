@@ -420,8 +420,7 @@ class RegisterTests(AuthTestCase):
         user = UserModel.objects.get(email="testuser@example.com")
         self.assertEqual(user.username, "testuser")
         self.assertFalse(user.is_active)
-        # Make sure that password is not stored in plain text
-        self.assertNotEqual(user.password, PASSWORD)
+        self.assertTrue(user.check_password(PASSWORD))
 
     def test_register_user_emits_signals(self):
         received = Mock()
