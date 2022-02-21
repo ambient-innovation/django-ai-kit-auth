@@ -33,7 +33,7 @@
   "dependencies": {
     "axios": "^0.21.1",
     "camelcase-keys": "^6.2.2",
-    "use-debounce": "^3.4.0"
+    "use-debounce": "^7.0.1"
   },
   "peerDependencies": {
     "@material-ui/core": "^4.9.0",
