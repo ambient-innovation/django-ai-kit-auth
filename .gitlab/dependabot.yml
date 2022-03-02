@@ -6,3 +6,13 @@ updates:
     directory: "/react-lib"
     schedule:
       interval: "daily"
+    reviewers:
+      - edward.lecock
+      - ronny.vedrilla
+  - package-ecosystem: "pip"
+    directory: "/django-app"
+    schedule:
+      interval: "daily"
+    reviewers:
+      - edward.lecock
+      - ronny.vedrilla
