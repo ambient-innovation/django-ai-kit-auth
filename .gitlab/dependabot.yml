@@ -12,5 +12,4 @@ updates:
     schedule:
       interval: "daily"
     reviewers:
-      - edward.lecock
-      - ronny.vedrilla
+      - matthias.tellen
