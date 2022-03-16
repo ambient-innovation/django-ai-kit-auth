@@ -6,7 +6,6 @@ updates:
       interval: "daily"
     reviewers:
       - edward.lecock
-      - ronny.vedrilla
   - package-ecosystem: "pip"
     directory: "/django-app"
     schedule:
