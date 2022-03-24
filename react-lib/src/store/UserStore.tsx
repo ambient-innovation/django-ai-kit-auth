@@ -2,7 +2,7 @@ import React, {
   Context,
   createContext, FC, useContext, useEffect, useMemo, useState,
 } from 'react';
-import axios from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 import { PasswordValidationInput, User } from '../api/types';
 import {
   activateEmailAddressAPI,
@@ -73,15 +73,12 @@ export function makeGenericUserStore<U extends unknown = User>(
     const [user, setUser] = useState<U|null>(initialUser ?? null);
     const [csrf, setCsrf] = useState(initialCsrf ?? '');
 
-    const axiosRequestConfig = useMemo(() => ({
+    const axiosRequestConfig = useMemo((): AxiosRequestConfig => ({
       withCredentials: true,
       baseURL: apiUrl,
       headers: {
-        ...axios.defaults.headers,
-        common: {
-          ...axios.defaults.headers.common,
-          'X-CSRFToken': csrf,
-        },
+        ...axios.defaults.headers.common,
+        'X-CSRFToken': csrf,
       },
     }), [csrf]);
 
@@ -203,7 +200,7 @@ export function makeGenericUserStore<U extends unknown = User>(
             csrf: '1234',
             axiosRequestConfig: {
               headers: {
-                common: { 'X-CSRFToken': context?.csrf ?? '1234' },
+                'X-CSRFToken': context?.csrf ?? '1234',
               },
             },
             loading: false,
