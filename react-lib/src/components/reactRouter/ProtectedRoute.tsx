@@ -2,7 +2,8 @@ import React, { FC, useContext } from 'react';
 import {
   Redirect, Route, RouteProps, useLocation,
 } from 'react-router-dom';
-import { AuthFunctionContext, FullConfig } from '../..';
+import { FullConfig } from '../../config/components';
+import { AuthFunctionContext } from '../../store/UserStore';
 
 export type MakeProtectedRouteResult = FC<RouteProps>;
 

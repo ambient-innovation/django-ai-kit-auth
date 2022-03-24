@@ -1,12 +1,12 @@
 import * as React from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { render, fireEvent, waitForElement } from '@testing-library/react';
+import { render, fireEvent, waitFor } from '@testing-library/react';
 import { makeRegisterForm } from '../Register';
 import { DeepPartial } from '../../util';
 import { en } from '../../internationalization';
 import { dontResolvePromise, makeGenericUserStore, MockUserStoreProps } from '../../store/UserStore';
-import { FullConfig, Identifier } from '../..';
 import { defaultApiConfig, getFullTestConfig, TestRoutingProps } from '../../tests/Helper';
+import { FullConfig, Identifier } from '../../config/components';
 
 const mockUser = ({
   username: 'Donald', email: 'donald@example.com', password: 'longpass',
@@ -115,7 +115,7 @@ test('on success, text is shown and form vanishes', async () => {
   register.mockReturnValue(Promise.resolve());
   const renderObject = renderFunction();
   fireEvent.submit(renderObject.getByRole('form'));
-  await waitForElement(() => renderObject.getByText(en('auth:RegisterForm.SuccessText')));
+  await waitFor(() => expect(renderObject.getByText(en('auth:RegisterForm.SuccessText'))).toBeInTheDocument());
   expect(renderObject.getByText(en('auth:RegisterForm.SuccessTitle'))).toBeInTheDocument();
   expect(() => renderObject.getByRole('form')).toThrowError();
 });
@@ -133,8 +133,8 @@ test('error in username field', async () => {
   }));
   const renderObject = renderFunction();
   fireEvent.submit(renderObject.getByRole('form'));
-  await waitForElement(
-    () => renderObject.getByText(en('auth:Common.FieldErrors.blank')),
+  await waitFor(
+    () => expect(renderObject.getByText(en('auth:Common.FieldErrors.blank'))).toBeInTheDocument(),
   );
   fireEvent.change(
     renderObject.getByLabelText(en('auth:RegisterForm.Username')),
@@ -156,8 +156,8 @@ test('error in email field', async () => {
   }));
   const renderObject = renderFunction();
   fireEvent.submit(renderObject.getByRole('form'));
-  await waitForElement(
-    () => renderObject.getByText(en('auth:Common.FieldErrors.blank')),
+  await waitFor(
+    () => expect(renderObject.getByText(en('auth:Common.FieldErrors.blank'))).toBeInTheDocument(),
   );
   fireEvent.change(
     renderObject.getByLabelText(en('auth:RegisterForm.Email')),
@@ -180,8 +180,8 @@ test('error in password field', async () => {
   }));
   const renderObject = renderFunction();
   fireEvent.submit(renderObject.getByRole('form'));
-  await waitForElement(
-    () => renderObject.getByText(en('auth:Common.FieldErrors.blank')),
+  await waitFor(
+    () => expect(renderObject.getByText(en('auth:Common.FieldErrors.blank'))).toBeInTheDocument(),
   );
 });
 
@@ -203,7 +203,7 @@ test('error in password while typing', async () => {
     renderObject.getByLabelText(en('auth:RegisterForm.Password')),
     { target: { value: '123' } },
   );
-  await waitForElement(() => renderObject.getByText(en('auth:Common.FieldErrors.password_too_short')));
+  await waitFor(() => expect(renderObject.getByText(en('auth:Common.FieldErrors.password_too_short'))).toBeInTheDocument());
 });
 
 // eslint-disable-next-line jest/expect-expect
@@ -220,10 +220,10 @@ test('show general error', async () => {
   }));
   const renderObject = renderFunction();
   fireEvent.submit(renderObject.getByRole('form'));
-  await waitForElement(
-    () => renderObject.getByText(
+  await waitFor(
+    () => expect(renderObject.getByText(
       en('auth:RegisterForm.NonFieldErrors.general'),
-    ),
+    )).toBeInTheDocument(),
   );
 });
 

@@ -1,15 +1,12 @@
 import * as React from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { render, fireEvent } from '@testing-library/react';
-import {
-  makeGenericUserStore,
-  MockUserStoreProps,
-  FullConfig,
-} from '../..';
 import { makeForgotPasswordForm } from '../ForgotPassword';
 import { en } from '../../internationalization';
 import { defaultApiConfig, getFullTestConfig, TestRoutingProps } from '../../tests/Helper';
 import { DeepPartial } from '../../util';
+import { makeGenericUserStore, MockUserStoreProps } from '../../store/UserStore';
+import { FullConfig } from '../../config/components';
 
 const mockEmail = 'mock@example.com';
 

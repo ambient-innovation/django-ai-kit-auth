@@ -7,8 +7,7 @@ import { createMemoryHistory } from 'history';
 import { User } from '../../../api/types';
 import { defaultApiConfig, getFullTestConfig, TestRoutingProps } from '../../../tests/Helper';
 import { makeLoginRoute } from '../LoginRoute';
-import { makeGenericUserStore, MockUserStoreProps } from '../../..';
-import { noop } from '../../../store/UserStore';
+import { makeGenericUserStore, MockUserStoreProps, noop } from '../../../store/UserStore';
 
 const mockUser: User = ({
   id: 42, username: 'Donald', email: 'donald@example.com',

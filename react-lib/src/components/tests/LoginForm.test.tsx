@@ -1,15 +1,14 @@
 import * as React from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { render, fireEvent, waitForElement } from '@testing-library/react';
+import { render, fireEvent, waitFor } from '@testing-library/react';
 import { makeLoginForm } from '../LoginForm';
 import { User } from '../../api/types';
 import { LogoutReason } from '../../store/types';
 import { en } from '../../internationalization';
-import {
-  makeGenericUserStore, MockUserStoreProps, FullConfig, Identifier,
-} from '../..';
 import { DeepPartial } from '../../util';
 import { defaultApiConfig, getFullTestConfig, TestRoutingProps } from '../../tests/Helper';
+import { makeGenericUserStore, MockUserStoreProps } from '../../store/UserStore';
+import { FullConfig, Identifier } from '../../config/components';
 
 const mockUser: User = ({
   id: 42, username: 'Donald', email: 'donald@example.com',
@@ -81,8 +80,8 @@ test('error in identifier field', async () => {
   }));
   const renderObject = renderComponent();
   fireEvent.submit(renderObject.getByRole('form'));
-  await waitForElement(
-    () => renderObject.getByText(en('auth:Common.FieldErrors.blank')),
+  await waitFor(
+    () => expect(renderObject.getByText(en('auth:Common.FieldErrors.blank'))).toBeInTheDocument(),
   );
 });
 
@@ -100,8 +99,8 @@ test('error in password field', async () => {
   }));
   const renderObject = renderComponent();
   fireEvent.submit(renderObject.getByRole('form'));
-  await waitForElement(
-    () => renderObject.getByText(en('auth:Common.FieldErrors.blank')),
+  await waitFor(
+    () => expect(renderObject.getByText(en('auth:Common.FieldErrors.blank'))).toBeInTheDocument(),
   );
 });
 
@@ -119,10 +118,10 @@ test('show general error', async () => {
   }));
   const renderObject = renderComponent();
   fireEvent.submit(renderObject.getByRole('form'));
-  await waitForElement(
-    () => renderObject.getByText(
+  await waitFor(
+    () => expect(renderObject.getByText(
       en('auth:Common.NonFieldErrors.invalid_credentials.UsernameOrEmail'),
-    ),
+    )).toBeInTheDocument(),
   );
 });
 

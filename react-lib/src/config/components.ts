@@ -4,7 +4,6 @@ import { en, Translator } from '../internationalization';
 import { DefaultBackgroundImage } from '../assets/DefaultBackgroundImage';
 import { User } from '../api/types';
 import { DeepPartial, mergeConfig } from '../util';
-import { AuthFunctionContext, makeGenericUserStore } from '..';
 import { makeLoginForm, MakeLoginFormResult } from '../components/LoginForm';
 import { makeRegisterForm, MakeRegisterFormResult } from '../components/Register';
 import { makeForgotPasswordForm, MakeForgotPasswordFormResult } from '../components/ForgotPassword';
@@ -15,7 +14,9 @@ import {
   AuthView, AuthViewProps, ErrorView, ErrorViewProps,
 } from '../components/AuthView';
 import { ErrorCard, ErrorCardProps } from '../components/ErrorCard';
-import { ApiConfig, MakeGenericUserStoreResult } from '../store/UserStore';
+import {
+  ApiConfig, AuthFunctionContext, makeGenericUserStore, MakeGenericUserStoreResult,
+} from '../store/UserStore';
 import { AuthFunctionContextValue } from '../store/types';
 import LoadingIndicator from '../components/LoadingIndicator';
 

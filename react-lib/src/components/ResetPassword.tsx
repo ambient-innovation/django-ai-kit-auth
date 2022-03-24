@@ -6,12 +6,13 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import { useDebouncedCallback } from 'use-debounce';
-import { AuthFunctionContext, FullConfig } from '..';
 import { AuthView } from './AuthView';
 import { PasswordField } from './common/PasswordField';
 import { ErrorMessage } from '../api/types';
 import { TranslatorProps } from '../internationalization';
 import { useFormStyles } from './common/styles';
+import {FullConfig} from '../config/components';
+import {AuthFunctionContext} from '../store/UserStore';
 
 enum SuccessState {
   INITIAL,

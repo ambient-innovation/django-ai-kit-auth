@@ -8,7 +8,7 @@ import { AuthView } from './AuthView';
 import { MailSvg } from '../assets/MailSvg';
 import { TranslatorProps } from '../internationalization';
 import { useFormStyles } from './common/styles';
-import { FullConfig } from '..';
+import { FullConfig } from '../config/components';
 
 const useStyles = makeStyles(createStyles({
   CheckIcon: {

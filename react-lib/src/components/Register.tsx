@@ -9,12 +9,13 @@ import React, { FC, useContext, useState } from 'react';
 import { AxiosError } from 'axios';
 import { useDebouncedCallback } from 'use-debounce';
 
-import { AuthFunctionContext, FullConfig, Identifier } from '..';
 import { AuthView } from './AuthView';
 import { ErrorMessage } from '../api/types';
 import { PasswordField } from './common/PasswordField';
 import { TranslatorProps } from '../internationalization';
 import { useFormStyles } from './common/styles';
+import { FullConfig, Identifier } from '../config/components';
+import { AuthFunctionContext } from '../store/UserStore';
 
 const useStyles = makeStyles(createStyles({
   linkUnderPaper: {
