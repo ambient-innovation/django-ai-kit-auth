@@ -11,8 +11,8 @@ import { PasswordField } from './common/PasswordField';
 import { ErrorMessage } from '../api/types';
 import { TranslatorProps } from '../internationalization';
 import { useFormStyles } from './common/styles';
-import {FullConfig} from '../config/components';
-import {AuthFunctionContext} from '../store/UserStore';
+import { FullConfig } from '../config/components';
+import { AuthFunctionContext } from '../store/UserStore';
 
 enum SuccessState {
   INITIAL,

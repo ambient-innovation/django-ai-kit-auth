@@ -1,5 +1,5 @@
 # base image
-FROM node:12.14
+FROM node:15.14
 
 ENV CI true
 
@@ -14,17 +14,20 @@ COPY examples/email-user/frontend/package*.json ./
 COPY react-lib /react-lib
 
 RUN echo "installing npm packages" && \
-    npm ci && \
+    yarn install --pure-lockfile && \
+    cd node_modules/react && yarn link && cd - && \
+    cd node_modules/react-router-dom && yarn link && cd - && \
+    cd node_modules/@material-ui/styles && yarn link && cd - && \
     cd /react-lib && \
     echo "build ai-kit-auth package" && \
-    npm ci && \
-    npm link /examples/email-user/frontend/node_modules/react && \
-    npm link /examples/email-user/frontend/node_modules/react-router-dom && \
-    npm link /examples/email-user/frontend/node_modules/@material-ui/styles && \
-    npm run build && \
-    npm link && \
+    yarn install --pure-lockfile && \
+    yarn link react && \
+    yarn link react-router-dom && \
+    yarn link @material-ui/styles && \
+    yarn build && \
+    yarn link && \
     cd - && \
-    npm link ai-kit-auth
+    yarn link ai-kit-auth
 
 COPY examples/email-user/frontend .
 
@@ -37,8 +40,8 @@ ARG app_env
 # Install node server and build code if production
 RUN if [ "${app_env}" = production ]; \
 	then \
-	npm install --global serve && \
-	npm run build --production; \
+	yarn global add serve && \
+	yarn build --production; \
 	fi
 
 EXPOSE 3000

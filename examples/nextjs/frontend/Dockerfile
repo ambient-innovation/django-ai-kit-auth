@@ -15,7 +15,7 @@ COPY react-lib /react-lib
 
 RUN echo "installing npm packages" && \
     yarn install --pure-lockfile && \
-    cd node_modules/react && yarn link && \
+    cd node_modules/react && yarn link && cd - && \
     cd /react-lib && \
     echo "build ai-kit-auth package" && \
     yarn install --pure-lockfile && \
