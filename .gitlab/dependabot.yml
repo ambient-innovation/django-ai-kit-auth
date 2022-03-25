@@ -4,6 +4,9 @@ updates:
     directory: "/react-lib"
     schedule:
       interval: "weekly"
+    commit-message:
+      prefix: "fix(react):"
+      prefix-development: "chore(react):"
     reviewers:
       - edward.lecock
     assignees:
@@ -12,6 +15,9 @@ updates:
     directory: "/django-app"
     schedule:
       interval: "weekly"
+    commit-message:
+      prefix: "fix(django):"
+      prefix-development: "chore(django):"
     reviewers:
       - matthias.tellen
     assignees:
@@ -20,6 +26,8 @@ updates:
     directory: "/examples/email-user/frontend"
     schedule:
       interval: "weekly"
+    commit-message:
+      prefix: "chore(example/email-user):"
     reviewers:
       - edward.lecock
     assignees:
@@ -28,6 +36,8 @@ updates:
     directory: "/examples/email-user/backend"
     schedule:
       interval: "weekly"
+    commit-message:
+      prefix: "chore(example/email-user):"
     reviewers:
       - matthias.tellen
     assignees:
@@ -36,6 +46,8 @@ updates:
     directory: "/examples/nextjs/frontend"
     schedule:
       interval: "weekly"
+    commit-message:
+      prefix: "chore(example/nextjs):"
     reviewers:
       - edward.lecock
     assignees:
@@ -44,6 +56,8 @@ updates:
     directory: "/examples/nextjs/backend"
     schedule:
       interval: "weekly"
+    commit-message:
+      prefix: "chore(example/nextjs):"
     reviewers:
       - matthias.tellen
     assignees:
@@ -52,6 +66,8 @@ updates:
     directory: "/examples/react-router/frontend"
     schedule:
       interval: "weekly"
+    commit-message:
+      prefix: "chore(example/react-router):"
     reviewers:
       - edward.lecock
     assignees:
@@ -60,6 +76,8 @@ updates:
     directory: "/examples/react-router/backend"
     schedule:
       interval: "weekly"
+    commit-message:
+      prefix: "chore(example/react-router):"
     reviewers:
       - matthias.tellen
     assignees:
