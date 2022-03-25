@@ -37,7 +37,7 @@ ARG app_env
 RUN if [ "${app_env}" = production ]; \
 	then \
 	yarn global add serve && \
-	yarn build --production; \
+	yarn build --profile; \
 	fi
 
 EXPOSE 3000
