@@ -97,11 +97,11 @@ unit-test-react:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     # https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#using-docker-caching
     - docker pull $CI_REGISTRY_IMAGE/${EXAMPLE_DIR}/backend:develop || true
-    - docker build \
-      --cache-from $CI_REGISTRY_IMAGE/${EXAMPLE_DIR}/backend:develop \
-      -t $IMAGE_TAG_BACKEND \
-      --build-arg DOCKER_IMAGE_PREFIX=${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/ \
-      --file ./examples/${EXAMPLE_DIR}/backend/Dockerfile \
+    - docker build
+      --cache-from $CI_REGISTRY_IMAGE/${EXAMPLE_DIR}/backend:develop
+      -t $IMAGE_TAG_BACKEND
+      --build-arg DOCKER_IMAGE_PREFIX=${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/
+      --file ./examples/${EXAMPLE_DIR}/backend/Dockerfile
       ./
     - docker push $IMAGE_TAG_BACKEND
 
@@ -118,12 +118,12 @@ unit-test-react:
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker pull $CI_REGISTRY_IMAGE/${EXAMPLE_DIR}/frontend:develop || true
-    - docker build \
-      --cache-from $CI_REGISTRY_IMAGE/${EXAMPLE_DIR}/frontend:develop \
-      -t $IMAGE_TAG_FRONTEND \
-      --build-arg app_env=production \
-      --build-arg DOCKER_IMAGE_PREFIX=${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/ \
-      --file ./examples/${EXAMPLE_DIR}/frontend/Dockerfile \
+    - docker build
+      --cache-from $CI_REGISTRY_IMAGE/${EXAMPLE_DIR}/frontend:develop
+      -t $IMAGE_TAG_FRONTEND
+      --build-arg app_env=production
+      --build-arg DOCKER_IMAGE_PREFIX=${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/
+      --file ./examples/${EXAMPLE_DIR}/frontend/Dockerfile
       ./
     - docker push $IMAGE_TAG_FRONTEND
 
