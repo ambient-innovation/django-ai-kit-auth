@@ -1,5 +1,4 @@
 import * as React from 'react';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { render, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { makeLoginForm } from '../LoginForm';
@@ -78,7 +77,7 @@ test('error in identifier field', () => {
   );
 
   return waitFor(() => {
-    expect(renderObject.getByText(en('auth:Common.FieldErrors.blank'))).toBeInTheDocument()
+    expect(renderObject.getByText(en('auth:Common.FieldErrors.blank'))).toBeInTheDocument();
   });
 });
 
