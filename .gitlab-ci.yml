@@ -174,7 +174,7 @@ build-next-frontend:
   <<: *next_environment
   <<: *build_frontend
 
-e2e-next-router:
+e2e-test-next-router:
   <<: *next_environment
   <<: *e2e
   dependencies:
@@ -188,8 +188,8 @@ deploy-react:
     - tags
   dependencies:
     - unit-test-react
-    - e2e-react-router
-    - e2e-next-router
+    - e2e-test-react-router
+    - e2e-test-next-router
   variables:
     GITLAB_URL: gitlab.ambient-innovation.com
   only:
@@ -210,8 +210,8 @@ deploy-django:
     - tags
   dependencies:
     - unit-test-django
-    - e2e-react-router
-    - e2e-next-router
+    - e2e-test-react-router
+    - e2e-test-next-router
   variables:
     PYPI_USERNAME: ambient-innovation
   only:
