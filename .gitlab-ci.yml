@@ -32,6 +32,10 @@ services:
 lint-django:
   image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/python:3.9-slim
   stage: lint
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}-django
+    paths:
+      - /root/.cache/pip/
   except:
     - tags
   tags:
@@ -44,6 +48,10 @@ lint-django:
 lint-react:
   image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/node:15
   stage: lint
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}-react
+    paths:
+      - /node-modules
   except:
     - tags
   tags:
@@ -56,6 +64,10 @@ lint-react:
 unit-test-django:
   image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/python:3.9-slim
   stage: test
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}-django
+    paths:
+      - /root/.cache/pip/
   except:
     - tags
   dependencies:
@@ -72,6 +84,10 @@ unit-test-django:
 unit-test-react:
   image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/node:15
   stage: test
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}-react
+    paths:
+      - /node-modules
   except:
     - tags
   dependencies:
