@@ -32,10 +32,6 @@ services:
 lint-django:
   image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/python:3.9-slim
   stage: lint
-  cache:
-    key: ${CI_COMMIT_REF_SLUG}-django
-    paths:
-      - /root/.cache/pip
   except:
     - tags
   tags:
@@ -43,16 +39,11 @@ lint-django:
   before_script:
     - pip install black
   script:
-    - pip cache dir
     - black --check $DJANGO/**/*.py --exclude .*/migrations/.*
 
 lint-react:
   image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/node:15
   stage: lint
-  cache:
-    key: ${CI_COMMIT_REF_SLUG}-react
-    paths:
-      - /usr/local/share/.cache/yarn/
   except:
     - tags
   tags:
@@ -60,16 +51,11 @@ lint-react:
   before_script:
     - yarn install --pure-lockfile --cwd $REACT
   script:
-    - yarn cache dir
     - yarn --cwd $REACT lint
 
 unit-test-django:
   image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/python:3.9-slim
   stage: test
-  cache:
-    key: ${CI_COMMIT_REF_SLUG}-django
-    paths:
-      - /root/.cache/pip/
   except:
     - tags
   dependencies:
@@ -86,10 +72,6 @@ unit-test-django:
 unit-test-react:
   image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/node:15
   stage: test
-  cache:
-    key: ${CI_COMMIT_REF_SLUG}-react
-    paths:
-      - /usr/local/share/.cache/yarn
   except:
     - tags
   dependencies:
