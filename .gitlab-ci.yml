@@ -9,7 +9,7 @@ variables:
 
 .next-environment: &next_environment
   variables:
-    EXAMPLE_DIR: next
+    EXAMPLE_DIR: nextjs
     IMAGE_TAG_BACKEND: $CI_REGISTRY_IMAGE/${EXAMPLE_DIR}/backend:$CI_COMMIT_REF_SLUG
     IMAGE_TAG_FRONTEND: $CI_REGISTRY_IMAGE/${EXAMPLE_DIR}/frontend:$CI_COMMIT_REF_SLUG
 
