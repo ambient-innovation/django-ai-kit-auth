@@ -35,7 +35,7 @@ lint-django:
   cache:
     key: ${CI_COMMIT_REF_SLUG}-django
     paths:
-      - /root/.cache/pip/
+      - /root/.cache/pip
   except:
     - tags
   tags:
@@ -52,7 +52,7 @@ lint-react:
   cache:
     key: ${CI_COMMIT_REF_SLUG}-react
     paths:
-      - /usr/local/share/.cache/yarn
+      - /usr/local/share/.cache/yarn/
   except:
     - tags
   tags:
