@@ -177,7 +177,7 @@ unit-test-react:
       -v ${PWD}/test-reports:/app/cypress/results
       --network="host"
       --ipc=host
-      ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/cypress/browsers:chrome69
+      ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/cypress/browsers:node14.7.0-chrome84
       bash -c "cd app && yarn install && yarn cypress run --browser chrome"
 
 build-react-router-backend:
