@@ -1,4 +1,5 @@
-FROM gitlab.ambient-innovation.com:443/ai/dependency_proxy/containers/python:3.7
+ARG DOCKER_IMAGE_PREFIX=""
+FROM ${DOCKER_IMAGE_PREFIX}python:3.7
 ENV PYTHONUNBUFFERED 1
 
 WORKDIR /examples/react-router/backend

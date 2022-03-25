@@ -1,4 +1,5 @@
-FROM gitlab.ambient-innovation.com:443/ai/dependency_proxy/containers/python:3.9
+ARG DOCKER_IMAGE_PREFIX=""
+FROM ${DOCKER_IMAGE_PREFIX}python:3.9
 ENV PYTHONUNBUFFERED 1
 
 WORKDIR /examples/email-user/backend

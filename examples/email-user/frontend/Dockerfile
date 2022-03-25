@@ -1,5 +1,5 @@
-# base image
-FROM gitlab.ambient-innovation.com:443/ai/dependency_proxy/containers/node:15.14
+ARG DOCKER_IMAGE_PREFIX=""
+FROM ${DOCKER_IMAGE_PREFIX}node:15.14
 
 ENV CI true
 
