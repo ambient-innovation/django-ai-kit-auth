@@ -61,7 +61,7 @@ export const sendPWResetEmail = (
   authPath: string, ident: string, config: AxiosRequestConfig,
 ): Promise<unknown> => camelCaseError(axios.post(
   makeUrl(authPath, 'send_pw_reset_email/'),
-  { email: ident }, // TODO rename email to ident in next major release
+  { ident },
   config,
 ));
 

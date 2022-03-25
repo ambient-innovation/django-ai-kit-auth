@@ -170,9 +170,7 @@ class InitiatePasswordResetView(views.APIView):
     def post(self, request, *args, **kwargs):
         # Find user by identity field
         user = None
-        ident = request.data[
-            "email"
-        ]  # TODO this should be renamed "ident" in the next major release
+        ident = request.data["ident"]
         for field_name in api_settings.USER_IDENTITY_FIELDS:
             field = UserModel._meta.get_field(field_name)
             filter_key = field.name
