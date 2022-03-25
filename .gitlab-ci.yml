@@ -4,12 +4,20 @@ variables:
   DOCKER_DRIVER: overlay2
   DJANGO: django-app
   REACT: react-lib
-  IMAGE_TAG_REACT_ROUTER_BACKEND: $CI_REGISTRY_IMAGE/react-router/backend:$CI_COMMIT_REF_SLUG
-  IMAGE_TAG_REACT_ROUTER_FRONTEND: $CI_REGISTRY_IMAGE/react-router/frontend:$CI_COMMIT_REF_SLUG
-  IMAGE_TAG_NEXT_BACKEND: $CI_REGISTRY_IMAGE/next/backend:$CI_COMMIT_REF_SLUG
-  IMAGE_TAG_NEXT_FRONTEND: $CI_REGISTRY_IMAGE/next/frontend:$CI_COMMIT_REF_SLUG
   DOCKER_HOST: tcp://localhost:2375
   DOCKER_API_VERSION: "1.39"
+
+.next-environment: &next_environment
+  variables:
+    EXAMPLE_DIR: next
+    IMAGE_TAG_BACKEND: $CI_REGISTRY_IMAGE/${EXAMPLE_DIR}/backend:$CI_COMMIT_REF_SLUG
+    IMAGE_TAG_FRONTEND: $CI_REGISTRY_IMAGE/${EXAMPLE_DIR}/frontend:$CI_COMMIT_REF_SLUG
+
+.react-router-environment: &react-router_environment
+  variables:
+    EXAMPLE_DIR: react-router
+    IMAGE_TAG_BACKEND: $CI_REGISTRY_IMAGE/${EXAMPLE_DIR}/backend:$CI_COMMIT_REF_SLUG
+    IMAGE_TAG_FRONTEND: $CI_REGISTRY_IMAGE/${EXAMPLE_DIR}/frontend:$CI_COMMIT_REF_SLUG
 
 stages:
   - lint
@@ -75,7 +83,7 @@ unit-test-react:
   script:
     - yarn --cwd $REACT test
 
-build-react-router-backend:
+.build-backend-template: &build_backend
   stage: build
   except:
     - tags
@@ -88,11 +96,11 @@ build-react-router-backend:
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     # https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#using-docker-caching
-    - docker pull $CI_REGISTRY_IMAGE/react-router/backend:develop || true
-    - docker build --cache-from $CI_REGISTRY_IMAGE/react-router/backend:develop -t $IMAGE_TAG_REACT_ROUTER_BACKEND --file ./examples/react-router/backend/Dockerfile ./
-    - docker push $IMAGE_TAG_REACT_ROUTER_BACKEND
+    - docker pull $CI_REGISTRY_IMAGE/${EXAMPLE_DIR}/backend:develop || true
+    - docker build --cache-from $CI_REGISTRY_IMAGE/${EXAMPLE_DIR}/backend:develop -t $IMAGE_TAG_BACKEND --file ./examples/${EXAMPLE_DIR}/backend/Dockerfile ./
+    - docker push $IMAGE_TAG_BACKEND
 
-build-react-router-frontend:
+.build-frontend-template: &build_frontend
   stage: build
   except:
     - tags
@@ -104,116 +112,74 @@ build-react-router-frontend:
     - docker login -u $CI_DEPENDENCY_PROXY_USER -p $CI_DEPENDENCY_PROXY_PASSWORD $CI_DEPENDENCY_PROXY_SERVER
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    - docker pull $CI_REGISTRY_IMAGE/react-router/frontend:develop || true
-    - docker build --cache-from $CI_REGISTRY_IMAGE/react-router/frontend:develop -t $IMAGE_TAG_REACT_ROUTER_FRONTEND --build-arg app_env=production --file ./examples/react-router/frontend/Dockerfile ./
-    - docker push $IMAGE_TAG_REACT_ROUTER_FRONTEND
+    - docker pull $CI_REGISTRY_IMAGE/${EXAMPLE_DIR}/frontend:develop || true
+    - docker build --cache-from $CI_REGISTRY_IMAGE/${EXAMPLE_DIR}/frontend:develop -t $IMAGE_TAG_FRONTEND --build-arg app_env=production --file ./examples/${EXAMPLE_DIR}/frontend/Dockerfile ./
+    - docker push $IMAGE_TAG_FRONTEND
 
-e2e-test-react-router:
+.e2e-template: &e2e
   stage: e2e
   except:
     - tags
+  tags:
+    - high-load
+  artifacts:
+    name: "$CI_JOB_STAGE-$CI_COMMIT_REF_NAME-screenshots"
+    expire_in: 1 week
+    when: always
+    paths:
+      - screenshots/
+      - videos/
+    reports:
+      junit: test-reports/reporter*.xml
+  before_script:
+    - docker login -u $CI_DEPENDENCY_PROXY_USER -p $CI_DEPENDENCY_PROXY_PASSWORD $CI_DEPENDENCY_PROXY_SERVER
+  script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker pull $IMAGE_TAG_FRONTEND
+    - docker run -d -p 3000:3000 $IMAGE_TAG_FRONTEND bash -c ./run.sh
+    - docker pull $IMAGE_TAG_BACKEND
+    - docker run -d -p 8000:8000 -e DJANGO_SESSION_COOKIE_SECURE=False -e DJANGO_CACHE_BACKEND=local $IMAGE_TAG_BACKEND ./run_backend.sh loadfixtures
+    - docker run --rm
+      -v ${PWD}/cypress/cypress:/app/cypress
+      -v ${PWD}/cypress/cypress.json:/app/cypress.json
+      -v ${PWD}/cypress/package.json:/app/package.json
+      -v ${PWD}/screenshots:/app/cypress/screenshots
+      -v ${PWD}/videos:/app/cypress/videos
+      -v ${PWD}/test-reports:/app/cypress/results
+      --network="host"
+      --ipc=host
+      ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/cypress/browsers:chrome69
+      bash -c "yarn install && cypress run --browser chrome"
+
+build-react-router-backend:
+  <<: *react-router_environment
+  <<: *build_backend
+
+build-react-router-frontend:
+  <<: *react-router_environment
+  <<: *build_frontend
+
+e2e-test-react-router:
+  <<: *react-router_environment
+  <<: *e2e
   dependencies:
     - build-react-router-backend
     - build-react-router-frontend
-  tags:
-    - high-load
-  artifacts:
-    name: "$CI_JOB_STAGE-$CI_COMMIT_REF_NAME-screenshots"
-    expire_in: 1 week
-    when: always
-    paths:
-      - screenshots/
-      - videos/
-    reports:
-      junit: test-reports/reporter*.xml
-  before_script:
-    - docker login -u $CI_DEPENDENCY_PROXY_USER -p $CI_DEPENDENCY_PROXY_PASSWORD $CI_DEPENDENCY_PROXY_SERVER
-  script:
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    - docker pull $IMAGE_TAG_REACT_ROUTER_FRONTEND
-    - docker run -d -p 3000:5000 $IMAGE_TAG_REACT_ROUTER_FRONTEND bash -c ./run.sh
-    - docker pull $IMAGE_TAG_REACT_ROUTER_BACKEND
-    - docker run -d -p 8000:8000 -e DJANGO_SESSION_COOKIE_SECURE=False -e DJANGO_CACHE_BACKEND=local $IMAGE_TAG_REACT_ROUTER_BACKEND ./run_backend.sh loadfixtures
-    - docker run --rm
-      -v ${PWD}/cypress/cypress:/app/cypress
-      -v ${PWD}/cypress/cypress.json:/app/cypress.json
-      -v ${PWD}/cypress/package.json:/app/package.json
-      -v ${PWD}/screenshots:/app/cypress/screenshots
-      -v ${PWD}/videos:/app/cypress/videos
-      -v ${PWD}/test-reports:/app/cypress/results
-      --network="host"
-      --ipc=host
-      ambientinnovation/cypress-docker:latest
-      bash -c "yarn install && cypress run --browser chrome"
 
 build-next-backend:
-  stage: build
-  except:
-    - tags
-  dependencies:
-    - unit-test-django
-  tags:
-    - normal-load
-  before_script:
-    - docker login -u $CI_DEPENDENCY_PROXY_USER -p $CI_DEPENDENCY_PROXY_PASSWORD $CI_DEPENDENCY_PROXY_SERVER
-  script:
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    # https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#using-docker-caching
-    - docker pull $CI_REGISTRY_IMAGE/next/backend:develop || true
-    - docker build --cache-from $CI_REGISTRY_IMAGE/next/backend:develop -t $IMAGE_TAG_NEXT_BACKEND --file ./examples/nextjs/backend/Dockerfile ./
-    - docker push $IMAGE_TAG_NEXT_BACKEND
+  <<: *next_environment
+  <<: *build_backend
 
 build-next-frontend:
-  stage: build
-  except:
-    - tags
-  dependencies:
-    - unit-test-react
-  tags:
-    - normal-load
-  before_script:
-    - docker login -u $CI_DEPENDENCY_PROXY_USER -p $CI_DEPENDENCY_PROXY_PASSWORD $CI_DEPENDENCY_PROXY_SERVER
-  script:
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    - docker pull $CI_REGISTRY_IMAGE/next/frontend:develop || true
-    - docker build --cache-from $CI_REGISTRY_IMAGE/next/frontend:develop -t $IMAGE_TAG_NEXT_FRONTEND --build-arg app_env=production --file ./examples/nextjs/frontend/Dockerfile ./
-    - docker push $IMAGE_TAG_NEXT_FRONTEND
+  <<: *next_environment
+  <<: *build_frontend
 
 e2e-next-router:
-  stage: e2e
-  except:
-    - tags
+  <<: *next_environment
+  <<: *e2e
   dependencies:
     - build-next-backend
     - build-next-frontend
-  tags:
-    - high-load
-  artifacts:
-    name: "$CI_JOB_STAGE-$CI_COMMIT_REF_NAME-screenshots"
-    expire_in: 1 week
-    when: always
-    paths:
-      - screenshots/
-      - videos/
-    reports:
-      junit: test-reports/reporter*.xml
-  script:
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    - docker pull $IMAGE_TAG_NEXT_FRONTEND
-    - docker run -d -p 3000:3000 $IMAGE_TAG_REACT_ROUTER_FRONTEND bash -c ./run.sh
-    - docker pull $IMAGE_TAG_NEXT_BACKEND
-    - docker run -d -p 8000:8000 -e DJANGO_SESSION_COOKIE_SECURE=False -e DJANGO_CACHE_BACKEND=local $IMAGE_TAG_NEXT_BACKEND ./run_backend.sh loadfixtures
-    - docker run --rm
-      -v ${PWD}/cypress/cypress:/app/cypress
-      -v ${PWD}/cypress/cypress.json:/app/cypress.json
-      -v ${PWD}/cypress/package.json:/app/package.json
-      -v ${PWD}/screenshots:/app/cypress/screenshots
-      -v ${PWD}/videos:/app/cypress/videos
-      -v ${PWD}/test-reports:/app/cypress/results
-      --network="host"
-      --ipc=host
-      ambientinnovation/cypress-docker:latest
-      bash -c "yarn install && cypress run --browser chrome"
 
 deploy-react:
   image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/node:15
@@ -222,6 +188,8 @@ deploy-react:
     - tags
   dependencies:
     - unit-test-react
+    - e2e-react-router
+    - e2e-next-router
   variables:
     GITLAB_URL: gitlab.ambient-innovation.com
   only:
@@ -236,12 +204,14 @@ deploy-react:
     - npx semantic-release
 
 deploy-django:
-  image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/python:3.7-slim
+  image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/python:3.9-slim
   stage: deploy
   except:
     - tags
   dependencies:
     - unit-test-django
+    - e2e-react-router
+    - e2e-next-router
   variables:
     PYPI_USERNAME: ambient-innovation
   only:
