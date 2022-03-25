@@ -1,0 +1,14 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/react-lib"
+    schedule:
+      interval: "daily"
+    reviewers:
+      - edward.lecock
+  - package-ecosystem: "pip"
+    directory: "/django-app"
+    schedule:
+      interval: "daily"
+    reviewers:
+      - matthias.tellen

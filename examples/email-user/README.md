@@ -75,8 +75,8 @@ then execute `npm run cypress:open` for testing with a GUI or `npm run cypress:r
 The frontend server will be available on `localhost:3000`. You can login using one of the two
 initially created users:
 
-* username `root`, password `root`
-* username `testuser`, password `testuserpassword`
+* email `root@example.com`, password `root`
+* username `user@example.com`, password `testuserpassword`
 
 On the dashboard, you can click the logout button to logout again, or click the `Trigger 401`
 button to trigger an unauthorized response from the server. This will lead to a logout.

@@ -179,12 +179,20 @@ default. Default configurations are:
         # If true, the user has to specify a username in addition to the
         # mail address
         "USERNAME_REQUIRED": False,
-        # A Serializer which is used by the ai-kit-auth endpoints for
+        # A serializer which is used by the ai-kit-auth endpoints for
         # sending user information to the frontend. Override it if you need
         # additional information about a user in the frontend, like e.g. avatar
         # image, user role etc.
         # The default USER_SERIALIZER contains id, email and username.
         "USER_SERIALIZER": "ai_kit_auth.serializers.UserSerializer",
+        # A serializer which is used by the registration endpoint. Override if
+        # you need additional information about the user directly in the
+        # registration. The default serializer sets username, password and email
+        "REGISTRATION_SERIALIZER": "ai_kit_auth.serializers.RegistrationSerializer",
+        # The user model fields which are used to identify a user.
+        # They are iterated over in the given order to find a user from the "ident" parameter
+        # provided to the views.
+        "USER_IDENTITY_FIELDS": ("email", "username"),
         # information about the frontend, mostly the used routes. In most cases
         # the defaults are fine, but can be changed for localisation of the
         # urls.

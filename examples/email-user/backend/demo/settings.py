@@ -155,6 +155,7 @@ AI_KIT_AUTH = {
     },
     "USERNAME_REQUIRED": False,
     "USER_SERIALIZER": "demo.serializers.EmailUserSerializer",
+    "USER_IDENTITY_FIELDS": ("email",),
     "ADMIN_FIELDSETS": (
         (None, {"fields": ("email", "password")}),
         ("Permissions", {"fields": ("is_active", "is_staff", "is_superuser")}),

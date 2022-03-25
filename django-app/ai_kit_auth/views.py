@@ -1,4 +1,5 @@
 from django.contrib.auth import login, logout, get_user_model, tokens
+from django.db.models import EmailField
 from rest_framework import status, generics, views
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -81,7 +82,7 @@ class MeView(generics.GenericAPIView):
     """
 
     permission_classes = (AllowAny,)
-    user_serializer = api_settings.USER_SERIALIZER
+    serializer_class = api_settings.USER_SERIALIZER
 
     def get(self, request, *args, **kwargs):
         csrf_token = csrf.get_token(request)
@@ -89,9 +90,7 @@ class MeView(generics.GenericAPIView):
         if request.user.is_anonymous:
             user_data = None
         else:
-            user_serializer = self.user_serializer(
-                instance=request.user, context={"request": request}
-            )
+            user_serializer = self.get_serializer(instance=request.user)
             user_data = user_serializer.data
         return Response(
             {
@@ -106,12 +105,13 @@ class RegistrationView(generics.GenericAPIView):
 
     permission_classes = (AllowAny,)
 
-    serializer_class = serializers.RegistrationSerializer
+    serializer_class = api_settings.REGISTRATION_SERIALIZER
 
     def post(self, request, *args, **kwargs):
         user_pre_registered.send(sender=RegistrationView, user_data=request.data)
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
+        serializer.save()
         return Response({}, status=status.HTTP_201_CREATED)
 
 
@@ -144,13 +144,13 @@ class ActivateUser(views.APIView):
             token = request.data["token"]
             pk = services.scramble_id(ident)
             user = UserModel.objects.get(pk=pk)
-            assert tokens.PasswordResetTokenGenerator().check_token(user, token)
+            if not tokens.PasswordResetTokenGenerator().check_token(user, token):
+                raise ValueError
         except (
             KeyError,
             TypeError,
             ValueError,
             OverflowError,
-            AssertionError,
             UserModel.DoesNotExist,
         ):
             return Response(
@@ -168,19 +168,31 @@ class InitiatePasswordResetView(views.APIView):
     permission_classes = (AllowAny,)
 
     def post(self, request, *args, **kwargs):
-        try:
-            user = UserModel.objects.get(
-                **{
-                    f"{UserModel.get_email_field_name()}__iexact": request.data[
-                        "email"
-                    ],
-                }
-            )
+        # Find user by identity field
+        user = None
+        ident = request.data[
+            "email"
+        ]  # TODO this should be renamed "ident" in the next major release
+        for field_name in api_settings.USER_IDENTITY_FIELDS:
+            field = UserModel._meta.get_field(field_name)
+            filter_key = field.name
+            if isinstance(field, EmailField):
+                filter_key += "__iexact"
+            try:
+                user = UserModel.objects.get(**{filter_key: ident})
+                break  # break as soon as a unique user is found
+            except (
+                KeyError,
+                UserModel.DoesNotExist,
+                UserModel.MultipleObjectsReturned,
+            ):
+                pass
+
+        if user:
             user_pre_forgot_password.send(sender=InitiatePasswordResetView, user=user)
             services.send_reset_pw_mail(user)
             user_post_forgot_password.send(sender=InitiatePasswordResetView, user=user)
-        except (KeyError, UserModel.DoesNotExist):
-            pass
+
         # always return OK
         return Response(status=status.HTTP_200_OK)
 
@@ -203,13 +215,13 @@ class ResetPassword(views.APIView):
             # we need a valid session to reset the password
             pk = services.scramble_id(ident)
             user = UserModel.objects.get(pk=pk)
-            assert tokens.PasswordResetTokenGenerator().check_token(user, token)
+            if not tokens.PasswordResetTokenGenerator().check_token(user, token):
+                raise ValueError
         except (
             KeyError,
             TypeError,
             ValueError,
             OverflowError,
-            AssertionError,
             UserModel.DoesNotExist,
         ):
             # if anything goes wrong, we error out

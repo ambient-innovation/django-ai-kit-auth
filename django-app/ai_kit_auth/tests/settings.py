@@ -57,4 +57,5 @@ ROOT_URLCONF = "ai_kit_auth.urls"
 AI_KIT_AUTH = {
     "FRONTEND": {"URL": "example.com"},
     "USER_SERIALIZER": "ai_kit_auth.tests.serializers.CustomUserSerializer",
+    "REGISTRATION_SERIALIZER": "ai_kit_auth.tests.serializers.CustomRegistrationSerializer",
 }
