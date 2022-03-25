@@ -176,7 +176,7 @@ unit-test-react:
       --network="host"
       --ipc=host
       ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/cypress/browsers:chrome69
-      bash -c "yarn install && yarn cypress run --browser chrome"
+      bash -c "cd cypress && yarn install && yarn cypress run --browser chrome"
 
 build-react-router-backend:
   <<: *react-router_environment
