@@ -1,5 +1,5 @@
 # base image
-FROM node:15.14
+FROM gitlab.ambient-innovation.com:443/infrastructure/dependency_proxy/containers/node:15.14
 
 ENV CI true
 

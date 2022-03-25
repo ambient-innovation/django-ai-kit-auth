@@ -1,4 +1,4 @@
-image: docker:stable
+image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/docker:stable
 
 variables:
   DOCKER_DRIVER: overlay2
@@ -19,10 +19,10 @@ stages:
   - deploy
 
 services:
-  - docker:18.09-dind
+  - ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/docker:18.09-dind
 
 lint-django:
-  image: python:3.7-slim
+  image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/python:3.9-slim
   stage: lint
   except:
     - tags
@@ -34,7 +34,7 @@ lint-django:
     - black --check $DJANGO/**/*.py --exclude .*/migrations/.*
 
 lint-react:
-  image: node:15
+  image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/node:15
   stage: lint
   except:
     - tags
@@ -46,7 +46,7 @@ lint-react:
     - yarn --cwd $REACT lint
 
 unit-test-django:
-  image: python:3.7-slim
+  image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/python:3.9-slim
   stage: test
   except:
     - tags
@@ -62,7 +62,7 @@ unit-test-django:
     - python runtests.py
 
 unit-test-react:
-  image: node:15
+  image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/node:15
   stage: test
   except:
     - tags
@@ -83,6 +83,8 @@ build-react-router-backend:
     - unit-test-django
   tags:
     - normal-load
+  before_script:
+    - docker login -u $CI_DEPENDENCY_PROXY_USER -p $CI_DEPENDENCY_PROXY_PASSWORD $CI_DEPENDENCY_PROXY_SERVER
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     # https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#using-docker-caching
@@ -98,6 +100,8 @@ build-react-router-frontend:
     - unit-test-react
   tags:
     - normal-load
+  before_script:
+    - docker login -u $CI_DEPENDENCY_PROXY_USER -p $CI_DEPENDENCY_PROXY_PASSWORD $CI_DEPENDENCY_PROXY_SERVER
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker pull $CI_REGISTRY_IMAGE/react-router/frontend:develop || true
@@ -122,6 +126,8 @@ e2e-test-react-router:
       - videos/
     reports:
       junit: test-reports/reporter*.xml
+  before_script:
+    - docker login -u $CI_DEPENDENCY_PROXY_USER -p $CI_DEPENDENCY_PROXY_PASSWORD $CI_DEPENDENCY_PROXY_SERVER
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker pull $IMAGE_TAG_REACT_ROUTER_FRONTEND
@@ -148,6 +154,8 @@ build-next-backend:
     - unit-test-django
   tags:
     - normal-load
+  before_script:
+    - docker login -u $CI_DEPENDENCY_PROXY_USER -p $CI_DEPENDENCY_PROXY_PASSWORD $CI_DEPENDENCY_PROXY_SERVER
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     # https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#using-docker-caching
@@ -163,6 +171,8 @@ build-next-frontend:
     - unit-test-react
   tags:
     - normal-load
+  before_script:
+    - docker login -u $CI_DEPENDENCY_PROXY_USER -p $CI_DEPENDENCY_PROXY_PASSWORD $CI_DEPENDENCY_PROXY_SERVER
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker pull $CI_REGISTRY_IMAGE/next/frontend:develop || true
@@ -190,7 +200,7 @@ e2e-next-router:
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker pull $IMAGE_TAG_NEXT_FRONTEND
-    - docker run -d -p 3000:5000 $IMAGE_TAG_REACT_ROUTER_FRONTEND bash -c ./run.sh
+    - docker run -d -p 3000:3000 $IMAGE_TAG_REACT_ROUTER_FRONTEND bash -c ./run.sh
     - docker pull $IMAGE_TAG_NEXT_BACKEND
     - docker run -d -p 8000:8000 -e DJANGO_SESSION_COOKIE_SECURE=False -e DJANGO_CACHE_BACKEND=local $IMAGE_TAG_NEXT_BACKEND ./run_backend.sh loadfixtures
     - docker run --rm
@@ -206,7 +216,7 @@ e2e-next-router:
       bash -c "yarn install && cypress run --browser chrome"
 
 deploy-react:
-  image: node:15
+  image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/node:15
   stage: deploy
   except:
     - tags
@@ -226,7 +236,7 @@ deploy-react:
     - npx semantic-release
 
 deploy-django:
-  image: python:3.7-slim
+  image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/python:3.7-slim
   stage: deploy
   except:
     - tags

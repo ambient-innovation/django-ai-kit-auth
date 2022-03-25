@@ -1,4 +1,4 @@
-FROM python:3.9
+FROM gitlab.ambient-innovation.com:443/infrastructure/dependency_proxy/containers/python:3.9
 ENV PYTHONUNBUFFERED 1
 
 WORKDIR /examples/email-user/backend

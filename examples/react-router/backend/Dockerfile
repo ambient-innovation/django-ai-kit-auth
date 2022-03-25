@@ -1,4 +1,4 @@
-FROM python:3.7
+FROM gitlab.ambient-innovation.com:443/infrastructure/dependency_proxy/containers/python:3.7
 ENV PYTHONUNBUFFERED 1
 
 WORKDIR /examples/react-router/backend
