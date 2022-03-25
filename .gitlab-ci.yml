@@ -43,6 +43,7 @@ lint-django:
   before_script:
     - pip install black
   script:
+    - pip cache dir
     - black --check $DJANGO/**/*.py --exclude .*/migrations/.*
 
 lint-react:
@@ -59,6 +60,7 @@ lint-react:
   before_script:
     - yarn install --pure-lockfile --cwd $REACT
   script:
+    - yarn cache dir
     - yarn --cwd $REACT lint
 
 unit-test-django:
