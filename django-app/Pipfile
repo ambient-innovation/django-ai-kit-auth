@@ -13,4 +13,4 @@ python-semantic-release = "==7.13.2"
 model_bakery = "*"
 
 [requires]
-python_version = "3.7"
+python_version = "3.9"
