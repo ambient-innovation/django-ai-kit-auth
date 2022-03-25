@@ -51,7 +51,7 @@ lint-react:
   cache:
     key: ${CI_COMMIT_REF_SLUG}-react
     paths:
-      - /node-modules
+      - /usr/local/share/.cache/yarn
   except:
     - tags
   tags:
@@ -87,7 +87,7 @@ unit-test-react:
   cache:
     key: ${CI_COMMIT_REF_SLUG}-react
     paths:
-      - /node-modules
+      - /usr/local/share/.cache/yarn
   except:
     - tags
   dependencies:
