@@ -84,6 +84,12 @@
       }
     },
     {
+      "files": ["*.test.{ts,tsx}"],
+      "rules": {
+        "import/no-extraneous-dependencies": 0
+      }
+    },
+    {
       "files": ["src/pages/*.tsx", "src/react-app-env.d.ts"],
       "rules": {
         "unicorn/filename-case": ["error", { "case": "kebabCase" }]

@@ -119,6 +119,7 @@ export function makeRegisterForm({
                 })
                 .finally(() => setLoading(false));
             }}
+            data-testid="register-form"
           >
             {userIdentifier !== Identifier.Email && (
               <TextField

@@ -1,6 +1,7 @@
 import * as React from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { render, fireEvent, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { makeRegisterForm } from '../Register';
 import { DeepPartial } from '../../util';
 import { en } from '../../internationalization';
@@ -56,19 +57,24 @@ test('with email identifier, username textbox is not rendered', () => {
 
 test('submit calls register', () => {
   const renderObject = renderFunction();
-  fireEvent.change(
+  userEvent.type(
     renderObject.getByLabelText(en('auth:RegisterForm.Username')),
-    { target: { value: mockUser.username } },
+    mockUser.username,
   );
-  fireEvent.change(
+  userEvent.type(
     renderObject.getByLabelText(en('auth:RegisterForm.Email')),
-    { target: { value: mockUser.email } },
+    mockUser.email,
   );
-  fireEvent.change(
+  userEvent.type(
     renderObject.getByLabelText(en('auth:RegisterForm.Password')),
-    { target: { value: mockUser.password } },
+    mockUser.password,
   );
-  fireEvent.submit(renderObject.getByRole('form'));
+  userEvent.click(
+    renderObject.getByRole(
+      'button',
+      { name: en('auth:RegisterForm.Register') },
+    ),
+  );
   expect(register).toHaveBeenCalledWith(
     mockUser.username,
     mockUser.email,
@@ -107,17 +113,36 @@ test('password is validated once, when typing is finished', async () => {
 test('cannot submit while loading', () => {
   register.mockReturnValue(dontResolvePromise());
   const renderObject = renderFunction();
-  fireEvent.submit(renderObject.getByRole('form'));
-  expect(renderObject.getByTitle(en('auth:RegisterForm.Register'))).toBeDisabled();
+  userEvent.click(
+    renderObject.getByRole(
+      'button',
+      { name: en('auth:RegisterForm.Register') },
+    ),
+  );
+  expect(
+    renderObject.getByRole(
+      'button',
+      { name: en('auth:RegisterForm.Register') },
+    ),
+  ).toBeDisabled();
 });
 
 test('on success, text is shown and form vanishes', async () => {
   register.mockReturnValue(Promise.resolve());
   const renderObject = renderFunction();
-  fireEvent.submit(renderObject.getByRole('form'));
-  await waitFor(() => expect(renderObject.getByText(en('auth:RegisterForm.SuccessText'))).toBeInTheDocument());
+  userEvent.click(
+    renderObject.getByRole(
+      'button',
+      { name: en('auth:RegisterForm.Register') },
+    ),
+  );
+  await waitFor(() => {
+    expect(
+      renderObject.getByText(en('auth:RegisterForm.SuccessText')),
+    ).toBeInTheDocument();
+  });
   expect(renderObject.getByText(en('auth:RegisterForm.SuccessTitle'))).toBeInTheDocument();
-  expect(() => renderObject.getByRole('form')).toThrowError();
+  expect(renderObject.queryByTestId('register-form')).not.toBeInTheDocument();
 });
 
 test('error in username field', async () => {
@@ -132,15 +157,22 @@ test('error in username field', async () => {
     });
   }));
   const renderObject = renderFunction();
-  fireEvent.submit(renderObject.getByRole('form'));
-  await waitFor(
-    () => expect(renderObject.getByText(en('auth:Common.FieldErrors.blank'))).toBeInTheDocument(),
+  userEvent.click(
+    renderObject.getByRole(
+      'button',
+      { name: en('auth:RegisterForm.Register') },
+    ),
   );
-  fireEvent.change(
+  await waitFor(() => {
+    expect(
+      renderObject.getByText(en('auth:Common.FieldErrors.blank')),
+    ).toBeInTheDocument();
+  });
+  userEvent.type(
     renderObject.getByLabelText(en('auth:RegisterForm.Username')),
-    { target: { value: 'a' } },
+    'a',
   );
-  expect(() => renderObject.getByText(en('auth:Common.FieldErrors.blank'))).toThrowError();
+  expect(renderObject.queryByText(en('auth:Common.FieldErrors.blank'))).not.toBeInTheDocument();
 });
 
 test('error in email field', async () => {
@@ -155,19 +187,25 @@ test('error in email field', async () => {
     });
   }));
   const renderObject = renderFunction();
-  fireEvent.submit(renderObject.getByRole('form'));
-  await waitFor(
-    () => expect(renderObject.getByText(en('auth:Common.FieldErrors.blank'))).toBeInTheDocument(),
+  userEvent.click(
+    renderObject.getByRole(
+      'button',
+      { name: en('auth:RegisterForm.Register') },
+    ),
   );
-  fireEvent.change(
+  await waitFor(() => {
+    expect(
+      renderObject.getByText(en('auth:Common.FieldErrors.blank')),
+    ).toBeInTheDocument();
+  });
+  userEvent.type(
     renderObject.getByLabelText(en('auth:RegisterForm.Email')),
-    { target: { value: 'a' } },
+    'a',
   );
-  expect(() => renderObject.getByText(en('auth:Common.FieldErrors.blank'))).toThrowError();
+  expect(renderObject.queryByText(en('auth:Common.FieldErrors.blank'))).not.toBeInTheDocument();
 });
 
-// eslint-disable-next-line jest/expect-expect
-test('error in password field', async () => {
+test('error in password field', () => {
   register.mockReturnValue(new Promise<void>(() => {
     // eslint-disable-next-line no-throw-literal
     throw ({
@@ -179,16 +217,22 @@ test('error in password field', async () => {
     });
   }));
   const renderObject = renderFunction();
-  fireEvent.submit(renderObject.getByRole('form'));
-  await waitFor(
-    () => expect(renderObject.getByText(en('auth:Common.FieldErrors.blank'))).toBeInTheDocument(),
+  userEvent.click(
+    renderObject.getByRole(
+      'button',
+      { name: en('auth:RegisterForm.Register') },
+    ),
   );
+
+  return waitFor(() => {
+    expect(
+      renderObject.getByText(en('auth:Common.FieldErrors.blank')),
+    ).toBeInTheDocument();
+  });
 });
 
-// eslint-disable-next-line jest/expect-expect
-test('error in password while typing', async () => {
-  // eslint-disable-next-line unicorn/consistent-function-scoping
-  const validatePassword = () => new Promise<void>(() => {
+test('error in password while typing', () => {
+  const validatePassword = jest.fn(() => new Promise<void>(() => {
     // eslint-disable-next-line no-throw-literal
     throw ({
       response: {
@@ -197,17 +241,21 @@ test('error in password while typing', async () => {
         },
       },
     });
-  });
+  }));
   const renderObject = renderFunction({}, { validatePassword });
-  fireEvent.change(
+  userEvent.type(
     renderObject.getByLabelText(en('auth:RegisterForm.Password')),
-    { target: { value: '123' } },
+    '123',
   );
-  await waitFor(() => expect(renderObject.getByText(en('auth:Common.FieldErrors.password_too_short'))).toBeInTheDocument());
+
+  return waitFor(() => {
+    expect(
+      renderObject.getByText(en('auth:Common.FieldErrors.password_too_short')),
+    ).toBeInTheDocument();
+  });
 });
 
-// eslint-disable-next-line jest/expect-expect
-test('show general error', async () => {
+test('show general error', () => {
   register.mockReturnValue(new Promise<void>(() => {
     // eslint-disable-next-line no-throw-literal
     throw ({
@@ -219,8 +267,14 @@ test('show general error', async () => {
     });
   }));
   const renderObject = renderFunction();
-  fireEvent.submit(renderObject.getByRole('form'));
-  await waitFor(
+  userEvent.click(
+    renderObject.getByRole(
+      'button',
+      { name: en('auth:RegisterForm.Register') },
+    ),
+  );
+
+  return waitFor(
     () => expect(renderObject.getByText(
       en('auth:RegisterForm.NonFieldErrors.general'),
     )).toBeInTheDocument(),

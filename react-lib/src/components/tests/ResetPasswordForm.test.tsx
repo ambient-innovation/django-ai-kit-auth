@@ -1,6 +1,6 @@
 import * as React from 'react';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { render, fireEvent, waitForElement } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { en } from '../../internationalization';
 import { dontResolvePromise, makeGenericUserStore, MockUserStoreProps } from '../../store/UserStore';
 import { defaultApiConfig, getFullTestConfig, TestRoutingProps } from '../../tests/Helper';
@@ -36,10 +36,12 @@ const renderComponent = (
   };
 };
 
-// eslint-disable-next-line jest/expect-expect
-test('renders the password form when ident and token are provided', async () => {
+test('renders the password form when ident and token are provided', () => {
   const renderObject = renderComponent({ resetPassword: () => Promise.resolve() });
-  await waitForElement(() => renderObject.getByText(en('auth:ResetPassword.ResetPassword')));
+
+  return waitFor(() => {
+    expect(renderObject.getByText(en('auth:ResetPassword.ResetPassword'))).toBeInTheDocument();
+  });
 });
 
 test('password is validated once, when typing is finished', async () => {
@@ -49,13 +51,16 @@ test('password is validated once, when typing is finished', async () => {
     { validatePassword },
     { queryParams: { ident: mockData.ident, token: '1234-1234' } },
   );
-  fireEvent.change(
+  userEvent.type(
     renderObject.getByLabelText(en('auth:ResetPassword.NewPassword')),
-    { target: { value: 'placeholder' } },
+    'placeholder',
   );
-  fireEvent.change(
+  userEvent.clear(
     renderObject.getByLabelText(en('auth:ResetPassword.NewPassword')),
-    { target: { value: mockData.password } },
+  );
+  userEvent.type(
+    renderObject.getByLabelText(en('auth:ResetPassword.NewPassword')),
+    mockData.password,
   );
 
   // wait for debounce
@@ -68,8 +73,7 @@ test('password is validated once, when typing is finished', async () => {
   expect(validatePassword).toHaveBeenCalledTimes(1);
 });
 
-// eslint-disable-next-line jest/expect-expect
-test('error state', async () => {
+test('error state', () => {
   const renderObject = renderComponent(
     {
       // eslint-disable-next-line prefer-promise-reject-errors
@@ -77,50 +81,51 @@ test('error state', async () => {
     },
     { queryParams: mockData },
   );
-  fireEvent.change(
+  userEvent.type(
     renderObject.getByLabelText(en('auth:ResetPassword.NewPassword')),
-    {
-      target: {
-        value: mockData.password,
-      },
-    },
+    mockData.password,
   );
-  fireEvent.change(
+  userEvent.type(
     renderObject.getByLabelText(en('auth:ResetPassword.RepeatNewPassword')),
-    {
-      target: {
-        value: mockData.password,
-      },
-    },
+    mockData.password,
   );
-  fireEvent.submit(renderObject.getByRole('form'));
+  userEvent.click(
+    renderObject.getByRole(
+      'button',
+      { name: en('auth:ResetPassword.ButtonText') },
+    ),
+  );
 
-  await waitForElement(() => renderObject.getByText(en('auth:ResetPassword.InvalidLink')));
+  return waitFor(() => {
+    expect(
+      renderObject.getByText(en('auth:ResetPassword.InvalidLink')),
+    ).toBeInTheDocument();
+  });
 });
 
-// eslint-disable-next-line jest/expect-expect
-test('success state', async () => {
+test('success state', () => {
   const renderObject = renderComponent(
     { resetPassword: () => Promise.resolve() },
     { queryParams: mockData },
   );
-  fireEvent.change(
+  userEvent.type(
     renderObject.getByLabelText(en('auth:ResetPassword.NewPassword')),
-    {
-      target: {
-        value: mockData.password,
-      },
-    },
+    mockData.password,
   );
-  fireEvent.change(
+  userEvent.type(
     renderObject.getByLabelText(en('auth:ResetPassword.RepeatNewPassword')),
-    {
-      target: {
-        value: mockData.password,
-      },
-    },
+    mockData.password,
   );
-  fireEvent.submit(renderObject.getByRole('form'));
+  userEvent.click(
+    renderObject.getByRole(
+      'button',
+      { name: en('auth:ResetPassword.ButtonText') },
+    ),
+  );
 
-  await waitForElement(() => renderObject.getByText(en('auth:ResetPassword.SuccessText')));
+  return waitFor(() => {
+    expect(
+      renderObject.getByText(en('auth:ResetPassword.SuccessText')),
+    ).toBeInTheDocument();
+  });
 });

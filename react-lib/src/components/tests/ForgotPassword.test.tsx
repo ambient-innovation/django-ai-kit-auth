@@ -1,6 +1,6 @@
 import * as React from 'react';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { render, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { makeForgotPasswordForm } from '../ForgotPassword';
 import { en } from '../../internationalization';
 import { defaultApiConfig, getFullTestConfig, TestRoutingProps } from '../../tests/Helper';
@@ -34,15 +34,19 @@ test('submit calls login', () => {
   const requestPasswordReset = jest.fn();
   requestPasswordReset.mockReturnValue(new Promise<void>((r) => r()));
   const renderObject = renderComponent({ requestPasswordReset });
-  fireEvent.change(
-    renderObject.getByLabelText(en('auth:ForgotPassword.InputLabel'), { exact: false }),
-    {
-      target: {
-        value: mockEmail,
-      },
-    },
+  userEvent.type(
+    renderObject.getByLabelText(
+      en('auth:ForgotPassword.InputLabel'),
+      { exact: false },
+    ),
+    mockEmail,
   );
-  fireEvent.submit(renderObject.getByRole('form'));
+  userEvent.click(
+    renderObject.getByRole(
+      'button',
+      { name: en('auth:ForgotPassword.ButtonText') },
+    ),
+  );
   expect(requestPasswordReset).toHaveBeenCalledWith(
     mockEmail,
   );
