@@ -14,14 +14,12 @@ const camelCaseError = <D>(
   apiCall: Promise<AxiosResponse<D>>,
 ): Promise<AxiosResponse<D>> => apiCall
     .catch((error) => {
-      if ('response' in error) {
-        throw new Error({
-          ...error,
-          response: {
-            ...error.response,
-            data: camelcaseKeys(error.response.data),
-          },
-        });
+      if (error.response) {
+        // eslint-disable-next-line no-param-reassign
+        error.response = {
+          ...error.response,
+          data: camelcaseKeys(error.response.data),
+        };
       }
       throw error;
     });
