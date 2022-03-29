@@ -1,15 +1,26 @@
-export type DeepPartial<T> = { [K in keyof T]?: DeepPartial<T[K]> };
+/* eslint-disable @typescript-eslint/ban-types */
 
-export const mergeConfig = <T extends {}>(
+type AnyConfig = Object;
+
+export type DeepPartial<T extends AnyConfig> = {
+  [K in keyof T]?: T[K] extends Function
+? T[K] : T[K] extends AnyConfig ? DeepPartial<T[K]> : T[K];
+}
+
+export const mergeConfig = <T extends AnyConfig>(
   defaults: T, configs: DeepPartial<T>,
 ): T => {
-  const fullConfig = { ...defaults };
+  const fullConfig: T = { ...defaults };
   if (configs) {
     Object.entries(configs).forEach(([key, value]) => {
-      if (typeof value === 'object') {
+      if (value && typeof value === 'object') {
         fullConfig[key as keyof T] = mergeConfig(
-          defaults[key as keyof T],
-          value as DeepPartial<T[keyof T]>,
+          // We cannot lean on typescript to infer the correct types because
+          // of the use of Object.entries(). Therefore we bite the bullet
+          // and use tests to make sure everything works fine.
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          defaults[key as keyof T] as any,
+          value,
         );
       } else {
         fullConfig[key as keyof T] = value as T[keyof T];

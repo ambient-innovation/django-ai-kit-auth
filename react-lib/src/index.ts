@@ -18,11 +18,3 @@ export {
 export {
   Translator, TranslatorProps, en, de,
 } from './internationalization';
-
-export {
-  ReactRouterConfig, configureAuthReactRouter,
-} from './config/ReactRouter';
-
-export {
-  NextConfig, AuthPageProps, configureAuthNext,
-} from './config/Next';

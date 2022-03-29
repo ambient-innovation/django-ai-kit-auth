@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
-import { configureAuthReactRouter, de } from 'ai-kit-auth';
+import { de } from 'ai-kit-auth';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-
+import { configureAuthReactRouter } from 'ai-kit-auth/dist/config/ReactRouter';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   BackgroundImage: {

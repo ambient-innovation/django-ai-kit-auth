@@ -1,6 +1,4 @@
 import { tFactory, Strings } from '..';
-// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-// @ts-ignore
 import en from '../en/auth.json';
 
 test('tFactory returns function', () => {

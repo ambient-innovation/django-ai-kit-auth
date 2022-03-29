@@ -1,4 +1,5 @@
-FROM python:3.7
+ARG DOCKER_IMAGE_PREFIX=""
+FROM ${DOCKER_IMAGE_PREFIX}python:3.9
 ENV PYTHONUNBUFFERED 1
 
 WORKDIR /examples/nextjs/backend

@@ -1,15 +1,14 @@
 import * as React from 'react';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { render, fireEvent, waitForElement } from '@testing-library/react';
+import { render, fireEvent, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { makeLoginForm } from '../LoginForm';
 import { User } from '../../api/types';
 import { LogoutReason } from '../../store/types';
 import { en } from '../../internationalization';
-import {
-  makeGenericUserStore, MockUserStoreProps, FullConfig, Identifier,
-} from '../..';
 import { DeepPartial } from '../../util';
 import { defaultApiConfig, getFullTestConfig, TestRoutingProps } from '../../tests/Helper';
+import { makeGenericUserStore, MockUserStoreProps } from '../../store/UserStore';
+import { FullConfig, Identifier } from '../../config/components';
 
 const mockUser: User = ({
   id: 42, username: 'Donald', email: 'donald@example.com',
@@ -44,31 +43,24 @@ beforeEach(() => {
 
 test('submit calls login', () => {
   const renderObject = renderComponent();
-  fireEvent.change(
+  userEvent.type(
     renderObject.getByLabelText(en('auth:LoginForm.UsernameOrEmail')),
-    {
-      target: {
-        value: mockUser.username,
-      },
-    },
+    mockUser.username,
   );
-  fireEvent.change(
+  userEvent.type(
     renderObject.getByLabelText(en('auth:Common.Password')),
-    {
-      target: {
-        value: mockPassword,
-      },
-    },
+    mockPassword,
   );
-  fireEvent.submit(renderObject.getByRole('form'));
+  userEvent.click(
+    renderObject.getByRole('button', { name: en('auth:LoginForm.Login') }),
+  );
   expect(login).toHaveBeenCalledWith(
     mockUser.username,
     mockPassword,
   );
 });
 
-// eslint-disable-next-line jest/expect-expect
-test('error in identifier field', async () => {
+test('error in identifier field', () => {
   login.mockReturnValue(new Promise(() => {
     // eslint-disable-next-line no-throw-literal
     throw ({
@@ -80,17 +72,19 @@ test('error in identifier field', async () => {
     });
   }));
   const renderObject = renderComponent();
-  fireEvent.submit(renderObject.getByRole('form'));
-  await waitForElement(
-    () => renderObject.getByText(en('auth:Common.FieldErrors.blank')),
+  userEvent.click(
+    renderObject.getByRole('button', { name: en('auth:LoginForm.Login') }),
   );
+
+  return waitFor(() => {
+    expect(renderObject.getByText(en('auth:Common.FieldErrors.blank'))).toBeInTheDocument();
+  });
 });
 
-// eslint-disable-next-line jest/expect-expect
-test('error in password field', async () => {
-  login.mockReturnValue(new Promise(() => {
-    // eslint-disable-next-line no-throw-literal
-    throw ({
+test('error in password field', () => {
+  login.mockReturnValue(new Promise((resolve, reject) => {
+    // eslint-disable-next-line prefer-promise-reject-errors
+    reject({
       response: {
         data: {
           password: ['blank'],
@@ -99,14 +93,16 @@ test('error in password field', async () => {
     });
   }));
   const renderObject = renderComponent();
-  fireEvent.submit(renderObject.getByRole('form'));
-  await waitForElement(
-    () => renderObject.getByText(en('auth:Common.FieldErrors.blank')),
+  userEvent.click(
+    renderObject.getByRole('button', { name: en('auth:LoginForm.Login') }),
   );
+
+  return waitFor(() => {
+    expect(renderObject.getByText(en('auth:Common.FieldErrors.blank'))).toBeInTheDocument();
+  });
 });
 
-// eslint-disable-next-line jest/expect-expect
-test('show general error', async () => {
+test('show general error', () => {
   login.mockReturnValue(new Promise(() => {
     // eslint-disable-next-line no-throw-literal
     throw ({
@@ -118,12 +114,15 @@ test('show general error', async () => {
     });
   }));
   const renderObject = renderComponent();
-  fireEvent.submit(renderObject.getByRole('form'));
-  await waitForElement(
-    () => renderObject.getByText(
-      en('auth:Common.NonFieldErrors.invalid_credentials.UsernameOrEmail'),
-    ),
+  userEvent.click(
+    renderObject.getByRole('button', { name: en('auth:LoginForm.Login') }),
   );
+
+  return waitFor(() => {
+    expect(renderObject.getByText(
+      en('auth:Common.NonFieldErrors.invalid_credentials.UsernameOrEmail'),
+    )).toBeInTheDocument();
+  });
 });
 
 test('Email type in ident input field', () => {

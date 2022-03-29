@@ -9,12 +9,13 @@ import React, { FC, useContext, useState } from 'react';
 import { AxiosError } from 'axios';
 import { useDebouncedCallback } from 'use-debounce';
 
-import { AuthFunctionContext, FullConfig, Identifier } from '..';
 import { AuthView } from './AuthView';
 import { ErrorMessage } from '../api/types';
 import { PasswordField } from './common/PasswordField';
 import { TranslatorProps } from '../internationalization';
 import { useFormStyles } from './common/styles';
+import { FullConfig, Identifier } from '../config/components';
+import { AuthFunctionContext } from '../store/UserStore';
 
 const useStyles = makeStyles(createStyles({
   linkUnderPaper: {
@@ -59,7 +60,7 @@ export function makeRegisterForm({
     const classes = useStyles();
     const formClasses = useFormStyles();
 
-    const [debouncedPasswordValidation] = useDebouncedCallback(
+    const debouncedPasswordValidation = useDebouncedCallback(
       (pw: string) => {
         validatePassword({ username, email, password: pw })
           .then(() => {
@@ -113,12 +114,12 @@ export function makeRegisterForm({
                   if (error.response) {
                     setErrors(error.response.data);
                   } else {
-                    // eslint-disable-next-line @typescript-eslint/camelcase
                     setErrors({ nonFieldErrors: ['general'] });
                   }
                 })
                 .finally(() => setLoading(false));
             }}
+            data-testid="register-form"
           >
             {userIdentifier !== Identifier.Email && (
               <TextField

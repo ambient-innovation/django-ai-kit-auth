@@ -6,9 +6,9 @@ import {
 import { User } from '../api/types';
 import { Link } from '../components/next/Link';
 import { useQueryParams } from '../components/next/useQueryParams';
-import { Translator, TranslatorProps, AuthFunctionContext } from '..';
 import { makePrivateProtection } from '../components/next/PrivateProtection';
-
+import { Translator, TranslatorProps } from '../internationalization';
+import { AuthFunctionContext } from '../store/UserStore';
 
 export interface NextConfig extends Omit<InputConfig, 'routing'> {
   routing?: InputConfig['routing'];

@@ -2,7 +2,7 @@ from unittest.mock import Mock, patch
 from django.urls import reverse
 from django.contrib.auth import authenticate
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from django.middleware.csrf import _compare_masked_tokens
+from django.middleware.csrf import _does_token_match
 from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -124,7 +124,7 @@ class LoginTests(AuthTestCase):
             format="json",
         )
         self.assertTrue(
-            _compare_masked_tokens(
+            _does_token_match(
                 response.cookies["csrftoken"].value, response.data["csrf"]
             )
         )
@@ -309,7 +309,7 @@ class ActivateEmailTests(AuthTestCase):
 
 class ResetPWTests(AuthTestCase):
     def test_init_password_reset(self):
-        response = self.client.post(send_pw_reset_email_url, {"email": self.user.email})
+        response = self.client.post(send_pw_reset_email_url, {"ident": self.user.email})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     @patch("ai_kit_auth.views.services.send_reset_pw_mail")
@@ -327,7 +327,7 @@ class ResetPWTests(AuthTestCase):
         user_pre_forgot_password.connect(receiver_pre)
         user_post_forgot_password.connect(receiver_post)
 
-        response = self.client.post(send_pw_reset_email_url, {"email": self.user.email})
+        response = self.client.post(send_pw_reset_email_url, {"ident": self.user.email})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         user_pre_forgot_password.disconnect(receiver_pre)
@@ -338,7 +338,7 @@ class ResetPWTests(AuthTestCase):
 
     def test_init_password_reset_fail(self):
         response = self.client.post(
-            send_pw_reset_email_url, {"email": "invalid_email@example.com"}
+            send_pw_reset_email_url, {"ident": "invalid_email@example.com"}
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -500,7 +500,12 @@ class RegisterTests(AuthTestCase):
     def test_register_blank_username_when_not_required(self):
         response = self.client.post(
             register_url,
-            {"username": "", "email": "a@example.com", "password": PASSWORD, "last_name": "last name"},
+            {
+                "username": "",
+                "email": "a@example.com",
+                "password": PASSWORD,
+                "last_name": "last name",
+            },
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -526,7 +531,12 @@ class RegisterTests(AuthTestCase):
     def test_register_blank_email_error(self):
         response = self.client.post(
             register_url,
-            {"username": "username123", "email": "", "password": PASSWORD, "last_name": "last name"},
+            {
+                "username": "username123",
+                "email": "",
+                "password": PASSWORD,
+                "last_name": "last name",
+            },
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

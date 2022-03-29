@@ -1,6 +1,7 @@
 import React, { FC, useContext } from 'react';
 import { useRouter } from 'next/router';
-import { AuthFunctionContext, FullConfig } from '../..';
+import { FullConfig } from '../../config/components';
+import { AuthFunctionContext } from '../../store/UserStore';
 
 export type MakePrivateProtectionResult = FC;
 

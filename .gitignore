@@ -42,4 +42,5 @@ cypress/cypress/results/
 # npm
 **/node_modules
 **/dist
+**/esm
 *.tgz

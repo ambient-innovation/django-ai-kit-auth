@@ -8,16 +8,16 @@
     "start": "next start"
   },
   "dependencies": {
-    "ai-kit-auth": "file:../../../react-lib",
-    "next": "10.0.6",
-    "react": "16.12.0",
-    "react-dom": "17.0.1",
     "@material-ui/core": "^4.9.5",
-    "@material-ui/icons": "^4.9.1"
+    "@material-ui/icons": "^4.9.1",
+    "ai-kit-auth": "file:../../../react-lib",
+    "next": "^10.1.3",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   },
   "devDependencies": {
-    "@types/node": "^14.14.25",
-    "@types/react": "^17.0.1",
-    "typescript": "^4.1.4"
+    "@types/node": "^14.14.37",
+    "@types/react": "^17.0.3",
+    "typescript": "^4.2.4"
   }
 }

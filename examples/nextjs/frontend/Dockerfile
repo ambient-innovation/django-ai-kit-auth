@@ -1,5 +1,5 @@
-# base image
-FROM node:12.14
+ARG DOCKER_IMAGE_PREFIX=""
+FROM ${DOCKER_IMAGE_PREFIX}node:15.14
 
 ENV CI true
 
@@ -14,15 +14,16 @@ COPY examples/nextjs/frontend/package*.json ./
 COPY react-lib /react-lib
 
 RUN echo "installing npm packages" && \
-    npm ci && \
+    yarn install --pure-lockfile && \
+    cd node_modules/react && yarn link && cd - && \
     cd /react-lib && \
     echo "build ai-kit-auth package" && \
-    npm ci && \
-    npm link /examples/nextjs/frontend/node_modules/react && \
-    npm run build && \
-    npm link && \
+    yarn install --pure-lockfile && \
+    yarn link react && \
+    yarn build && \
+    yarn link && \
     cd - && \
-    npm link ai-kit-auth
+    yarn link ai-kit-auth
 
 COPY examples/nextjs/frontend .
 
@@ -35,8 +36,8 @@ ARG app_env
 # Install node server and build code if production
 RUN if [ "${app_env}" = production ]; \
 	then \
-	npm install --global serve && \
-	npm run build --production; \
+	yarn global add serve && \
+	yarn build --profile; \
 	fi
 
 EXPOSE 3000

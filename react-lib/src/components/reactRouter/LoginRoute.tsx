@@ -3,8 +3,8 @@ import {
   Route,
   RouteProps,
 } from 'react-router-dom';
-
-import { AuthFunctionContext, FullConfig } from '../..';
+import { FullConfig } from '../../config/components';
+import { AuthFunctionContext } from '../../store/UserStore';
 
 export type MakeLoginRouteResult = FC<RouteProps>;
 
