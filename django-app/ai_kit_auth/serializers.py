@@ -133,7 +133,7 @@ class ActivateUserSerializer(serializers.Serializer):
 
 
 class InitiatePasswordResetSerializer(serializers.Serializer):
-    email = serializers.EmailField(**FIELD_ARGS, write_only=True)
+    ident = serializers.EmailField(**FIELD_ARGS, write_only=True)
 
 
 class PasswordResetSerializer(serializers.Serializer):

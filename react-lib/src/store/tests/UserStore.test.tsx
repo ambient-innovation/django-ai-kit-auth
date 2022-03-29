@@ -3,9 +3,9 @@ import { FC } from 'react';
 import axios from 'axios';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import MockAdapter from 'axios-mock-adapter';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import {
-  render, waitForElement, fireEvent, act,
+  render, waitFor, fireEvent, act,
+// eslint-disable-next-line import/no-extraneous-dependencies
 } from '@testing-library/react';
 
 import { User } from '../../api/types';
@@ -79,8 +79,9 @@ test('UserStore tries to obtain user information', async () => {
   const csrf = 'abcdsdcbasdasd';
   maxios.onGet('/me/').reply(200, { user: mockUser, csrf });
   const renderObject = renderStoreValue();
-  await waitForElement(() => renderObject.getByText(mockUser.username));
-  expect(renderObject.getByText(csrf)).toBeInTheDocument();
+  await waitFor(() => {
+    expect(renderObject.getByText(csrf)).toBeInTheDocument();
+  });
 });
 
 test('UserStore is loading initially', () => {
@@ -94,7 +95,9 @@ test('UserStore behaviour if me-call fails', async () => {
   maxios.onGet('/me/').reply(200, { user: null, csrf: '' });
   await act(async () => {
     const renderObject = renderStoreValue();
-    await waitForElement(() => renderObject.getByText('no user'));
+    await waitFor(() => {
+      expect(renderObject.getByText('no user')).toBeInTheDocument();
+    });
   });
 });
 
@@ -103,9 +106,13 @@ test('UserStore sends login', async () => {
   maxios.onGet('/me/').reply(200, { user: null, csrf: '' });
   maxios.onPost('/login/').reply(200, { user: mockUser, csrf });
   const renderObject = renderStoreValue();
-  await waitForElement(() => renderObject.getByText('Login'));
+  await waitFor(() => {
+    expect(renderObject.getByText('Login')).toBeInTheDocument();
+  });
   fireEvent.click(renderObject.getByText('Login'));
-  await waitForElement(() => renderObject.getByText(mockUser.username));
+  await waitFor(() => {
+    expect(renderObject.getByText(mockUser.username)).toBeInTheDocument();
+  });
   expect(renderObject.getByText(csrf)).toBeInTheDocument();
 });
 
@@ -113,7 +120,9 @@ test('UserStore shows loading while logging in', async () => {
   maxios.onGet('/me/').reply(200, { user: null, csrf: '' });
   maxios.onPost('/login/').reply(dontResolvePromise);
   const renderObject = renderStoreValue();
-  await waitForElement(() => renderObject.getByText('Login'));
+  await waitFor(() => {
+    expect(renderObject.getByText('Login')).toBeInTheDocument();
+  });
   fireEvent.click(renderObject.getByText('Login'));
   expect(renderObject.getByText('loading')).toBeInTheDocument();
 });
@@ -123,9 +132,13 @@ test('UserStore behaviour when login fails', async () => {
   maxios.onGet('/me/').reply(200, { user: null, csrf: '' });
   maxios.onPost('/login/').reply(400, {});
   const renderObject = renderStoreValue();
-  await waitForElement(() => renderObject.getByText('Login'));
+  await waitFor(() => {
+    expect(renderObject.getByText('Login')).toBeInTheDocument();
+  });
   fireEvent.click(renderObject.getByText('Login'));
-  await waitForElement(() => renderObject.getByText('no user'));
+  await waitFor(() => {
+    expect(renderObject.getByText('no user')).toBeInTheDocument();
+  });
 });
 
 // eslint-disable-next-line jest/expect-expect
@@ -134,9 +147,13 @@ test('UserStore sends logout', async () => {
   maxios.onGet('/me/').reply(200, { user: mockUser, csrf: '' });
   maxios.onPost('/logout/').reply(200, { csrf });
   const renderObject = renderStoreValue();
-  await waitForElement(() => renderObject.getByText('Logout'));
+  await waitFor(() => {
+    expect(renderObject.getByText('Logout')).toBeInTheDocument();
+  });
   fireEvent.click(renderObject.getByText('Logout'));
-  await waitForElement(() => renderObject.getByText('no user'));
+  await waitFor(() => {
+    expect(renderObject.getByText('no user')).toBeInTheDocument();
+  });
   expect(renderObject.getByText(csrf)).toBeInTheDocument();
 });
 
@@ -144,7 +161,9 @@ test('UserStore shows loading while logging out', async () => {
   maxios.onGet('/me/').reply(200, { user: mockUser, csrf: '' });
   maxios.onPost('/logout/').reply(dontResolvePromise);
   const renderObject = renderStoreValue();
-  await waitForElement(() => renderObject.getByText('Logout'));
+  await waitFor(() => {
+    expect(renderObject.getByText('Logout')).toBeInTheDocument();
+  });
   fireEvent.click(renderObject.getByText('Logout'));
   expect(renderObject.getByText('loading')).toBeInTheDocument();
 });
@@ -153,10 +172,14 @@ test('updateUserInfo calls the me api', async () => {
   const csrf = 'jasdkfskjdf';
   maxios.onGet('/me/').replyOnce(200, { user: null, csrf: '' });
   const renderObject = renderStoreValue();
-  await waitForElement(() => renderObject.getByText('no user'));
-  await waitForElement(() => renderObject.getByText('Update'));
+  await waitFor(() => {
+    expect(renderObject.getByText('no user')).toBeInTheDocument();
+    expect(renderObject.getByText('Update')).toBeInTheDocument();
+  });
   maxios.onGet('/me/').replyOnce(200, { user: mockUser, csrf });
   fireEvent.click(renderObject.getByText('Update'));
-  await waitForElement(() => renderObject.getByText(mockUser.username));
+  await waitFor(() => {
+    expect(renderObject.getByText(mockUser.username)).toBeInTheDocument();
+  });
   expect(renderObject.getByText(csrf)).toBeInTheDocument();
 });

@@ -23,6 +23,11 @@
     "plugin:jest/recommended"
   ],
   "rules": {
+    // note you must disable the base rule as it can report incorrect errors
+    "no-use-before-define": "off",
+    "@typescript-eslint/no-use-before-define": ["error"],
+    "no-shadow": "off",
+    "@typescript-eslint/no-shadow": ["error"],
     "react/jsx-filename-extension": [0, { "extensions": [".js", ".jsx"] }],
     "react/jsx-props-no-spreading": 0,
     "react/prop-types": 0,
@@ -76,6 +81,12 @@
           "ts": "never",
           "tsx": "never"
         }]
+      }
+    },
+    {
+      "files": ["*.test.{ts,tsx}"],
+      "rules": {
+        "import/no-extraneous-dependencies": 0
       }
     },
     {

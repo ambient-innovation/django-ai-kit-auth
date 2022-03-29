@@ -1,4 +1,3 @@
-
 import enStrings from './en/auth.json';
 import deStrings from './de/auth.json';
 

@@ -2,11 +2,11 @@ import * as React from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { render } from '@testing-library/react';
 import { NextRouter, useRouter } from 'next/router';
-import { FullConfig, makeGenericUserStore, MockUserStoreProps } from '../../..';
 import { defaultApiConfig, getFullTestConfig } from '../../../tests/Helper';
 import { makePrivateProtection } from '../PrivateProtection';
 import { DeepPartial } from '../../../util';
-import { noop } from '../../../store/UserStore';
+import { makeGenericUserStore, MockUserStoreProps, noop } from '../../../store/UserStore';
+import { FullConfig } from '../../../config/components';
 
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),

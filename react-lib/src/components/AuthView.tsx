@@ -67,6 +67,7 @@ export interface ErrorViewProps extends ErrorCardProps, AuthViewProps {
 export const ErrorView: FC<ErrorViewProps> = (
   errorViewProps,
 ) => (
+  // eslint-disable-next-line react/destructuring-assignment
   <AuthView backgroundImage={errorViewProps.backgroundImage}>
     <ErrorCard {...errorViewProps} />
   </AuthView>

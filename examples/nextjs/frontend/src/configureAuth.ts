@@ -1,4 +1,4 @@
-import { configureAuthNext } from 'ai-kit-auth';
+import { configureAuthNext } from 'ai-kit-auth/dist/config/Next';
 
 export const {
   UserStore, useUserStore, AuthPage, PrivateProtection,

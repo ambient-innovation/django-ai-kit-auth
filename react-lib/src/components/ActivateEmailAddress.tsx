@@ -2,10 +2,11 @@ import React, {
   FC, useContext, useEffect, useState,
 } from 'react';
 import { AxiosError } from 'axios';
-import { AuthFunctionContext, FullConfig } from '..';
 import { ErrorView } from './AuthView';
 import { makeActivationCard } from './Activation';
 import { TranslatorProps } from '../internationalization';
+import { FullConfig } from '../config/components';
+import { AuthFunctionContext } from '../store/UserStore';
 
 export interface MakeActivateEmailAddressResult {
   ActivateEmailAddress: FC<TranslatorProps>;

@@ -6,12 +6,13 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import { useDebouncedCallback } from 'use-debounce';
-import { AuthFunctionContext, FullConfig } from '..';
 import { AuthView } from './AuthView';
 import { PasswordField } from './common/PasswordField';
 import { ErrorMessage } from '../api/types';
 import { TranslatorProps } from '../internationalization';
 import { useFormStyles } from './common/styles';
+import { FullConfig } from '../config/components';
+import { AuthFunctionContext } from '../store/UserStore';
 
 enum SuccessState {
   INITIAL,
@@ -37,6 +38,64 @@ export function makeResetPasswordForm({
   defaultTranslator,
   routing: { useQueryParams },
 }: FullConfig): MakeResetPasswordFormResult {
+  const SuccessView: FC<TranslatorProps> = ({
+    translator: t = defaultTranslator,
+  }) => {
+    const classes = useStyles();
+
+    return (
+      <>
+        <Typography
+          className={classes.successText}
+          variant="body1"
+        >
+          {t('auth:ResetPassword.SuccessText')}
+        </Typography>
+
+        <Grid container item xs={12} justify="center">
+          <Button
+            type="button"
+            title={t('auth:ResetPassword.SuccessButtonText')}
+            variant="contained"
+            color="primary"
+            href={login}
+          >
+            {t('auth:ResetPassword.SuccessButtonText')}
+          </Button>
+        </Grid>
+      </>
+    );
+  };
+
+  const InvalidLinkView: FC<TranslatorProps> = ({
+    translator: t = defaultTranslator,
+  }) => {
+    const classes = useStyles();
+
+    return (
+      <>
+        <Typography
+          className={classes.successText}
+          variant="body1"
+        >
+          {t('auth:ResetPassword.InvalidLink')}
+        </Typography>
+
+        <Grid container item xs={12} justify="center">
+          <Button
+            type="button"
+            title={t('auth:ResetPassword.InvalidLinkButtonText')}
+            variant="contained"
+            color="primary"
+            href={forgotPassword}
+          >
+            {t('auth:ResetPassword.InvalidLinkButtonText')}
+          </Button>
+        </Grid>
+      </>
+    );
+  };
+
   const ResetPasswordForm: FC<TranslatorProps> = ({
     translator: t = defaultTranslator,
   }) => {
@@ -48,7 +107,7 @@ export function makeResetPasswordForm({
     const { validatePassword, resetPassword } = useContext(AuthFunctionContext);
     const { ident, token } = useQueryParams();
 
-    const [debouncedPasswordValidation] = useDebouncedCallback(
+    const debouncedPasswordValidation = useDebouncedCallback(
       (pw: string) => {
         validatePassword({ ident, password: pw })
           .then(() => {
@@ -155,64 +214,6 @@ export function makeResetPasswordForm({
           )
         }
       </Paper>
-    );
-  };
-
-  const SuccessView: FC<TranslatorProps> = ({
-    translator: t = defaultTranslator,
-  }) => {
-    const classes = useStyles();
-
-    return (
-      <>
-        <Typography
-          className={classes.successText}
-          variant="body1"
-        >
-          {t('auth:ResetPassword.SuccessText')}
-        </Typography>
-
-        <Grid container item xs={12} justify="center">
-          <Button
-            type="button"
-            title={t('auth:ResetPassword.SuccessButtonText')}
-            variant="contained"
-            color="primary"
-            href={login}
-          >
-            {t('auth:ResetPassword.SuccessButtonText')}
-          </Button>
-        </Grid>
-      </>
-    );
-  };
-
-  const InvalidLinkView: FC<TranslatorProps> = ({
-    translator: t = defaultTranslator,
-  }) => {
-    const classes = useStyles();
-
-    return (
-      <>
-        <Typography
-          className={classes.successText}
-          variant="body1"
-        >
-          {t('auth:ResetPassword.InvalidLink')}
-        </Typography>
-
-        <Grid container item xs={12} justify="center">
-          <Button
-            type="button"
-            title={t('auth:ResetPassword.InvalidLinkButtonText')}
-            variant="contained"
-            color="primary"
-            href={forgotPassword}
-          >
-            {t('auth:ResetPassword.InvalidLinkButtonText')}
-          </Button>
-        </Grid>
-      </>
     );
   };
 

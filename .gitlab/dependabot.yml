@@ -1,0 +1,84 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/react-lib"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "fix(react):"
+      prefix-development: "chore(react):"
+    reviewers:
+      - edward.lecock
+    assignees:
+      - matthias.herzkamp
+  - package-ecosystem: "pip"
+    directory: "/django-app"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "fix(django):"
+      prefix-development: "chore(django):"
+    reviewers:
+      - matthias.tellen
+    assignees:
+      - matthias.herzkamp
+  - package-ecosystem: "npm"
+    directory: "/examples/email-user/frontend"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "chore(example/email-user):"
+    reviewers:
+      - edward.lecock
+    assignees:
+      - matthias.herzkamp
+  - package-ecosystem: "pip"
+    directory: "/examples/email-user/backend"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "chore(example/email-user):"
+    reviewers:
+      - matthias.tellen
+    assignees:
+      - matthias.herzkamp
+  - package-ecosystem: "npm"
+    directory: "/examples/nextjs/frontend"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "chore(example/nextjs):"
+    reviewers:
+      - edward.lecock
+    assignees:
+      - matthias.herzkamp
+  - package-ecosystem: "pip"
+    directory: "/examples/nextjs/backend"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "chore(example/nextjs):"
+    reviewers:
+      - matthias.tellen
+    assignees:
+      - matthias.herzkamp
+  - package-ecosystem: "npm"
+    directory: "/examples/react-router/frontend"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "chore(example/react-router):"
+    reviewers:
+      - edward.lecock
+    assignees:
+      - matthias.herzkamp
+  - package-ecosystem: "pip"
+    directory: "/examples/react-router/backend"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "chore(example/react-router):"
+    reviewers:
+      - matthias.tellen
+    assignees:
+      - matthias.herzkamp
