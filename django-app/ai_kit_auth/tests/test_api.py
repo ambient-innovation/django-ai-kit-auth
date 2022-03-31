@@ -2,12 +2,16 @@ from unittest.mock import Mock, patch
 from django.urls import reverse
 from django.contrib.auth import authenticate
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from django.middleware.csrf import _does_token_match
 from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.test import APITestCase
 from model_bakery import baker
 from ai_kit_auth import services
+
+try:
+    from django.middleware.csrf import _does_token_match as compare_tokens
+except ImportError:
+    from django.middleware.csrf import _compare_masked_tokens as compare_tokens
 
 from ai_kit_auth.signals import (
     user_pre_login,
@@ -124,9 +128,7 @@ class LoginTests(AuthTestCase):
             format="json",
         )
         self.assertTrue(
-            _does_token_match(
-                response.cookies["csrftoken"].value, response.data["csrf"]
-            )
+            compare_tokens(response.cookies["csrftoken"].value, response.data["csrf"])
         )
 
 
