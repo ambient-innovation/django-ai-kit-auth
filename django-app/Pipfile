@@ -5,12 +5,12 @@ verify_ssl = true
 
 [packages]
 Django = ">=3.0.0"
-djangorestframework = "*"
+djangorestframework = ">=3.13.1"
 
 [dev-packages]
 commit_parser = {path = "./../python_commit_parser"}
 python-semantic-release = "==7.13.2"
-model_bakery = "*"
+model_bakery = ">=1.4.0"
 
 [requires]
 python_version = "3.9"

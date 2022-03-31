@@ -16,8 +16,9 @@ updates:
     schedule:
       interval: "weekly"
     commit-message:
-      prefix: "fix(django):"
-      prefix-development: "chore(django):"
+      prefix: "chore(django):"
+    ignore:
+      - dependency-name: "python-semantic-release"
     reviewers:
       - matthias.tellen
     assignees:
