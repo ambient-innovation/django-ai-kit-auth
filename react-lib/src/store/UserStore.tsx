@@ -76,11 +76,8 @@ export function makeGenericUserStore<U extends unknown = User>(
       withCredentials: true,
       baseURL: apiUrl,
       headers: {
-        ...axios.defaults.headers,
-        common: {
-          ...axios.defaults.headers.common,
-          'X-CSRFToken': csrf,
-        },
+        ...axios.defaults.headers.common,
+        'X-CSRFToken': csrf,
       },
     }), [csrf]);
 
@@ -202,7 +199,7 @@ export function makeGenericUserStore<U extends unknown = User>(
             csrf: '1234',
             axiosRequestConfig: {
               headers: {
-                common: { 'X-CSRFToken': context?.csrf ?? '1234' },
+                'X-CSRFToken': context?.csrf ?? '1234',
               },
             },
             loading: false,
