@@ -9,7 +9,7 @@ djangorestframework = ">=3.13.1"
 
 [dev-packages]
 commit_parser = {path = "./../python_commit_parser"}
-python-semantic-release = ">=7.13.2"
+python-semantic-release = ">=7.27.0"
 model_bakery = ">=1.4.0"
 
 [requires]
