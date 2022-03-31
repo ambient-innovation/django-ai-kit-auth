@@ -32,9 +32,9 @@
   "author": "Ambient Innovation",
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.21.1",
-    "camelcase-keys": "^6.2.2",
-    "use-debounce": "^6.0.1"
+    "axios": "^0.26.0",
+    "camelcase-keys": "^7.0.2",
+    "use-debounce": "^7.0.1"
   },
   "peerDependencies": {
     "@material-ui/core": "^4.9.0",
@@ -44,8 +44,8 @@
     "react-router-dom": "^5.0.0"
   },
   "devDependencies": {
-    "@commitlint/cli": "^11.0.0",
-    "@commitlint/config-conventional": "^11.0.0",
+    "@commitlint/cli": "^16.2.3",
+    "@commitlint/config-conventional": "^16.2.1",
     "@material-ui/core": "^4.11.3",
     "@material-ui/icons": "^4.11.2",
     "@semantic-release/gitlab": "^6.0.9",
