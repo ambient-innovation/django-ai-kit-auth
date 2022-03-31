@@ -8,7 +8,7 @@ with open("ai_kit_auth/__init__.py", "r") as fd:
 
 setup(
     version=version,
-    install_requires=["Django>=3.0.0"],
+    install_requires=["Django>=3.0.0", "djangorestframework>=3.0.0"],
     tests_require=[],
     test_suite="runtests.runtests",
 )
