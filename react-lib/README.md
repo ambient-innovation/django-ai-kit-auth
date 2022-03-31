@@ -33,7 +33,7 @@ If you use `react-router`, you can create a configuration file like this:
 
 ```typescript jsx
 // configureAuth.ts
-import { configureAuthReactRouter } from 'ai-kit-auth';
+import { configureAuthReactRouter } from 'ai-kit-auth/dist/config/ReactRouter';
 
 export const {
     UserStore,
@@ -602,7 +602,8 @@ input fields (password and password-repeat) and a submit button. Upon submit the
 
 ### configureAuthReactRouter
 
-This function provides default values to the mandatory ones of [`makeComponents`](#makecomponents).
+This function can be imported from `ai-kit-auth/dist/config/ReactRouter` and provides default
+values to the mandatory ones of [`makeComponents`](#makecomponents).
 It uses the widely used `react-router` library to define functionality for page transitions.
 
 #### Parameters
@@ -621,7 +622,7 @@ An object containing all components returned by [`makeComponents`](#makecomponen
 #### Example
 
 ```typescript jsx
-import { configureAuthReactRouter } from 'ai-kit-auth';
+import { configureAuthReactRouter } from 'ai-kit-auth/dist/config/ReactRouter';
 
 export const {
     UserStore, useUserStore, makeAuthRoutes, ProtectedRoute,
@@ -655,7 +656,7 @@ A list of `JSX.Element`s (`Routes`), which can be placed directly in a `react-ro
 
 ```typescript jsx
 import React from 'react';
-import { makeAuthRoutes } from 'ai-kit-auth';
+import { makeAuthRoutes } from './configuredAuth';
 import ...
 
 const App: React.FC = () => (
@@ -725,7 +726,8 @@ If there is no referrer, it redirects to the `main page` (default `'/'`).
 
 ### configureAuthNext
 
-This function provides default values to the mandatory ones of [`makeComponents`](#makecomponents).
+This function can be imported from `ai-kit-auth/dist/Next` and provides default values to the
+mandatory ones of [`makeComponents`](#makecomponents).
 It uses the very popular next.js framework for routing.
 
 #### Parameters
@@ -744,7 +746,7 @@ An object containing all components returned by [`makeComponents`](#makecomponen
 #### Example
 
 ```typescript jsx
-import { configureAuthNext } from 'ai-kit-auth';
+import { configureAuthNext } from 'ai-kit-auth/dist/config/Next';
 
 export const {
     UserStore, useUserStore, makeAuthRoutes, ProtectedRoute,
