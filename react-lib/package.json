@@ -50,7 +50,7 @@
     "@material-ui/icons": "^4.11.2",
     "@semantic-release/gitlab": "^6.0.9",
     "@testing-library/jest-dom": "^5.11.10",
-    "@testing-library/react": "^11.2.6",
+    "@testing-library/react": "^12.1.4",
     "@testing-library/user-event": "^13.5.0",
     "@types/axios-mock-adapter": "^1.10.0",
     "@types/history": "^4.7.8",
