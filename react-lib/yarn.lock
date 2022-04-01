@@ -1107,9 +1107,9 @@
     url-join "^4.0.0"
 
 "@semantic-release/gitlab@^6.0.9":
-  version "6.0.9"
-  resolved "https://registry.yarnpkg.com/@semantic-release/gitlab/-/gitlab-6.0.9.tgz#aaac32c77cae6f8d5c7923a0de75f441b63206f4"
-  integrity sha512-PUdtYksSZvSm11T3kenyxSJkJttvumnSlrK0NGFH0ERfPeDV1VlUOoNxjOQ/cUsOM6yyY3aZ//khNe0FpGAZ2Q==
+  version "6.2.2"
+  resolved "https://registry.yarnpkg.com/@semantic-release/gitlab/-/gitlab-6.2.2.tgz#af019b44afef7927c731d97a928c2bf1b1d1d703"
+  integrity sha512-AEz1MpTVttQITTXYmsryQQi+f6ybLUIXoLSXhNwhNB/P/kFYs9P/X8GU/ARip/J5twByoWw07S5KldMCP2zZNQ==
   dependencies:
     "@semantic-release/error" "^2.2.0"
     aggregate-error "^3.0.0"
