@@ -8,7 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
-    "@material-ui/core": "^4.9.5",
+    "@material-ui/core": "^4.12.4",
     "@material-ui/icons": "^4.9.1",
     "ai-kit-auth": "file:../../../react-lib",
     "next": "^10.1.3",
