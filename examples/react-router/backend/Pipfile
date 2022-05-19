@@ -14,7 +14,7 @@ djangorestframework-camel-case = "==1.1.2" # CamelCase JSON rendering for API
 django-cors-headers = ">=3.2.1"
 
 # Deploy
-gunicorn = "==20.0.4"                      # Webserver
+gunicorn = "==20.1.0"                      # Webserver
 # Local installation of django-ai-kit-auth
 django-ai-kit-auth = {editable = true,path = "./../../../django-app"}
 
