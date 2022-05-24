@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 # django
-Django = "~=3.0"                           # django
+Django = "~=3.1"                           # django
 # Testing
 model-bakery = "==1.0.2"                   # Test template for objects
 # REST API
