@@ -33,7 +33,7 @@
   "license": "MIT",
   "dependencies": {
     "axios": "^0.21.1",
-    "camelcase-keys": "^6.2.2",
+    "camelcase-keys": "^8.0.1",
     "use-debounce": "^6.0.1"
   },
   "peerDependencies": {
