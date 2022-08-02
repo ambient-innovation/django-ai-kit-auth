@@ -7,7 +7,7 @@ name = "pypi"
 # django
 Django = "~=3.2"                           # django
 # Testing
-model-bakery = "==1.0.2"                   # Test template for objects
+model-bakery = "==1.7.0"                   # Test template for objects
 # REST API
 djangorestframework = "==3.11.0"           # django REST API
 djangorestframework-camel-case = "==1.1.2" # CamelCase JSON rendering for API
