@@ -19,7 +19,7 @@ gunicorn = "==20.0.4"                      # Webserver
 django-ai-kit-auth = {editable = true,path = "./../../../django-app"}
 
 [dev-packages]
-flake8 = "==3.7.9"                         # Linting
+flake8 = "==5.0.4"                         # Linting
 pep8-naming = "==0.9.1"                    # PEP8 conform name linting
 
 [requires]
