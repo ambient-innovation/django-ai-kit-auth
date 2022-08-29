@@ -1,0 +1,38 @@
+[project]
+name = "django-ai-kit-auth"
+authors = [{ name = "Ambient Innovation: GmbH", email = "hello@ambient.digital" }]
+readme = "README.md"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Web Environment",
+    "Framework :: Django",
+    "Framework :: Django :: 3.0",
+    "Framework :: Django :: 3.1",
+    "Framework :: Django :: 3.2",
+    "Framework :: Django :: 4.0",
+    "Framework :: Django :: 4.1",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: BSD License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+]
+dynamic = ["version", "description"]
+license = { "file" = "LICENSE" }
+dependencies = [
+    'Django>=3.0',
+]
+
+[project.urls]
+'Documentation' = 'https://github.com/ambient-innovation/django-ai-kit-auth/blob/develop/README.md'
+'Maintained by' = 'https://ambient.digital/'
+'Bugtracker' = 'https://github.com/ambient-innovation/django-ai-kit-auth/issues'
+'Changelog' = 'https://github.com/ambient-innovation/django-ai-kit-auth/commits/develop/django-app'

@@ -1,16 +1,15 @@
 # AI-KIT: Authentication
 
-AI Kit Auth is the one stop shop for authentification related tasks for
-ambient innovation.
+"AI Kit Auth" is the one-stop shop for authentication related tasks for Ambient Digital.
 
 It targets the following tech stack:
 
 * Django in the back
 * React in the front
-* Material UI is used for the standard theme, but its not tightly coupled and
+* Material UI is used for the standard theme, but it's not tightly coupled and
 there are efforts to make it a not necessary dependency
 * REST Api
-* Sessions authentification. Support for JWT is planned --- not as the main
+* Sessions authentication. Support for JWT is planned --- not as the main
 auth method, but to enable access to external services for a short amount of
 time.
 
@@ -26,14 +25,14 @@ Links to the hosted packages:
 ## Usage
 
 You can find detailed instructions on how to use the frontend and backend libraries
-in the READMEs of the respective folders:
+in the different README files of the respective folders:
 * Backend: [django-app](django-app/README.rst)
 * Frontend: [react-lib](react-lib/README.md)
 
 ## Contributing
 
 If you want to contribute, please make sure to write commit messages
-according to the [conventionalcommits](https://www.conventionalcommits.org/en/v1.0.0/#summary)
+according to the [conventional-commits](https://www.conventionalcommits.org/en/v1.0.0/#summary)
 specification, because they are the basis for automatic versioning and
 changelog generation. Basically, a commit message should have the format
 
@@ -81,9 +80,9 @@ See [demo README](examples/email-user/README.md)
 
 Python code should be formatted by black, typescript code by eslint.
 
-### Notes on CSRF protection and authentification strategy
+### Notes on CSRF protection and authentication strategy
 
-Ai-Kit-Auth makes use of the standard django session managment and
+Ai-Kit-Auth makes use of the standard django session management and
 the build in CSRF protection measures. The frontend has to set a `X-CSRFToken`
 http header to the current CSRF token value. This token is returned by the
 `me/` and the `login` endpoints (the token is rotated by django after login,
