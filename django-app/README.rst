@@ -13,7 +13,7 @@ at the template section of the settings to configure the email templates.
 It works with the standard django and with a custom user model as
 long as its provides an email address.
 
-Standard Django sessions are used for authentification.
+Standard Django sessions are used for authentication.
 
 Index
 -----
@@ -71,7 +71,7 @@ For more details see the
 `django-cors-headers <https://github.com/adamchainz/django-cors-headers>`__
 documentation.
 
-2.) Configuration is namespaced unter ``AI_KIT_AUTH`` like so:
+2.) AI-KIT: Authentication is configured using a single, global setting called ``AI_KIT_AUTH``:
 
 ::
 
@@ -209,7 +209,7 @@ In addition to that some general configuration is required:
 
 ::
 
-    CORS_ORIGIN_WHITELIST = [
+    CORS_ALLOWED_ORIGINS = [
         "http://localhost:8000",
         "http://localhost:3000",
         # add other front-end backend urls
@@ -229,9 +229,6 @@ The ``CSRF_USE_SESSIONS`` configuration doesn't need to be set to enable
 Ai-Kit-Auth, but in prevents problems with double logins, for example
 if a user is logged into the Admin interface and also logged in the
 frontend. Django saves CSRF tokens in cookies by default.
-
-Please note that ``CORS_ORIGIN_WHITELIST`` takes the whole URL including the scheme (e.g. 'http://'), whereas ``CSRF_TRUSTED_ORIGINS`` takes
-**only** the domain, for example: "example.org".
 
 
 3.) Include the routes in your ``urls.py``:
@@ -276,7 +273,7 @@ expects
 
 
 both fields are required.
-In addition a csrf-token returned from the `/me` call is needed in the request header as X-CSRFTOKEN.
+In addition a csrf-token returned from the `/me` call is needed in the request header as X-CSRFToken.
 The endpoint answers with the status code 200
 and
 
@@ -428,7 +425,7 @@ expects
 ::
 
     {
-        "ident": <identifer for the user, from the reset link>,
+        "ident": <identifier for the user, from the reset link>,
         "token": <reset token, from the reset link>,
         "password": <password>,
     }
@@ -488,7 +485,7 @@ expects
 ::
 
     {
-        "ident": <identifer for the user, from the reset link>,
+        "ident": <identifier for the user, from the reset link>,
         "token": <reset token, from the reset link>,
     }
 
