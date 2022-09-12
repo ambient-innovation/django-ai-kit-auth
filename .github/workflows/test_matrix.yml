@@ -1,10 +1,9 @@
 name: Unit tests
 
 on:
-  push:
-    branches: [ master ]
+  push
   pull_request:
-    branches: [ master ]
+    branches: [ develop ]
 
 jobs:
   build:
